@@ -6,6 +6,7 @@ import { DataTable, EmptyState, FilterBar, PageHeader, selectCls } from "@/compo
 import { Button } from "@/components/ui/button";
 import { venues } from "@/lib/mock";
 import { seo } from "@/lib/seo";
+import { useDemo } from "@/components/v2/DemoProvider";
 
 export const Route = createFileRoute("/estabelecimentos")({
   head: () => seo("Estabelecimentos", "Pontos da rede com telas instaladas, por cidade, bairro e região."),
@@ -13,6 +14,8 @@ export const Route = createFileRoute("/estabelecimentos")({
 });
 
 function Page() {
+  const demo = useDemo();
+  const venues = demo.venues.filter(v=>demo.role==='admin'||demo.clientFor(v.name)?.id===demo.clientId);
   const [q, setQ] = useState("");
   const [region, setRegion] = useState("");
   const list = venues.filter((v) => v.name.toLowerCase().includes(q.toLowerCase()) && (!region || v.region === region));
@@ -32,7 +35,7 @@ function Page() {
           {list.map((v) => (
             <tr key={v.id}>
               <td className="font-mono text-xs text-muted-foreground">{v.id}</td><td className="font-medium">{v.name}</td><td>{v.type}</td>
-              <td>{v.city}</td><td>{v.district}</td><td>{v.region}</td><td>{v.screens}</td>
+              <td>{v.city}</td><td>{v.district}</td><td>{v.region}</td><td>{demo.devices.filter(tv=>tv.venue===v.name).length}</td>
               <td className={v.uptime > 97 ? "text-success" : v.uptime > 93 ? "text-warning" : "text-destructive"}>{v.uptime}%</td>
             </tr>
           ))}

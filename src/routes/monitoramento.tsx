@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { alerts, devices } from "@/lib/mock";
 import { seo } from "@/lib/seo";
+import { VisualMonitoring } from "@/components/v2/VisualMonitoring";
+import { useDemo } from "@/components/v2/DemoProvider";
 
 export const Route = createFileRoute("/monitoramento")({
   head: () => seo("Monitoramento", "Saúde dos dispositivos e alertas da rede em tempo real."),
@@ -13,6 +15,8 @@ export const Route = createFileRoute("/monitoramento")({
 });
 
 function Page() {
+  const demo = useDemo();
+  const visible = demo.visibleDevices;
   return (
     <>
       <PageHeader title="Monitoramento" description="Saúde dos dispositivos (valores demonstrativos)." />
@@ -24,7 +28,7 @@ function Page() {
       </div>
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
         <Panel title="Alertas ativos">
-          <ul className="space-y-3">{alerts.map((a) => (
+          <ul className="space-y-3">{alerts.filter(a=>demo.role==='admin'||demo.clientFor(a.venue)?.id===demo.clientId).map((a) => (
             <li key={a.device} className="rounded-lg border p-3 text-sm">
               <div className="flex justify-between"><span className="font-mono text-xs">{a.device}</span><StatusBadge status={a.level} /></div>
               <div className="mt-1 font-medium">{a.issue}</div><div className="text-xs text-muted-foreground">{a.venue}</div>
@@ -33,7 +37,7 @@ function Page() {
           ))}</ul>
         </Panel>
         <Panel title="Dispositivos" className="lg:col-span-2">
-          <ul className="divide-y">{devices.map((d, i) => {
+          <ul className="divide-y">{visible.map((d, i) => {
             const cpu = [28, 0, 41, 22, 35, 30, 0][i], disk = [55, 72, 91, 40, 63, 48, 80][i];
             return (
               <li key={d.id} className="grid grid-cols-[1fr_auto] items-center gap-3 py-3 text-sm sm:grid-cols-[1.4fr_1fr_1fr_auto]">
@@ -46,6 +50,7 @@ function Page() {
           })}</ul>
         </Panel>
       </div>
+      <VisualMonitoring />
     </>
   );
 }
