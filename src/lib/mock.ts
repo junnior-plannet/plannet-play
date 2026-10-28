@@ -84,3 +84,26 @@ export const playlists = [
 ];
 
 export const fmt = (n: number) => n.toLocaleString("pt-BR");
+
+export type Content = { id: string; name: string; category: string; seconds: number; fixed: boolean; visual: string };
+export type SequenceItem = Content & { key: string };
+export type VisualPlaylist = { id: string; name: string; owner: string; items: SequenceItem[]; state: string };
+export type Client = { id: string; name: string; venueNames: string[]; city: string; region: string; plan: string; status: string; reserved: number };
+export const clients: Client[] = venues.map((v, i) => ({ id: `C-${i+1}`, name: v.name, venueNames: [v.name], city: v.city, region: v.region, plan: i === 6 ? 'Essencial' : 'Parceiro', status: 'Ativo', reserved: i === 6 ? 0 : 20 }));
+export const contentLibrary: Content[] = [
+  ...media.map((m, i) => ({ id: `m-${i}`, name: m.name, category: m.tag === 'Publicidade' ? 'Publicidades' : m.type === 'Vídeo' ? 'Vídeos' : 'Imagens', seconds: Number(m.duration.split(':')[1]), fixed: m.type === 'Vídeo', visual: i === 2 || i === 4 ? 'cafe' : 'video' })),
+  { id: 'rss', name: 'Notícias do dia · RSS', category: 'Notícias RSS', seconds: 25, fixed: false, visual: 'rss' },
+  { id: 'weather', name: 'Previsão · São Paulo', category: 'Previsão do tempo', seconds: 15, fixed: false, visual: 'weather' },
+  { id: 'social', name: 'Novidades nas redes', category: 'Redes sociais', seconds: 20, fixed: false, visual: 'social' },
+  { id: 'widget', name: 'Relógio e boas-vindas', category: 'Widgets', seconds: 10, fixed: false, visual: 'widget' },
+  { id: 'live', name: 'Evento Plannet · Ao vivo', category: 'Transmissões ao vivo', seconds: 3600, fixed: true, visual: 'live' },
+];
+export const visualPlaylists: VisualPlaylist[] = playlists.map((p, i) => ({ id: `p-${i}`, name: p.name, owner: `C-${[3,4,2,1][i]}`, state: 'Rascunho', items: contentLibrary.slice(i, i+5).map((m, j) => ({ ...m, key: `p-${i}-${j}` })) }));
+visualPlaylists.push({ id: 'plannet', name: 'Plannet · Rede parceira', owner: 'plannet', state: 'Rascunho', items: contentLibrary.slice(0,3).map((m,i) => ({ ...m, key: `plannet-${i}` })) });
+export type Track = { id: string; name: string; artist: string; duration: string };
+export const musicTracks: Track[] = [ { id:'t1', name:'Horizonte tranquilo', artist:'Acervo demonstrativo', duration:'3:42' }, { id:'t2', name:'Luz da manhã', artist:'Acervo demonstrativo', duration:'4:10' }, { id:'t3', name:'Entre notas', artist:'Acervo demonstrativo', duration:'2:58' } ];
+export type Channel = { id: string; name: string; description: string; available: boolean; trackIds: string[] };
+export const musicChannels: Channel[] = ['Relax','Lounge','Pop','Instrumental','Jazz'].map((name,i) => ({ id:`ch-${i}`, name, description: ['Tranquilidade para clínicas e consultórios','Uma atmosfera sofisticada','Energia para lojas','Melodias sem voz','Clássicos para ambientes elegantes'][i] ?? '', available: true, trackIds: ['t1','t2','t3'] }));
+export type AudioConfig = { enabled: boolean; source: string; channel: string; volume: number; playing: boolean; muted: boolean; auto: boolean; loop: boolean; shuffle: boolean; priority: string; silent: boolean; original: boolean; livePause: boolean };
+export const defaultAudio: AudioConfig = { enabled:false, source:'Rádio Plannet', channel:'ch-0', volume:40, playing:false, muted:false, auto:true, loop:true, shuffle:false, priority:'Vídeo', silent:true, original:true, livePause:true };
+export const customGroups = [{ name: 'Recepções', ids: ['TV-0142','TV-0019'] }, { name: 'Varejo', ids: ['TV-0087','TV-0098'] }];

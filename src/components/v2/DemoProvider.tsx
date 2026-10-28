@@ -1,0 +1,24 @@
+import { createContext, useContext, useState, type ReactNode } from 'react';
+import { clients as initialClients, devices as initialDevices, visualPlaylists, musicChannels, musicTracks, type Client, type VisualPlaylist, type Channel, type Track, type AudioConfig } from '@/lib/mock';
+import type { DemoRole } from '@/lib/demo-rules';
+export type Device = typeof initialDevices[number];
+export type Publication = { id:string; playlistId:string; deviceId:string; state:string };
+function useDemoState() {
+ const [clients,setClients] = useState<Client[]>(initialClients);
+ const [devices,setDevices] = useState<Device[]>(initialDevices);
+ const [playlists,setPlaylists] = useState<VisualPlaylist[]>(visualPlaylists);
+ const [channels,setChannels] = useState<Channel[]>(musicChannels);
+ const [tracks,setTracks] = useState<Track[]>(musicTracks);
+ const [audio,setAudio] = useState<Record<string,AudioConfig>>({});
+ const [publications,setPublications] = useState<Publication[]>([]);
+ const [role,setRole] = useState<DemoRole>('admin');
+ const [clientId,setClientId] = useState('C-1');
+ const clientFor = (venue:string) => clients.find(c => c.venueNames.includes(venue));
+ const visibleDevices = devices.filter(d => role === 'admin' || clientFor(d.venue)?.id === clientId);
+ const visiblePlaylists = playlists.filter(p => role === 'admin' || p.owner === clientId);
+ return {clients,setClients,devices,setDevices,playlists,setPlaylists,channels,setChannels,tracks,setTracks,audio,setAudio,publications,setPublications,role,setRole,clientId,setClientId,clientFor,visibleDevices,visiblePlaylists};
+}
+type DemoState = ReturnType<typeof useDemoState>;
+const DemoContext = createContext<DemoState | null>(null);
+export function DemoProvider({children}:{children:ReactNode}) { const value=useDemoState(); return <DemoContext.Provider value={value}>{children}</DemoContext.Provider>; }
+export function useDemo() { const ctx=useContext(DemoContext); if(!ctx) throw new Error('DemoProvider ausente'); return ctx; }
