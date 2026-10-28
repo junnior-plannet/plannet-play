@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnunciantesRouteImport } from './routes/anunciantes'
 import { Route as AoVivoRouteImport } from './routes/ao-vivo'
 import { Route as CampanhasRouteImport } from './routes/campanhas'
+import { Route as ClientesRouteImport } from './routes/clientes'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as EstabelecimentosRouteImport } from './routes/estabelecimentos'
 import { Route as HistoricoRouteImport } from './routes/historico'
@@ -46,6 +47,11 @@ const AoVivoRoute = AoVivoRouteImport.update({
 const CampanhasRoute = CampanhasRouteImport.update({
   id: '/campanhas',
   path: '/campanhas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientesRoute = ClientesRouteImport.update({
+  id: '/clientes',
+  path: '/clientes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/anunciantes': typeof AnunciantesRoute
   '/ao-vivo': typeof AoVivoRoute
   '/campanhas': typeof CampanhasRoute
+  '/clientes': typeof ClientesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/estabelecimentos': typeof EstabelecimentosRoute
   '/historico': typeof HistoricoRoute
@@ -144,6 +151,7 @@ export interface FileRoutesByTo {
   '/anunciantes': typeof AnunciantesRoute
   '/ao-vivo': typeof AoVivoRoute
   '/campanhas': typeof CampanhasRoute
+  '/clientes': typeof ClientesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/estabelecimentos': typeof EstabelecimentosRoute
   '/historico': typeof HistoricoRoute
@@ -165,6 +173,7 @@ export interface FileRoutesById {
   '/anunciantes': typeof AnunciantesRoute
   '/ao-vivo': typeof AoVivoRoute
   '/campanhas': typeof CampanhasRoute
+  '/clientes': typeof ClientesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/estabelecimentos': typeof EstabelecimentosRoute
   '/historico': typeof HistoricoRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/anunciantes'
     | '/ao-vivo'
     | '/campanhas'
+    | '/clientes'
     | '/configuracoes'
     | '/estabelecimentos'
     | '/historico'
@@ -207,6 +217,7 @@ export interface FileRouteTypes {
     | '/anunciantes'
     | '/ao-vivo'
     | '/campanhas'
+    | '/clientes'
     | '/configuracoes'
     | '/estabelecimentos'
     | '/historico'
@@ -227,6 +238,7 @@ export interface FileRouteTypes {
     | '/anunciantes'
     | '/ao-vivo'
     | '/campanhas'
+    | '/clientes'
     | '/configuracoes'
     | '/estabelecimentos'
     | '/historico'
@@ -248,6 +260,7 @@ export interface RootRouteChildren {
   AnunciantesRoute: typeof AnunciantesRoute
   AoVivoRoute: typeof AoVivoRoute
   CampanhasRoute: typeof CampanhasRoute
+  ClientesRoute: typeof ClientesRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   EstabelecimentosRoute: typeof EstabelecimentosRoute
   HistoricoRoute: typeof HistoricoRoute
@@ -292,6 +305,13 @@ declare module '@tanstack/react-router' {
       path: '/campanhas'
       fullPath: '/campanhas'
       preLoaderRoute: typeof CampanhasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clientes': {
+      id: '/clientes'
+      path: '/clientes'
+      fullPath: '/clientes'
+      preLoaderRoute: typeof ClientesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/configuracoes': {
@@ -400,6 +420,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnunciantesRoute: AnunciantesRoute,
   AoVivoRoute: AoVivoRoute,
   CampanhasRoute: CampanhasRoute,
+  ClientesRoute: ClientesRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
   EstabelecimentosRoute: EstabelecimentosRoute,
   HistoricoRoute: HistoricoRoute,
