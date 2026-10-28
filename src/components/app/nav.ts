@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, BrainCircuit, Store, MapPinned, MonitorSmartphone, Map, Film, ListVideo,
   CalendarClock, Newspaper, LayoutGrid, Radio, Building2, Megaphone, FileBarChart, Activity,
-  History, Settings, type LucideIcon,
+  History, Settings, Users, Music2, type LucideIcon,
 } from "lucide-react";
 
 export type NavItem = { title: string; url: string; icon: LucideIcon };
@@ -11,6 +11,7 @@ export const navGroups: { label: string; items: NavItem[] }[] = [
     { title: "Central de Inteligência", url: "/inteligencia", icon: BrainCircuit },
   ]},
   { label: "Rede", items: [
+    { title: "Clientes", url: "/clientes", icon: Users },
     { title: "Estabelecimentos", url: "/estabelecimentos", icon: Store },
     { title: "Regiões", url: "/regioes", icon: MapPinned },
     { title: "Telas e Dispositivos", url: "/telas", icon: MonitorSmartphone },
@@ -23,6 +24,7 @@ export const navGroups: { label: string; items: NavItem[] }[] = [
     { title: "Notícias e RSS", url: "/noticias", icon: Newspaper },
     { title: "Widgets", url: "/widgets", icon: LayoutGrid },
     { title: "Transmissões ao Vivo", url: "/ao-vivo", icon: Radio },
+    { title: "Áudio Ambiente", url: "/audio-ambiente", icon: Music2 },
   ]},
   { label: "Comercial", items: [
     { title: "Anunciantes", url: "/anunciantes", icon: Building2 },
