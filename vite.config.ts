@@ -12,4 +12,9 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    optimizeDeps: {
+      include: ["recharts", "sonner", "lucide-react", "@radix-ui/react-dialog", "@radix-ui/react-slider", "@radix-ui/react-switch", "@radix-ui/react-checkbox", "@radix-ui/react-tabs", "@radix-ui/react-progress", "@radix-ui/react-tooltip", "@radix-ui/react-slot"],
+    },
+  },
 });
