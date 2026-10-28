@@ -1,5 +1,5 @@
 import { describe,it,expect } from 'vitest';
-import { canDistribute,canEditPlaylist,changeReservation,setDuration } from '@/lib/demo-rules';
+import { canDistribute,canEditPlaylist,changeReservation,setDuration,assignVisualPlaylist } from '@/lib/demo-rules';
 import { clients,visualPlaylists,defaultAudio } from '@/lib/mock';
 const c=clients[0];const p=visualPlaylists.find(p=>p.owner==='plannet');
 if(!c||!p)throw new Error('Fixtures ausentes');
@@ -12,6 +12,6 @@ describe('Regras contratuais V2',()=>{
  it('cliente distribui apenas para suas TVs',()=>{const own={...p,owner:c.id};expect(canDistribute('client',c.id,own,c)).toBe(true);expect(canDistribute('client',c.id,own,{...c,id:'outro'})).toBe(false);});
  it('vídeos preservam duração original',()=>{expect(setDuration({fixed:true,seconds:30},90).seconds).toBe(30);});
  it('imagens permitem duração em segundos',()=>{expect(setDuration({fixed:false,seconds:10},18).seconds).toBe(18);});
- it('publicação compartilhada não muta playlist original',()=>{const before=JSON.stringify(p);canDistribute('admin',c.id,p,c);expect(JSON.stringify(p)).toBe(before);});
- it('configuração de áudio é independente de playlist visual',()=>{const original={...defaultAudio};const updated={...original,channel:'ch-1'};expect(updated.channel).toBe('ch-1');expect('playlist' in updated).toBe(false);});
+ it('publicação compartilhada preserva playlist original do cliente',()=>{const tv={id:'TV-1',playlist:'Cliente original'};expect(assignVisualPlaylist([tv],['TV-1'],p)[0]?.playlist).toBe('Cliente original');});
+ it('publicação visual mantém configuração musical independente',()=>{const tv={id:'TV-1',playlist:'Original',audio:{...defaultAudio,channel:'ch-1'}};const result=assignVisualPlaylist([tv],['TV-1'],{...p,owner:c.id,name:'Nova visual'});expect(result[0]?.playlist).toBe('Nova visual');expect(result[0]?.audio.channel).toBe('ch-1');});
 });

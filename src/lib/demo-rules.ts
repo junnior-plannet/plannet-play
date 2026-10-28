@@ -9,3 +9,6 @@ export function changeReservation(role: DemoRole, client: Client, value: number)
   return role === 'admin' ? { ...client, reserved: Math.max(0, Math.min(100, value)) } : client;
 }
 export function setDuration<T extends { fixed: boolean; seconds: number }>(item:T, seconds:number):T { return item.fixed ? item : {...item, seconds:Math.max(1,Math.round(seconds))}; }
+export function assignVisualPlaylist<T extends {id:string;playlist:string}>(devices:T[], ids:string[], playlist:VisualPlaylist):T[] {
+  return playlist.owner==='plannet'?devices:devices.map(tv=>ids.includes(tv.id)?{...tv,playlist:playlist.name}:tv);
+}

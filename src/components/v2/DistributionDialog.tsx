@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '@/components/ui/button';
 import { Field, selectCls, EmptyState } from '@/components/app/ui';
 import { customGroups, type VisualPlaylist } from '@/lib/mock';
-import { canDistribute } from '@/lib/demo-rules';
+import { canDistribute, assignVisualPlaylist } from '@/lib/demo-rules';
 import { useDemo } from './DemoProvider';
 export function DistributionDialog({playlist,open,onOpenChange}:{playlist:VisualPlaylist;open:boolean;onOpenChange:(v:boolean)=>void}) {
  const d=useDemo(); const [scope,setScope]=useState('TV individual'); const [target,setTarget]=useState(''); const [selected,setSelected]=useState<string[]>([]); const [confirm,setConfirm]=useState(false);
@@ -16,7 +16,7 @@ export function DistributionDialog({playlist,open,onOpenChange}:{playlist:Visual
  function publish(){
   const rows=chosen.map(tv=>({id:`${Date.now()}-${tv.id}`,playlistId:playlist.id,deviceId:tv.id,state:tv.status==='Offline'?'Com erro':tv.status==='Online'?'Sincronizada':'Pendente'}));
   d.setPublications(prev=>[...rows,...prev.filter(p=>p.playlistId!==playlist.id||!ids.includes(p.deviceId))]);
-  if(playlist.owner!=='plannet')d.setDevices(prev=>prev.map(tv=>ids.includes(tv.id)?{...tv,playlist:playlist.name}:tv));
+  d.setDevices(prev=>assignVisualPlaylist(prev,ids,playlist));
   d.setPlaylists(prev=>prev.map(p=>p.id===playlist.id?{...p,state:'Publicada'}:p)); setConfirm(false);toast.success('Publicação demonstrativa registrada');
  }
  return <Dialog open={open} onOpenChange={v=>{onOpenChange(v);if(!v)setConfirm(false);}}><DialogContent className="max-h-[90dvh] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto"><DialogHeader><DialogTitle>Distribuição de programação</DialogTitle><DialogDescription>Demonstração · nenhuma comunicação com TVs.</DialogDescription></DialogHeader>

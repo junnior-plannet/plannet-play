@@ -1,10 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { toast } from "sonner";
 import { Field, PageHeader, Panel, selectCls } from "@/components/app/ui";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { devices, playlists, regions } from "@/lib/mock";
 import { seo } from "@/lib/seo";
 import { useDemo } from "@/components/v2/DemoProvider";
 import { DistributionDialog } from "@/components/v2/DistributionDialog";
@@ -70,7 +68,7 @@ function Page() {
           </div>
         </Panel>
       </div>
-      {selected && <DistributionDialog playlist={selected} open={publish} onOpenChange={setPublish} />}
+      {selected && <DistributionDialog key={selected.id} playlist={selected} open={publish} onOpenChange={setPublish} />}
     </>
   );
 }
