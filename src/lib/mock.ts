@@ -25,7 +25,7 @@ export const devices = [
   { id: "TV-0019", name: "Balcão", venue: "Padaria Bella Vista", orientation: "16:9", status: "Online", sync: "há 4 min", playlist: "Manhã Gourmet", hours: 355 },
   { id: "TV-0311", name: "Espera", venue: "Barbearia Navalha de Ouro", orientation: "9:16", status: "Sincronizando", sync: "agora", playlist: "Estilo & Esporte", hours: 198 },
   { id: "TV-0156", name: "Salão", venue: "Restaurante Sabor Mineiro", orientation: "16:9", status: "Online", sync: "há 6 min", playlist: "Almoço Executivo", hours: 290 },
-  { id: "TV-0098", name: "Entrada", venue: "Farmácia Saúde Já", orientation: "9:16", status: "Offline", sync: "há 26 h", playlist: "Saúde & Bem-estar", hours: 120 },
+  { id: "TV-0098", name: "Entrada", venue: "Farmácia Saúde Já", orientation: "9:16", status: "Offline", sync: "há 26 h", playlist: "Farmácia · Saúde", hours: 120 },
 ];
 
 export const hourlyActivity = Array.from({ length: 24 }, (_, h) => ({
@@ -85,23 +85,26 @@ export const playlists = [
 
 export const fmt = (n: number) => n.toLocaleString("pt-BR");
 
-export type Content = { id: string; name: string; category: string; seconds: number; fixed: boolean; visual: string };
+export type Content = { id: string; name: string; category: string; seconds: number; fixed: boolean; visual: string; owner?: string };
 export type SequenceItem = Content & { key: string };
 export type VisualPlaylist = { id: string; name: string; owner: string; items: SequenceItem[]; state: string };
 export type Client = { id: string; name: string; venueNames: string[]; city: string; region: string; plan: string; status: string; reserved: number };
 export const clients: Client[] = venues.map((v, i) => ({ id: `C-${i+1}`, name: v.name, venueNames: [v.name], city: v.city, region: v.region, plan: i === 6 ? 'Essencial' : 'Parceiro', status: 'Ativo', reserved: i === 6 ? 0 : 20 }));
 export const contentLibrary: Content[] = [
-  ...media.map((m, i) => ({ id: `m-${i}`, name: m.name, category: m.tag === 'Publicidade' ? 'Publicidades' : m.type === 'Vídeo' ? 'Vídeos' : 'Imagens', seconds: Number(m.duration.split(':')[1]), fixed: m.type === 'Vídeo', visual: i === 2 || i === 4 ? 'cafe' : 'video' })),
+  ...media.map((m, i) => ({ id: `m-${i}`, name: m.name, category: m.tag === 'Publicidade' ? 'Publicidades' : m.type === 'Vídeo' ? 'Vídeos' : 'Imagens', seconds: Number(m.duration.split(':')[1]), fixed: m.type === 'Vídeo', visual: i === 2 || i === 4 ? 'cafe' : 'video', owner: `C-${[4,2,6,7,1,5,3,3][i]}` })),
   { id: 'rss', name: 'Notícias do dia · RSS', category: 'Notícias RSS', seconds: 25, fixed: false, visual: 'rss' },
   { id: 'weather', name: 'Previsão · São Paulo', category: 'Previsão do tempo', seconds: 15, fixed: false, visual: 'weather' },
   { id: 'social', name: 'Novidades nas redes', category: 'Redes sociais', seconds: 20, fixed: false, visual: 'social' },
   { id: 'widget', name: 'Relógio e boas-vindas', category: 'Widgets', seconds: 10, fixed: false, visual: 'widget' },
   { id: 'live', name: 'Evento Plannet · Ao vivo', category: 'Transmissões ao vivo', seconds: 3600, fixed: true, visual: 'live' },
 ];
-export const visualPlaylists: VisualPlaylist[] = playlists.map((p, i) => ({ id: `p-${i}`, name: p.name, owner: `C-${[3,4,2,1][i]}`, state: 'Rascunho', items: contentLibrary.slice(i, i+5).map((m, j) => ({ ...m, key: `p-${i}-${j}` })) }));
+export const visualPlaylists: VisualPlaylist[] = playlists.map((p, i) => ({ id: `p-${i}`, name: p.name, owner: `C-${[3,4,2,1][i]}`, state: 'Rascunho', items: contentLibrary.filter(m=>!m.owner||m.owner===`C-${[3,4,2,1][i]}`).slice(0,5).map((m, j) => ({ ...m, key: `p-${i}-${j}` })) }));
+for (const [i, owner] of ['C-5','C-6','C-7'].entries()) { const name=['Estilo & Esporte','Almoço Executivo','Farmácia · Saúde'][i]??'Playlist'; visualPlaylists.push({id:`extra-${i}`,name,owner,state:'Rascunho',items:contentLibrary.filter(m=>!m.owner||m.owner===owner).slice(0,3).map((m,j)=>({...m,key:`extra-${i}-${j}`}))}); }
 visualPlaylists.push({ id: 'plannet', name: 'Plannet · Rede parceira', owner: 'plannet', state: 'Rascunho', items: contentLibrary.slice(0,3).map((m,i) => ({ ...m, key: `plannet-${i}` })) });
-export type Track = { id: string; name: string; artist: string; duration: string };
+export type Track = { owner?: string; id: string; name: string; artist: string; duration: string };
 export const musicTracks: Track[] = [ { id:'t1', name:'Horizonte tranquilo', artist:'Acervo demonstrativo', duration:'3:42' }, { id:'t2', name:'Luz da manhã', artist:'Acervo demonstrativo', duration:'4:10' }, { id:'t3', name:'Entre notas', artist:'Acervo demonstrativo', duration:'2:58' } ];
+export const personalMusicLists: Record<string,Record<string,string[]>> = {};
+export type Station = { id:string; name:string; url:string; category:string; description:string; owner:string };
 export type Channel = { id: string; name: string; description: string; available: boolean; trackIds: string[] };
 export const musicChannels: Channel[] = ['Relax','Lounge','Pop','Instrumental','Jazz'].map((name,i) => ({ id:`ch-${i}`, name, description: ['Tranquilidade para clínicas e consultórios','Uma atmosfera sofisticada','Energia para lojas','Melodias sem voz','Clássicos para ambientes elegantes'][i] ?? '', available: true, trackIds: ['t1','t2','t3'] }));
 export type AudioConfig = { enabled: boolean; source: string; channel: string; volume: number; playing: boolean; muted: boolean; auto: boolean; loop: boolean; shuffle: boolean; priority: string; silent: boolean; original: boolean; livePause: boolean };
