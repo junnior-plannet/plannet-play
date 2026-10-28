@@ -14,4 +14,4 @@
 - All demo data lives in `src/lib/mock.ts`; pages read only from there so real integrations can replace it in one place.
 - AppShell owns DemoProvider around its consuming content and route children; keep context identity in the component-free demo-context module to prevent refresh mismatches. Do not persist demo data or call external services.
 - Frontend permission and distribution rules live in demo-rules and are tested independently; they are not a security boundary.
-- Use one PlaylistEditor for both demo roles and dnd-kit for accessible sequence sorting; audio settings remain separate from visual assignments.
+- Use one PlaylistEditor for both demo roles with PlaylistTimeline for single-track horizontal dnd-kit sorting; playlist-timeline supplies shared duration, repetition and sequencing logic for list and preview consistency. Audio settings remain separate from visual assignments.
