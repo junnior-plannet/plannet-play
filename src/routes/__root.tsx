@@ -14,7 +14,6 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppShell } from "@/components/app/AppShell";
 import { Toaster } from "@/components/ui/sonner";
-import { DemoProvider } from "@/components/v2/DemoProvider";
 
 function NotFoundComponent() {
   return (
@@ -125,7 +124,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <DemoProvider><AppShell><Outlet /></AppShell></DemoProvider>
+      <AppShell><Outlet /></AppShell>
       <Toaster theme="dark" richColors />
     </QueryClientProvider>
   );

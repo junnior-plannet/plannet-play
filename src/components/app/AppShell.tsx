@@ -6,7 +6,7 @@ import {
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, SidebarFooter,
 } from "@/components/ui/sidebar";
 import { navGroups } from "./nav";
-import { useDemo } from "@/components/v2/DemoProvider";
+import { DemoProvider, useDemo } from "@/components/v2/DemoProvider";
 import { Button } from "@/components/ui/button";
 
 const clientPaths = ["/clientes", "/estabelecimentos", "/telas", "/midias", "/playlists", "/programacao", "/monitoramento", "/audio-ambiente"];
@@ -63,6 +63,10 @@ function AppSidebar() {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
+  return <DemoProvider><AppShellContent>{children}</AppShellContent></DemoProvider>;
+}
+
+function AppShellContent({ children }: { children: ReactNode }) {
   const demo = useDemo();
   const path = useRouterState({ select: r => r.location.pathname });
   return (

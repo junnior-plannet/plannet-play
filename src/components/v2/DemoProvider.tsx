@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { useContext, useState, type ReactNode } from 'react';
+import { DemoContext } from './demo-context';
 import { clients as initialClients, venues as initialVenues, devices as initialDevices, visualPlaylists, musicChannels, musicTracks, type Client, type VisualPlaylist, type Channel, type Track, type AudioConfig, type Station, personalMusicLists } from '@/lib/mock';
 import type { DemoRole } from '@/lib/demo-rules';
 export type Device = typeof initialDevices[number];
@@ -21,7 +22,6 @@ function useDemoState() {
  const visiblePlaylists = playlists.filter(p => role === 'admin' || p.owner === clientId);
  return {musicListsByOwner,setMusicListsByOwner,stations,setStations,clients,setClients,venues,setVenues,devices,setDevices,playlists,setPlaylists,channels,setChannels,tracks,setTracks,audio,setAudio,publications,setPublications,role,setRole,clientId,setClientId,clientFor,visibleDevices,visiblePlaylists};
 }
-type DemoState = ReturnType<typeof useDemoState>;
-const DemoContext = createContext<DemoState | null>(null);
+export type DemoState = ReturnType<typeof useDemoState>;
 export function DemoProvider({children}:{children:ReactNode}) { const value=useDemoState(); return <DemoContext.Provider value={value}>{children}</DemoContext.Provider>; }
 export function useDemo() { const ctx=useContext(DemoContext); if(!ctx) throw new Error('DemoProvider ausente'); return ctx; }
