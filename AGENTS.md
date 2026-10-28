@@ -8,3 +8,7 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Architecture
+- Shared app shell (sidebar + header) lives in `src/components/app/AppShell.tsx` and wraps `<Outlet />` in `__root.tsx`; menu entries come from `src/components/app/nav.ts` so nav and routes stay in sync.
+- All demo data lives in `src/lib/mock.ts`; pages read only from there so real integrations can replace it in one place.

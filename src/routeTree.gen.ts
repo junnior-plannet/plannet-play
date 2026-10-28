@@ -10,33 +10,258 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnunciantesRouteImport } from './routes/anunciantes'
+import { Route as AoVivoRouteImport } from './routes/ao-vivo'
+import { Route as CampanhasRouteImport } from './routes/campanhas'
+import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
+import { Route as EstabelecimentosRouteImport } from './routes/estabelecimentos'
+import { Route as HistoricoRouteImport } from './routes/historico'
+import { Route as InteligenciaRouteImport } from './routes/inteligencia'
+import { Route as MapaRouteImport } from './routes/mapa'
+import { Route as MidiasRouteImport } from './routes/midias'
+import { Route as MonitoramentoRouteImport } from './routes/monitoramento'
+import { Route as NoticiasRouteImport } from './routes/noticias'
+import { Route as PlaylistsRouteImport } from './routes/playlists'
+import { Route as ProgramacaoRouteImport } from './routes/programacao'
+import { Route as RegioesRouteImport } from './routes/regioes'
+import { Route as RelatoriosRouteImport } from './routes/relatorios'
+import { Route as TelasRouteImport } from './routes/telas'
+import { Route as WidgetsRouteImport } from './routes/widgets'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnunciantesRoute = AnunciantesRouteImport.update({
+  id: '/anunciantes',
+  path: '/anunciantes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AoVivoRoute = AoVivoRouteImport.update({
+  id: '/ao-vivo',
+  path: '/ao-vivo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CampanhasRoute = CampanhasRouteImport.update({
+  id: '/campanhas',
+  path: '/campanhas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EstabelecimentosRoute = EstabelecimentosRouteImport.update({
+  id: '/estabelecimentos',
+  path: '/estabelecimentos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoricoRoute = HistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InteligenciaRoute = InteligenciaRouteImport.update({
+  id: '/inteligencia',
+  path: '/inteligencia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapaRoute = MapaRouteImport.update({
+  id: '/mapa',
+  path: '/mapa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MidiasRoute = MidiasRouteImport.update({
+  id: '/midias',
+  path: '/midias',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MonitoramentoRoute = MonitoramentoRouteImport.update({
+  id: '/monitoramento',
+  path: '/monitoramento',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoticiasRoute = NoticiasRouteImport.update({
+  id: '/noticias',
+  path: '/noticias',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlaylistsRoute = PlaylistsRouteImport.update({
+  id: '/playlists',
+  path: '/playlists',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgramacaoRoute = ProgramacaoRouteImport.update({
+  id: '/programacao',
+  path: '/programacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegioesRoute = RegioesRouteImport.update({
+  id: '/regioes',
+  path: '/regioes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RelatoriosRoute = RelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TelasRoute = TelasRouteImport.update({
+  id: '/telas',
+  path: '/telas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WidgetsRoute = WidgetsRouteImport.update({
+  id: '/widgets',
+  path: '/widgets',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/anunciantes': typeof AnunciantesRoute
+  '/ao-vivo': typeof AoVivoRoute
+  '/campanhas': typeof CampanhasRoute
+  '/configuracoes': typeof ConfiguracoesRoute
+  '/estabelecimentos': typeof EstabelecimentosRoute
+  '/historico': typeof HistoricoRoute
+  '/inteligencia': typeof InteligenciaRoute
+  '/mapa': typeof MapaRoute
+  '/midias': typeof MidiasRoute
+  '/monitoramento': typeof MonitoramentoRoute
+  '/noticias': typeof NoticiasRoute
+  '/playlists': typeof PlaylistsRoute
+  '/programacao': typeof ProgramacaoRoute
+  '/regioes': typeof RegioesRoute
+  '/relatorios': typeof RelatoriosRoute
+  '/telas': typeof TelasRoute
+  '/widgets': typeof WidgetsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/anunciantes': typeof AnunciantesRoute
+  '/ao-vivo': typeof AoVivoRoute
+  '/campanhas': typeof CampanhasRoute
+  '/configuracoes': typeof ConfiguracoesRoute
+  '/estabelecimentos': typeof EstabelecimentosRoute
+  '/historico': typeof HistoricoRoute
+  '/inteligencia': typeof InteligenciaRoute
+  '/mapa': typeof MapaRoute
+  '/midias': typeof MidiasRoute
+  '/monitoramento': typeof MonitoramentoRoute
+  '/noticias': typeof NoticiasRoute
+  '/playlists': typeof PlaylistsRoute
+  '/programacao': typeof ProgramacaoRoute
+  '/regioes': typeof RegioesRoute
+  '/relatorios': typeof RelatoriosRoute
+  '/telas': typeof TelasRoute
+  '/widgets': typeof WidgetsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/anunciantes': typeof AnunciantesRoute
+  '/ao-vivo': typeof AoVivoRoute
+  '/campanhas': typeof CampanhasRoute
+  '/configuracoes': typeof ConfiguracoesRoute
+  '/estabelecimentos': typeof EstabelecimentosRoute
+  '/historico': typeof HistoricoRoute
+  '/inteligencia': typeof InteligenciaRoute
+  '/mapa': typeof MapaRoute
+  '/midias': typeof MidiasRoute
+  '/monitoramento': typeof MonitoramentoRoute
+  '/noticias': typeof NoticiasRoute
+  '/playlists': typeof PlaylistsRoute
+  '/programacao': typeof ProgramacaoRoute
+  '/regioes': typeof RegioesRoute
+  '/relatorios': typeof RelatoriosRoute
+  '/telas': typeof TelasRoute
+  '/widgets': typeof WidgetsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/anunciantes'
+    | '/ao-vivo'
+    | '/campanhas'
+    | '/configuracoes'
+    | '/estabelecimentos'
+    | '/historico'
+    | '/inteligencia'
+    | '/mapa'
+    | '/midias'
+    | '/monitoramento'
+    | '/noticias'
+    | '/playlists'
+    | '/programacao'
+    | '/regioes'
+    | '/relatorios'
+    | '/telas'
+    | '/widgets'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/anunciantes'
+    | '/ao-vivo'
+    | '/campanhas'
+    | '/configuracoes'
+    | '/estabelecimentos'
+    | '/historico'
+    | '/inteligencia'
+    | '/mapa'
+    | '/midias'
+    | '/monitoramento'
+    | '/noticias'
+    | '/playlists'
+    | '/programacao'
+    | '/regioes'
+    | '/relatorios'
+    | '/telas'
+    | '/widgets'
+  id:
+    | '__root__'
+    | '/'
+    | '/anunciantes'
+    | '/ao-vivo'
+    | '/campanhas'
+    | '/configuracoes'
+    | '/estabelecimentos'
+    | '/historico'
+    | '/inteligencia'
+    | '/mapa'
+    | '/midias'
+    | '/monitoramento'
+    | '/noticias'
+    | '/playlists'
+    | '/programacao'
+    | '/regioes'
+    | '/relatorios'
+    | '/telas'
+    | '/widgets'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnunciantesRoute: typeof AnunciantesRoute
+  AoVivoRoute: typeof AoVivoRoute
+  CampanhasRoute: typeof CampanhasRoute
+  ConfiguracoesRoute: typeof ConfiguracoesRoute
+  EstabelecimentosRoute: typeof EstabelecimentosRoute
+  HistoricoRoute: typeof HistoricoRoute
+  InteligenciaRoute: typeof InteligenciaRoute
+  MapaRoute: typeof MapaRoute
+  MidiasRoute: typeof MidiasRoute
+  MonitoramentoRoute: typeof MonitoramentoRoute
+  NoticiasRoute: typeof NoticiasRoute
+  PlaylistsRoute: typeof PlaylistsRoute
+  ProgramacaoRoute: typeof ProgramacaoRoute
+  RegioesRoute: typeof RegioesRoute
+  RelatoriosRoute: typeof RelatoriosRoute
+  TelasRoute: typeof TelasRoute
+  WidgetsRoute: typeof WidgetsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +273,147 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/anunciantes': {
+      id: '/anunciantes'
+      path: '/anunciantes'
+      fullPath: '/anunciantes'
+      preLoaderRoute: typeof AnunciantesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ao-vivo': {
+      id: '/ao-vivo'
+      path: '/ao-vivo'
+      fullPath: '/ao-vivo'
+      preLoaderRoute: typeof AoVivoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/campanhas': {
+      id: '/campanhas'
+      path: '/campanhas'
+      fullPath: '/campanhas'
+      preLoaderRoute: typeof CampanhasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/configuracoes': {
+      id: '/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/configuracoes'
+      preLoaderRoute: typeof ConfiguracoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/estabelecimentos': {
+      id: '/estabelecimentos'
+      path: '/estabelecimentos'
+      fullPath: '/estabelecimentos'
+      preLoaderRoute: typeof EstabelecimentosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/historico': {
+      id: '/historico'
+      path: '/historico'
+      fullPath: '/historico'
+      preLoaderRoute: typeof HistoricoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inteligencia': {
+      id: '/inteligencia'
+      path: '/inteligencia'
+      fullPath: '/inteligencia'
+      preLoaderRoute: typeof InteligenciaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mapa': {
+      id: '/mapa'
+      path: '/mapa'
+      fullPath: '/mapa'
+      preLoaderRoute: typeof MapaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/midias': {
+      id: '/midias'
+      path: '/midias'
+      fullPath: '/midias'
+      preLoaderRoute: typeof MidiasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/monitoramento': {
+      id: '/monitoramento'
+      path: '/monitoramento'
+      fullPath: '/monitoramento'
+      preLoaderRoute: typeof MonitoramentoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/noticias': {
+      id: '/noticias'
+      path: '/noticias'
+      fullPath: '/noticias'
+      preLoaderRoute: typeof NoticiasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/playlists': {
+      id: '/playlists'
+      path: '/playlists'
+      fullPath: '/playlists'
+      preLoaderRoute: typeof PlaylistsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/programacao': {
+      id: '/programacao'
+      path: '/programacao'
+      fullPath: '/programacao'
+      preLoaderRoute: typeof ProgramacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/regioes': {
+      id: '/regioes'
+      path: '/regioes'
+      fullPath: '/regioes'
+      preLoaderRoute: typeof RegioesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/relatorios': {
+      id: '/relatorios'
+      path: '/relatorios'
+      fullPath: '/relatorios'
+      preLoaderRoute: typeof RelatoriosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/telas': {
+      id: '/telas'
+      path: '/telas'
+      fullPath: '/telas'
+      preLoaderRoute: typeof TelasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/widgets': {
+      id: '/widgets'
+      path: '/widgets'
+      fullPath: '/widgets'
+      preLoaderRoute: typeof WidgetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnunciantesRoute: AnunciantesRoute,
+  AoVivoRoute: AoVivoRoute,
+  CampanhasRoute: CampanhasRoute,
+  ConfiguracoesRoute: ConfiguracoesRoute,
+  EstabelecimentosRoute: EstabelecimentosRoute,
+  HistoricoRoute: HistoricoRoute,
+  InteligenciaRoute: InteligenciaRoute,
+  MapaRoute: MapaRoute,
+  MidiasRoute: MidiasRoute,
+  MonitoramentoRoute: MonitoramentoRoute,
+  NoticiasRoute: NoticiasRoute,
+  PlaylistsRoute: PlaylistsRoute,
+  ProgramacaoRoute: ProgramacaoRoute,
+  RegioesRoute: RegioesRoute,
+  RelatoriosRoute: RelatoriosRoute,
+  TelasRoute: TelasRoute,
+  WidgetsRoute: WidgetsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
