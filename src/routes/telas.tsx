@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { DataTable, EmptyState, Field, FilterBar, PageHeader, StatusBadge, inputCls, selectCls } from "@/components/app/ui";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
-import { devices as initial, playlists, venues } from "@/lib/mock";
+import { useDemo } from "@/components/v2/DemoProvider";
 import { seo } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +17,11 @@ export const Route = createFileRoute("/telas")({
 const code = () => Array.from({ length: 6 }, () => "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
 
 function Page() {
-  const [list, setList] = useState(initial);
+  const demo = useDemo();
+  const list = demo.visibleDevices;
+  const setList = demo.setDevices;
+  const playlists = demo.visiblePlaylists;
+  const venues = demo.venues.filter(v => demo.role === 'admin' || demo.clientFor(v.name)?.id === demo.clientId);
   const [filter, setFilter] = useState("Todos");
   const [open, setOpen] = useState(false);
   const [orientation, setOrientation] = useState("16:9");
@@ -27,7 +31,7 @@ function Page() {
   function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
-    setList([{ id: `TV-0${400 + list.length}`, name: String(f.get("name") || "Nova tela"), venue: String(f.get("venue")), orientation, status: "Sincronizando", sync: "agora", playlist: String(f.get("playlist")), hours: 0 }, ...list]);
+    setList(prev => [{ id: `TV-${crypto.randomUUID().slice(0, 6)}`, name: String(f.get("name") || "Nova tela"), venue: String(f.get("venue")), orientation, status: "Sincronizando", sync: "agora", playlist: String(f.get("playlist") || "Sem playlist"), hours: 0 }, ...prev]);
     setOpen(false);
     toast.success("Dispositivo cadastrado", { description: `Código de ativação: ${activation}` });
   }
@@ -47,7 +51,7 @@ function Page() {
                 <Field label="Orientação">
                   <div className="grid grid-cols-2 gap-2">
                     {[{ v: "16:9", l: "Horizontal 16:9", I: RectangleHorizontal }, { v: "9:16", l: "Vertical 9:16", I: RectangleVertical }].map(({ v, l, I }) => (
-                      <button type="button" key={v} onClick={() => setOrientation(v)} className={cn("flex items-center gap-2 rounded-lg border p-3 text-sm", orientation === v && "border-primary bg-primary/10 text-primary")}><I className="size-4" />{l}</button>
+                      <Button variant="outline" type="button" key={v} onClick={() => setOrientation(v)} className={cn("h-auto whitespace-normal p-3 text-sm", orientation === v && "border-primary bg-primary/10 text-primary")}><I className="size-4" />{l}</Button>
                     ))}
                   </div>
                 </Field>

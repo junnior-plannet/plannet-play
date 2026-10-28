@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { EmptyState, FilterBar, PageHeader } from "@/components/app/ui";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { media } from "@/lib/mock";
+import { media, contentLibrary } from "@/lib/mock";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/midias")({
@@ -13,12 +13,16 @@ export const Route = createFileRoute("/midias")({
   component: Page,
 });
 
+import { useDemo } from '@/components/v2/DemoProvider';
+
 function Page() {
+  const demo=useDemo();
+  const available=media.filter((_,i)=>demo.role==='admin'||contentLibrary[i]?.owner===demo.clientId);
   const [type, setType] = useState("Todos");
-  const list = media.filter((m) => type === "Todos" || m.type === type);
+  const list = available.filter((m) => type === "Todos" || m.type === type);
   return (
     <>
-      <PageHeader title="Biblioteca de Mídias" description={`${media.length} arquivos · 87,1 MB utilizados de 50 GB`}
+      <PageHeader title="Biblioteca de Mídias" description={`${available.length} arquivos · 87,1 MB utilizados de 50 GB`}
         actions={<Button onClick={() => toast.success("Envio simulado concluído")}><Upload /> Enviar mídia</Button>} />
       <FilterBar>
         {["Todos", "Vídeo", "Imagem"].map((t) => <Button key={t} size="sm" variant={type === t ? "default" : "outline"} onClick={() => setType(t)}>{t}</Button>)}

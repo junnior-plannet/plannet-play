@@ -6,9 +6,14 @@ import {
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, SidebarFooter,
 } from "@/components/ui/sidebar";
 import { navGroups } from "./nav";
+import { DemoProvider, useDemo } from "@/components/v2/DemoProvider";
+import { Button } from "@/components/ui/button";
+
+const clientPaths = ["/clientes", "/estabelecimentos", "/telas", "/midias", "/playlists", "/programacao", "/monitoramento", "/audio-ambiente"];
 
 function AppSidebar() {
   const path = useRouterState({ select: (r) => r.location.pathname });
+  const demo = useDemo();
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -28,7 +33,7 @@ function AppSidebar() {
             <SidebarGroupLabel className="text-[10px] uppercase tracking-[0.15em]">{g.label}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {g.items.map((it) => {
+                {g.items.filter(it => demo.role === 'admin' || clientPaths.includes(it.url)).map((it) => {
                   const active = path === it.url;
                   return (
                     <SidebarMenuButton key={it.url} asChild isActive={active} tooltip={it.title}
@@ -48,7 +53,7 @@ function AppSidebar() {
             <div className="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-xs font-semibold">JP</div>
             <div className="text-xs group-data-[collapsible=icon]:hidden">
               <div className="font-medium">Junnior Plannet</div>
-              <div className="text-muted-foreground">Administrador</div>
+              <div className="text-muted-foreground">{demo.role === 'admin' ? 'Administrador' : 'Cliente (simulado)'}</div>
             </div>
           </div>
         </SidebarMenuItem></SidebarMenu>
@@ -58,6 +63,12 @@ function AppSidebar() {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
+  return <DemoProvider><AppShellContent>{children}</AppShellContent></DemoProvider>;
+}
+
+function AppShellContent({ children }: { children: ReactNode }) {
+  const demo = useDemo();
+  const path = useRouterState({ select: r => r.location.pathname });
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
@@ -70,16 +81,19 @@ export function AppShell({ children }: { children: ReactNode }) {
               <input placeholder="Buscar telas, campanhas, estabelecimentos..." className="h-9 w-full rounded-lg border bg-card pl-9 pr-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary" />
             </div>
             <div className="ml-auto flex items-center gap-3">
-              <span className="hidden items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs text-success sm:flex">
-                <span className="dot-live size-1.5 rounded-full bg-success" /> Rede operacional
-              </span>
+              <span className="text-[10px] text-warning">Demonstração V2</span>
               <button className="relative grid size-9 place-items-center rounded-lg border bg-card hover:bg-accent" aria-label="Notificações">
                 <Bell className="size-4" />
                 <span className="absolute right-2 top-2 size-1.5 rounded-full bg-destructive" />
               </button>
             </div>
           </header>
-          <main className="flex-1 p-4 md:p-6 lg:p-8">{children}</main>
+          <div className="flex flex-wrap items-center gap-2 border-b bg-card px-4 py-2">
+            <span className="text-[10px] text-muted-foreground">Perfil simulado</span>
+            <select aria-label="Perfil simulado" value={demo.role} onChange={e=>demo.setRole(e.target.value === 'admin' ? 'admin' : 'client')} className="h-8 rounded-md border bg-background px-2 text-xs"><option value="admin">Administrador Plannet</option><option value="client">Cliente</option></select>
+            <select aria-label="Cliente selecionado" value={demo.clientId} onChange={e=>demo.setClientId(e.target.value)} className="h-8 min-w-0 max-w-full rounded-md border bg-background px-2 text-xs">{demo.clients.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select>
+          </div>
+          <main className="min-w-0 flex-1 p-4 md:p-6 lg:p-8">{demo.role === 'client' && !clientPaths.includes(path) ? <div className="py-8"><h1 className="text-xl font-semibold">Área reservada ao administrador</h1><p className="my-3 text-sm text-muted-foreground">Perfil de cliente simulado · selecione uma página disponível no menu.</p><Button asChild><Link to="/playlists">Minhas playlists</Link></Button></div> : children}</main>
         </div>
       </div>
     </SidebarProvider>

@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnunciantesRouteImport } from './routes/anunciantes'
 import { Route as AoVivoRouteImport } from './routes/ao-vivo'
+import { Route as AudioAmbienteRouteImport } from './routes/audio-ambiente'
 import { Route as CampanhasRouteImport } from './routes/campanhas'
+import { Route as ClientesRouteImport } from './routes/clientes'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as EstabelecimentosRouteImport } from './routes/estabelecimentos'
 import { Route as HistoricoRouteImport } from './routes/historico'
@@ -43,9 +45,19 @@ const AoVivoRoute = AoVivoRouteImport.update({
   path: '/ao-vivo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AudioAmbienteRoute = AudioAmbienteRouteImport.update({
+  id: '/audio-ambiente',
+  path: '/audio-ambiente',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CampanhasRoute = CampanhasRouteImport.update({
   id: '/campanhas',
   path: '/campanhas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClientesRoute = ClientesRouteImport.update({
+  id: '/clientes',
+  path: '/clientes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
@@ -123,7 +135,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/anunciantes': typeof AnunciantesRoute
   '/ao-vivo': typeof AoVivoRoute
+  '/audio-ambiente': typeof AudioAmbienteRoute
   '/campanhas': typeof CampanhasRoute
+  '/clientes': typeof ClientesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/estabelecimentos': typeof EstabelecimentosRoute
   '/historico': typeof HistoricoRoute
@@ -143,7 +157,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/anunciantes': typeof AnunciantesRoute
   '/ao-vivo': typeof AoVivoRoute
+  '/audio-ambiente': typeof AudioAmbienteRoute
   '/campanhas': typeof CampanhasRoute
+  '/clientes': typeof ClientesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/estabelecimentos': typeof EstabelecimentosRoute
   '/historico': typeof HistoricoRoute
@@ -164,7 +180,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/anunciantes': typeof AnunciantesRoute
   '/ao-vivo': typeof AoVivoRoute
+  '/audio-ambiente': typeof AudioAmbienteRoute
   '/campanhas': typeof CampanhasRoute
+  '/clientes': typeof ClientesRoute
   '/configuracoes': typeof ConfiguracoesRoute
   '/estabelecimentos': typeof EstabelecimentosRoute
   '/historico': typeof HistoricoRoute
@@ -186,7 +204,9 @@ export interface FileRouteTypes {
     | '/'
     | '/anunciantes'
     | '/ao-vivo'
+    | '/audio-ambiente'
     | '/campanhas'
+    | '/clientes'
     | '/configuracoes'
     | '/estabelecimentos'
     | '/historico'
@@ -206,7 +226,9 @@ export interface FileRouteTypes {
     | '/'
     | '/anunciantes'
     | '/ao-vivo'
+    | '/audio-ambiente'
     | '/campanhas'
+    | '/clientes'
     | '/configuracoes'
     | '/estabelecimentos'
     | '/historico'
@@ -226,7 +248,9 @@ export interface FileRouteTypes {
     | '/'
     | '/anunciantes'
     | '/ao-vivo'
+    | '/audio-ambiente'
     | '/campanhas'
+    | '/clientes'
     | '/configuracoes'
     | '/estabelecimentos'
     | '/historico'
@@ -247,7 +271,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnunciantesRoute: typeof AnunciantesRoute
   AoVivoRoute: typeof AoVivoRoute
+  AudioAmbienteRoute: typeof AudioAmbienteRoute
   CampanhasRoute: typeof CampanhasRoute
+  ClientesRoute: typeof ClientesRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
   EstabelecimentosRoute: typeof EstabelecimentosRoute
   HistoricoRoute: typeof HistoricoRoute
@@ -287,11 +313,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AoVivoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/audio-ambiente': {
+      id: '/audio-ambiente'
+      path: '/audio-ambiente'
+      fullPath: '/audio-ambiente'
+      preLoaderRoute: typeof AudioAmbienteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/campanhas': {
       id: '/campanhas'
       path: '/campanhas'
       fullPath: '/campanhas'
       preLoaderRoute: typeof CampanhasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clientes': {
+      id: '/clientes'
+      path: '/clientes'
+      fullPath: '/clientes'
+      preLoaderRoute: typeof ClientesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/configuracoes': {
@@ -399,7 +439,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnunciantesRoute: AnunciantesRoute,
   AoVivoRoute: AoVivoRoute,
+  AudioAmbienteRoute: AudioAmbienteRoute,
   CampanhasRoute: CampanhasRoute,
+  ClientesRoute: ClientesRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
   EstabelecimentosRoute: EstabelecimentosRoute,
   HistoricoRoute: HistoricoRoute,
