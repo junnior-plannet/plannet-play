@@ -31,3 +31,6 @@
 - [ ] Aprovar SQL aditivo da Etapa 1 antes de aplicar banco e conectar aprovação, condições comerciais, planos e notificações.
 - [x] Revisar SQL: concorrência/limite de TVs, campos protegidos, publicidade, exceções justificadas, funções/RLS, leitura para suspensos e compatibilidade; apresentar versão e testes sem executar.
 - [x] Revisão pontual V2 (OLD em INSERT, v2_sync_plan, GRANT/REVOKE/SECURITY DEFINER): validada em PostgreSQL 17 local isolado — migração aplicada sem erros, 37/37 testes de segurança, 22/22 testes focados, reaplicação abortada pelo preflight, zero resíduos; SQL inalterado, aguardando autorização para aplicar.
+- [x] Verificação pré-migração: checksum idêntico (f61c4362…), revalidação local 37/37 com dados equivalentes à produção, preservação de admin/planos/cliente confirmada, preflight de reaplicação OK. Backup: Supabase externo sem PITR verificável por SQL — orientado pg_dump/snapshot antes de aplicar.
+- [ ] Aguardando autorização do usuário para aplicar etapa1-base-operacional_v2.sql em produção.
+- [ ] Pós-aplicação: testar autocadastro, aprovação administrativa, liberação de planos e permissões do cliente.
