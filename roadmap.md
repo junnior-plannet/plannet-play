@@ -30,3 +30,4 @@
 - [x] Recuperação: validar contexto e tratar link inválido/expirado.
 - [ ] Aprovar SQL aditivo da Etapa 1 antes de aplicar banco e conectar aprovação, condições comerciais, planos e notificações.
 - [x] Revisar SQL: concorrência/limite de TVs, campos protegidos, publicidade, exceções justificadas, funções/RLS, leitura para suspensos e compatibilidade; apresentar versão e testes sem executar.
+- [x] Revisão pontual V2 (OLD em INSERT, v2_sync_plan, GRANT/REVOKE/SECURITY DEFINER): validada em PostgreSQL 17 local isolado — migração aplicada sem erros, 37/37 testes de segurança, 22/22 testes focados, reaplicação abortada pelo preflight, zero resíduos; SQL inalterado, aguardando autorização para aplicar.
