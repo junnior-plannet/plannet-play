@@ -9,199 +9,205 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AnunciantesRouteImport } from './routes/anunciantes'
-import { Route as AoVivoRouteImport } from './routes/ao-vivo'
-import { Route as AudioAmbienteRouteImport } from './routes/audio-ambiente'
-import { Route as CampanhasRouteImport } from './routes/campanhas'
-import { Route as ClientesRouteImport } from './routes/clientes'
-import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
-import { Route as EstabelecimentosRouteImport } from './routes/estabelecimentos'
-import { Route as HistoricoRouteImport } from './routes/historico'
-import { Route as InteligenciaRouteImport } from './routes/inteligencia'
-import { Route as MapaRouteImport } from './routes/mapa'
-import { Route as MidiasRouteImport } from './routes/midias'
-import { Route as MonitoramentoRouteImport } from './routes/monitoramento'
-import { Route as NoticiasRouteImport } from './routes/noticias'
-import { Route as PlaylistsRouteImport } from './routes/playlists'
-import { Route as ProgramacaoRouteImport } from './routes/programacao'
-import { Route as RegioesRouteImport } from './routes/regioes'
-import { Route as RelatoriosRouteImport } from './routes/relatorios'
-import { Route as TelasRouteImport } from './routes/telas'
-import { Route as WidgetsRouteImport } from './routes/widgets'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedAnunciantesRouteImport } from './routes/_authenticated/anunciantes'
+import { Route as AuthenticatedAoVivoRouteImport } from './routes/_authenticated/ao-vivo'
+import { Route as AuthenticatedAudioAmbienteRouteImport } from './routes/_authenticated/audio-ambiente'
+import { Route as AuthenticatedCampanhasRouteImport } from './routes/_authenticated/campanhas'
+import { Route as AuthenticatedClientesRouteImport } from './routes/_authenticated/clientes'
+import { Route as AuthenticatedConfiguracoesRouteImport } from './routes/_authenticated/configuracoes'
+import { Route as AuthenticatedEstabelecimentosRouteImport } from './routes/_authenticated/estabelecimentos'
+import { Route as AuthenticatedHistoricoRouteImport } from './routes/_authenticated/historico'
+import { Route as AuthenticatedInteligenciaRouteImport } from './routes/_authenticated/inteligencia'
+import { Route as AuthenticatedMapaRouteImport } from './routes/_authenticated/mapa'
+import { Route as AuthenticatedMidiasRouteImport } from './routes/_authenticated/midias'
+import { Route as AuthenticatedMonitoramentoRouteImport } from './routes/_authenticated/monitoramento'
+import { Route as AuthenticatedNoticiasRouteImport } from './routes/_authenticated/noticias'
+import { Route as AuthenticatedPlaylistsRouteImport } from './routes/_authenticated/playlists'
+import { Route as AuthenticatedProgramacaoRouteImport } from './routes/_authenticated/programacao'
+import { Route as AuthenticatedRegioesRouteImport } from './routes/_authenticated/regioes'
+import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
+import { Route as AuthenticatedTelasRouteImport } from './routes/_authenticated/telas'
+import { Route as AuthenticatedWidgetsRouteImport } from './routes/_authenticated/widgets'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/_authenticated/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AnunciantesRoute = AnunciantesRouteImport.update({
-  id: '/anunciantes',
-  path: '/anunciantes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AoVivoRoute = AoVivoRouteImport.update({
-  id: '/ao-vivo',
+const AuthenticatedAnunciantesRoute =
+  AuthenticatedAnunciantesRouteImport.update({
+    id: '/_authenticated/anunciantes',
+    path: '/anunciantes',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedAoVivoRoute = AuthenticatedAoVivoRouteImport.update({
+  id: '/_authenticated/ao-vivo',
   path: '/ao-vivo',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AudioAmbienteRoute = AudioAmbienteRouteImport.update({
-  id: '/audio-ambiente',
-  path: '/audio-ambiente',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CampanhasRoute = CampanhasRouteImport.update({
-  id: '/campanhas',
+const AuthenticatedAudioAmbienteRoute =
+  AuthenticatedAudioAmbienteRouteImport.update({
+    id: '/_authenticated/audio-ambiente',
+    path: '/audio-ambiente',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedCampanhasRoute = AuthenticatedCampanhasRouteImport.update({
+  id: '/_authenticated/campanhas',
   path: '/campanhas',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ClientesRoute = ClientesRouteImport.update({
-  id: '/clientes',
+const AuthenticatedClientesRoute = AuthenticatedClientesRouteImport.update({
+  id: '/_authenticated/clientes',
   path: '/clientes',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
-  id: '/configuracoes',
-  path: '/configuracoes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EstabelecimentosRoute = EstabelecimentosRouteImport.update({
-  id: '/estabelecimentos',
-  path: '/estabelecimentos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HistoricoRoute = HistoricoRouteImport.update({
-  id: '/historico',
+const AuthenticatedConfiguracoesRoute =
+  AuthenticatedConfiguracoesRouteImport.update({
+    id: '/_authenticated/configuracoes',
+    path: '/configuracoes',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedEstabelecimentosRoute =
+  AuthenticatedEstabelecimentosRouteImport.update({
+    id: '/_authenticated/estabelecimentos',
+    path: '/estabelecimentos',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedHistoricoRoute = AuthenticatedHistoricoRouteImport.update({
+  id: '/_authenticated/historico',
   path: '/historico',
   getParentRoute: () => rootRouteImport,
 } as any)
-const InteligenciaRoute = InteligenciaRouteImport.update({
-  id: '/inteligencia',
-  path: '/inteligencia',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MapaRoute = MapaRouteImport.update({
-  id: '/mapa',
+const AuthenticatedInteligenciaRoute =
+  AuthenticatedInteligenciaRouteImport.update({
+    id: '/_authenticated/inteligencia',
+    path: '/inteligencia',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedMapaRoute = AuthenticatedMapaRouteImport.update({
+  id: '/_authenticated/mapa',
   path: '/mapa',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MidiasRoute = MidiasRouteImport.update({
-  id: '/midias',
+const AuthenticatedMidiasRoute = AuthenticatedMidiasRouteImport.update({
+  id: '/_authenticated/midias',
   path: '/midias',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MonitoramentoRoute = MonitoramentoRouteImport.update({
-  id: '/monitoramento',
-  path: '/monitoramento',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NoticiasRoute = NoticiasRouteImport.update({
-  id: '/noticias',
+const AuthenticatedMonitoramentoRoute =
+  AuthenticatedMonitoramentoRouteImport.update({
+    id: '/_authenticated/monitoramento',
+    path: '/monitoramento',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedNoticiasRoute = AuthenticatedNoticiasRouteImport.update({
+  id: '/_authenticated/noticias',
   path: '/noticias',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PlaylistsRoute = PlaylistsRouteImport.update({
-  id: '/playlists',
+const AuthenticatedPlaylistsRoute = AuthenticatedPlaylistsRouteImport.update({
+  id: '/_authenticated/playlists',
   path: '/playlists',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProgramacaoRoute = ProgramacaoRouteImport.update({
-  id: '/programacao',
-  path: '/programacao',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RegioesRoute = RegioesRouteImport.update({
-  id: '/regioes',
+const AuthenticatedProgramacaoRoute =
+  AuthenticatedProgramacaoRouteImport.update({
+    id: '/_authenticated/programacao',
+    path: '/programacao',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedRegioesRoute = AuthenticatedRegioesRouteImport.update({
+  id: '/_authenticated/regioes',
   path: '/regioes',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RelatoriosRoute = RelatoriosRouteImport.update({
-  id: '/relatorios',
+const AuthenticatedRelatoriosRoute = AuthenticatedRelatoriosRouteImport.update({
+  id: '/_authenticated/relatorios',
   path: '/relatorios',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TelasRoute = TelasRouteImport.update({
-  id: '/telas',
+const AuthenticatedTelasRoute = AuthenticatedTelasRouteImport.update({
+  id: '/_authenticated/telas',
   path: '/telas',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WidgetsRoute = WidgetsRouteImport.update({
-  id: '/widgets',
+const AuthenticatedWidgetsRoute = AuthenticatedWidgetsRouteImport.update({
+  id: '/_authenticated/widgets',
   path: '/widgets',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/anunciantes': typeof AnunciantesRoute
-  '/ao-vivo': typeof AoVivoRoute
-  '/audio-ambiente': typeof AudioAmbienteRoute
-  '/campanhas': typeof CampanhasRoute
-  '/clientes': typeof ClientesRoute
-  '/configuracoes': typeof ConfiguracoesRoute
-  '/estabelecimentos': typeof EstabelecimentosRoute
-  '/historico': typeof HistoricoRoute
-  '/inteligencia': typeof InteligenciaRoute
-  '/mapa': typeof MapaRoute
-  '/midias': typeof MidiasRoute
-  '/monitoramento': typeof MonitoramentoRoute
-  '/noticias': typeof NoticiasRoute
-  '/playlists': typeof PlaylistsRoute
-  '/programacao': typeof ProgramacaoRoute
-  '/regioes': typeof RegioesRoute
-  '/relatorios': typeof RelatoriosRoute
-  '/telas': typeof TelasRoute
-  '/widgets': typeof WidgetsRoute
+  '/anunciantes': typeof AuthenticatedAnunciantesRoute
+  '/ao-vivo': typeof AuthenticatedAoVivoRoute
+  '/audio-ambiente': typeof AuthenticatedAudioAmbienteRoute
+  '/campanhas': typeof AuthenticatedCampanhasRoute
+  '/clientes': typeof AuthenticatedClientesRoute
+  '/configuracoes': typeof AuthenticatedConfiguracoesRoute
+  '/estabelecimentos': typeof AuthenticatedEstabelecimentosRoute
+  '/historico': typeof AuthenticatedHistoricoRoute
+  '/inteligencia': typeof AuthenticatedInteligenciaRoute
+  '/mapa': typeof AuthenticatedMapaRoute
+  '/midias': typeof AuthenticatedMidiasRoute
+  '/monitoramento': typeof AuthenticatedMonitoramentoRoute
+  '/noticias': typeof AuthenticatedNoticiasRoute
+  '/playlists': typeof AuthenticatedPlaylistsRoute
+  '/programacao': typeof AuthenticatedProgramacaoRoute
+  '/regioes': typeof AuthenticatedRegioesRoute
+  '/relatorios': typeof AuthenticatedRelatoriosRoute
+  '/telas': typeof AuthenticatedTelasRoute
+  '/widgets': typeof AuthenticatedWidgetsRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/anunciantes': typeof AnunciantesRoute
-  '/ao-vivo': typeof AoVivoRoute
-  '/audio-ambiente': typeof AudioAmbienteRoute
-  '/campanhas': typeof CampanhasRoute
-  '/clientes': typeof ClientesRoute
-  '/configuracoes': typeof ConfiguracoesRoute
-  '/estabelecimentos': typeof EstabelecimentosRoute
-  '/historico': typeof HistoricoRoute
-  '/inteligencia': typeof InteligenciaRoute
-  '/mapa': typeof MapaRoute
-  '/midias': typeof MidiasRoute
-  '/monitoramento': typeof MonitoramentoRoute
-  '/noticias': typeof NoticiasRoute
-  '/playlists': typeof PlaylistsRoute
-  '/programacao': typeof ProgramacaoRoute
-  '/regioes': typeof RegioesRoute
-  '/relatorios': typeof RelatoriosRoute
-  '/telas': typeof TelasRoute
-  '/widgets': typeof WidgetsRoute
+  '/anunciantes': typeof AuthenticatedAnunciantesRoute
+  '/ao-vivo': typeof AuthenticatedAoVivoRoute
+  '/audio-ambiente': typeof AuthenticatedAudioAmbienteRoute
+  '/campanhas': typeof AuthenticatedCampanhasRoute
+  '/clientes': typeof AuthenticatedClientesRoute
+  '/configuracoes': typeof AuthenticatedConfiguracoesRoute
+  '/estabelecimentos': typeof AuthenticatedEstabelecimentosRoute
+  '/historico': typeof AuthenticatedHistoricoRoute
+  '/inteligencia': typeof AuthenticatedInteligenciaRoute
+  '/mapa': typeof AuthenticatedMapaRoute
+  '/midias': typeof AuthenticatedMidiasRoute
+  '/monitoramento': typeof AuthenticatedMonitoramentoRoute
+  '/noticias': typeof AuthenticatedNoticiasRoute
+  '/playlists': typeof AuthenticatedPlaylistsRoute
+  '/programacao': typeof AuthenticatedProgramacaoRoute
+  '/regioes': typeof AuthenticatedRegioesRoute
+  '/relatorios': typeof AuthenticatedRelatoriosRoute
+  '/telas': typeof AuthenticatedTelasRoute
+  '/widgets': typeof AuthenticatedWidgetsRoute
+  '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/anunciantes': typeof AnunciantesRoute
-  '/ao-vivo': typeof AoVivoRoute
-  '/audio-ambiente': typeof AudioAmbienteRoute
-  '/campanhas': typeof CampanhasRoute
-  '/clientes': typeof ClientesRoute
-  '/configuracoes': typeof ConfiguracoesRoute
-  '/estabelecimentos': typeof EstabelecimentosRoute
-  '/historico': typeof HistoricoRoute
-  '/inteligencia': typeof InteligenciaRoute
-  '/mapa': typeof MapaRoute
-  '/midias': typeof MidiasRoute
-  '/monitoramento': typeof MonitoramentoRoute
-  '/noticias': typeof NoticiasRoute
-  '/playlists': typeof PlaylistsRoute
-  '/programacao': typeof ProgramacaoRoute
-  '/regioes': typeof RegioesRoute
-  '/relatorios': typeof RelatoriosRoute
-  '/telas': typeof TelasRoute
-  '/widgets': typeof WidgetsRoute
+  '/_authenticated/anunciantes': typeof AuthenticatedAnunciantesRoute
+  '/_authenticated/ao-vivo': typeof AuthenticatedAoVivoRoute
+  '/_authenticated/audio-ambiente': typeof AuthenticatedAudioAmbienteRoute
+  '/_authenticated/campanhas': typeof AuthenticatedCampanhasRoute
+  '/_authenticated/clientes': typeof AuthenticatedClientesRoute
+  '/_authenticated/configuracoes': typeof AuthenticatedConfiguracoesRoute
+  '/_authenticated/estabelecimentos': typeof AuthenticatedEstabelecimentosRoute
+  '/_authenticated/historico': typeof AuthenticatedHistoricoRoute
+  '/_authenticated/inteligencia': typeof AuthenticatedInteligenciaRoute
+  '/_authenticated/mapa': typeof AuthenticatedMapaRoute
+  '/_authenticated/midias': typeof AuthenticatedMidiasRoute
+  '/_authenticated/monitoramento': typeof AuthenticatedMonitoramentoRoute
+  '/_authenticated/noticias': typeof AuthenticatedNoticiasRoute
+  '/_authenticated/playlists': typeof AuthenticatedPlaylistsRoute
+  '/_authenticated/programacao': typeof AuthenticatedProgramacaoRoute
+  '/_authenticated/regioes': typeof AuthenticatedRegioesRoute
+  '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
+  '/_authenticated/telas': typeof AuthenticatedTelasRoute
+  '/_authenticated/widgets': typeof AuthenticatedWidgetsRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/anunciantes'
     | '/ao-vivo'
     | '/audio-ambiente'
@@ -221,9 +227,9 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/telas'
     | '/widgets'
+    | '/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/anunciantes'
     | '/ao-vivo'
     | '/audio-ambiente'
@@ -243,219 +249,220 @@ export interface FileRouteTypes {
     | '/relatorios'
     | '/telas'
     | '/widgets'
+    | '/'
   id:
     | '__root__'
-    | '/'
-    | '/anunciantes'
-    | '/ao-vivo'
-    | '/audio-ambiente'
-    | '/campanhas'
-    | '/clientes'
-    | '/configuracoes'
-    | '/estabelecimentos'
-    | '/historico'
-    | '/inteligencia'
-    | '/mapa'
-    | '/midias'
-    | '/monitoramento'
-    | '/noticias'
-    | '/playlists'
-    | '/programacao'
-    | '/regioes'
-    | '/relatorios'
-    | '/telas'
-    | '/widgets'
+    | '/_authenticated/anunciantes'
+    | '/_authenticated/ao-vivo'
+    | '/_authenticated/audio-ambiente'
+    | '/_authenticated/campanhas'
+    | '/_authenticated/clientes'
+    | '/_authenticated/configuracoes'
+    | '/_authenticated/estabelecimentos'
+    | '/_authenticated/historico'
+    | '/_authenticated/inteligencia'
+    | '/_authenticated/mapa'
+    | '/_authenticated/midias'
+    | '/_authenticated/monitoramento'
+    | '/_authenticated/noticias'
+    | '/_authenticated/playlists'
+    | '/_authenticated/programacao'
+    | '/_authenticated/regioes'
+    | '/_authenticated/relatorios'
+    | '/_authenticated/telas'
+    | '/_authenticated/widgets'
+    | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AnunciantesRoute: typeof AnunciantesRoute
-  AoVivoRoute: typeof AoVivoRoute
-  AudioAmbienteRoute: typeof AudioAmbienteRoute
-  CampanhasRoute: typeof CampanhasRoute
-  ClientesRoute: typeof ClientesRoute
-  ConfiguracoesRoute: typeof ConfiguracoesRoute
-  EstabelecimentosRoute: typeof EstabelecimentosRoute
-  HistoricoRoute: typeof HistoricoRoute
-  InteligenciaRoute: typeof InteligenciaRoute
-  MapaRoute: typeof MapaRoute
-  MidiasRoute: typeof MidiasRoute
-  MonitoramentoRoute: typeof MonitoramentoRoute
-  NoticiasRoute: typeof NoticiasRoute
-  PlaylistsRoute: typeof PlaylistsRoute
-  ProgramacaoRoute: typeof ProgramacaoRoute
-  RegioesRoute: typeof RegioesRoute
-  RelatoriosRoute: typeof RelatoriosRoute
-  TelasRoute: typeof TelasRoute
-  WidgetsRoute: typeof WidgetsRoute
+  AuthenticatedAnunciantesRoute: typeof AuthenticatedAnunciantesRoute
+  AuthenticatedAoVivoRoute: typeof AuthenticatedAoVivoRoute
+  AuthenticatedAudioAmbienteRoute: typeof AuthenticatedAudioAmbienteRoute
+  AuthenticatedCampanhasRoute: typeof AuthenticatedCampanhasRoute
+  AuthenticatedClientesRoute: typeof AuthenticatedClientesRoute
+  AuthenticatedConfiguracoesRoute: typeof AuthenticatedConfiguracoesRoute
+  AuthenticatedEstabelecimentosRoute: typeof AuthenticatedEstabelecimentosRoute
+  AuthenticatedHistoricoRoute: typeof AuthenticatedHistoricoRoute
+  AuthenticatedInteligenciaRoute: typeof AuthenticatedInteligenciaRoute
+  AuthenticatedMapaRoute: typeof AuthenticatedMapaRoute
+  AuthenticatedMidiasRoute: typeof AuthenticatedMidiasRoute
+  AuthenticatedMonitoramentoRoute: typeof AuthenticatedMonitoramentoRoute
+  AuthenticatedNoticiasRoute: typeof AuthenticatedNoticiasRoute
+  AuthenticatedPlaylistsRoute: typeof AuthenticatedPlaylistsRoute
+  AuthenticatedProgramacaoRoute: typeof AuthenticatedProgramacaoRoute
+  AuthenticatedRegioesRoute: typeof AuthenticatedRegioesRoute
+  AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
+  AuthenticatedTelasRoute: typeof AuthenticatedTelasRoute
+  AuthenticatedWidgetsRoute: typeof AuthenticatedWidgetsRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/anunciantes': {
-      id: '/anunciantes'
+    '/_authenticated/anunciantes': {
+      id: '/_authenticated/anunciantes'
       path: '/anunciantes'
       fullPath: '/anunciantes'
-      preLoaderRoute: typeof AnunciantesRouteImport
+      preLoaderRoute: typeof AuthenticatedAnunciantesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ao-vivo': {
-      id: '/ao-vivo'
+    '/_authenticated/ao-vivo': {
+      id: '/_authenticated/ao-vivo'
       path: '/ao-vivo'
       fullPath: '/ao-vivo'
-      preLoaderRoute: typeof AoVivoRouteImport
+      preLoaderRoute: typeof AuthenticatedAoVivoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/audio-ambiente': {
-      id: '/audio-ambiente'
+    '/_authenticated/audio-ambiente': {
+      id: '/_authenticated/audio-ambiente'
       path: '/audio-ambiente'
       fullPath: '/audio-ambiente'
-      preLoaderRoute: typeof AudioAmbienteRouteImport
+      preLoaderRoute: typeof AuthenticatedAudioAmbienteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/campanhas': {
-      id: '/campanhas'
+    '/_authenticated/campanhas': {
+      id: '/_authenticated/campanhas'
       path: '/campanhas'
       fullPath: '/campanhas'
-      preLoaderRoute: typeof CampanhasRouteImport
+      preLoaderRoute: typeof AuthenticatedCampanhasRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/clientes': {
-      id: '/clientes'
+    '/_authenticated/clientes': {
+      id: '/_authenticated/clientes'
       path: '/clientes'
       fullPath: '/clientes'
-      preLoaderRoute: typeof ClientesRouteImport
+      preLoaderRoute: typeof AuthenticatedClientesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/configuracoes': {
-      id: '/configuracoes'
+    '/_authenticated/configuracoes': {
+      id: '/_authenticated/configuracoes'
       path: '/configuracoes'
       fullPath: '/configuracoes'
-      preLoaderRoute: typeof ConfiguracoesRouteImport
+      preLoaderRoute: typeof AuthenticatedConfiguracoesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/estabelecimentos': {
-      id: '/estabelecimentos'
+    '/_authenticated/estabelecimentos': {
+      id: '/_authenticated/estabelecimentos'
       path: '/estabelecimentos'
       fullPath: '/estabelecimentos'
-      preLoaderRoute: typeof EstabelecimentosRouteImport
+      preLoaderRoute: typeof AuthenticatedEstabelecimentosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/historico': {
-      id: '/historico'
+    '/_authenticated/historico': {
+      id: '/_authenticated/historico'
       path: '/historico'
       fullPath: '/historico'
-      preLoaderRoute: typeof HistoricoRouteImport
+      preLoaderRoute: typeof AuthenticatedHistoricoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/inteligencia': {
-      id: '/inteligencia'
+    '/_authenticated/inteligencia': {
+      id: '/_authenticated/inteligencia'
       path: '/inteligencia'
       fullPath: '/inteligencia'
-      preLoaderRoute: typeof InteligenciaRouteImport
+      preLoaderRoute: typeof AuthenticatedInteligenciaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/mapa': {
-      id: '/mapa'
+    '/_authenticated/mapa': {
+      id: '/_authenticated/mapa'
       path: '/mapa'
       fullPath: '/mapa'
-      preLoaderRoute: typeof MapaRouteImport
+      preLoaderRoute: typeof AuthenticatedMapaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/midias': {
-      id: '/midias'
+    '/_authenticated/midias': {
+      id: '/_authenticated/midias'
       path: '/midias'
       fullPath: '/midias'
-      preLoaderRoute: typeof MidiasRouteImport
+      preLoaderRoute: typeof AuthenticatedMidiasRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/monitoramento': {
-      id: '/monitoramento'
+    '/_authenticated/monitoramento': {
+      id: '/_authenticated/monitoramento'
       path: '/monitoramento'
       fullPath: '/monitoramento'
-      preLoaderRoute: typeof MonitoramentoRouteImport
+      preLoaderRoute: typeof AuthenticatedMonitoramentoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/noticias': {
-      id: '/noticias'
+    '/_authenticated/noticias': {
+      id: '/_authenticated/noticias'
       path: '/noticias'
       fullPath: '/noticias'
-      preLoaderRoute: typeof NoticiasRouteImport
+      preLoaderRoute: typeof AuthenticatedNoticiasRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/playlists': {
-      id: '/playlists'
+    '/_authenticated/playlists': {
+      id: '/_authenticated/playlists'
       path: '/playlists'
       fullPath: '/playlists'
-      preLoaderRoute: typeof PlaylistsRouteImport
+      preLoaderRoute: typeof AuthenticatedPlaylistsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/programacao': {
-      id: '/programacao'
+    '/_authenticated/programacao': {
+      id: '/_authenticated/programacao'
       path: '/programacao'
       fullPath: '/programacao'
-      preLoaderRoute: typeof ProgramacaoRouteImport
+      preLoaderRoute: typeof AuthenticatedProgramacaoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/regioes': {
-      id: '/regioes'
+    '/_authenticated/regioes': {
+      id: '/_authenticated/regioes'
       path: '/regioes'
       fullPath: '/regioes'
-      preLoaderRoute: typeof RegioesRouteImport
+      preLoaderRoute: typeof AuthenticatedRegioesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/relatorios': {
-      id: '/relatorios'
+    '/_authenticated/relatorios': {
+      id: '/_authenticated/relatorios'
       path: '/relatorios'
       fullPath: '/relatorios'
-      preLoaderRoute: typeof RelatoriosRouteImport
+      preLoaderRoute: typeof AuthenticatedRelatoriosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/telas': {
-      id: '/telas'
+    '/_authenticated/telas': {
+      id: '/_authenticated/telas'
       path: '/telas'
       fullPath: '/telas'
-      preLoaderRoute: typeof TelasRouteImport
+      preLoaderRoute: typeof AuthenticatedTelasRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/widgets': {
-      id: '/widgets'
+    '/_authenticated/widgets': {
+      id: '/_authenticated/widgets'
       path: '/widgets'
       fullPath: '/widgets'
-      preLoaderRoute: typeof WidgetsRouteImport
+      preLoaderRoute: typeof AuthenticatedWidgetsRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AnunciantesRoute: AnunciantesRoute,
-  AoVivoRoute: AoVivoRoute,
-  AudioAmbienteRoute: AudioAmbienteRoute,
-  CampanhasRoute: CampanhasRoute,
-  ClientesRoute: ClientesRoute,
-  ConfiguracoesRoute: ConfiguracoesRoute,
-  EstabelecimentosRoute: EstabelecimentosRoute,
-  HistoricoRoute: HistoricoRoute,
-  InteligenciaRoute: InteligenciaRoute,
-  MapaRoute: MapaRoute,
-  MidiasRoute: MidiasRoute,
-  MonitoramentoRoute: MonitoramentoRoute,
-  NoticiasRoute: NoticiasRoute,
-  PlaylistsRoute: PlaylistsRoute,
-  ProgramacaoRoute: ProgramacaoRoute,
-  RegioesRoute: RegioesRoute,
-  RelatoriosRoute: RelatoriosRoute,
-  TelasRoute: TelasRoute,
-  WidgetsRoute: WidgetsRoute,
+  AuthenticatedAnunciantesRoute: AuthenticatedAnunciantesRoute,
+  AuthenticatedAoVivoRoute: AuthenticatedAoVivoRoute,
+  AuthenticatedAudioAmbienteRoute: AuthenticatedAudioAmbienteRoute,
+  AuthenticatedCampanhasRoute: AuthenticatedCampanhasRoute,
+  AuthenticatedClientesRoute: AuthenticatedClientesRoute,
+  AuthenticatedConfiguracoesRoute: AuthenticatedConfiguracoesRoute,
+  AuthenticatedEstabelecimentosRoute: AuthenticatedEstabelecimentosRoute,
+  AuthenticatedHistoricoRoute: AuthenticatedHistoricoRoute,
+  AuthenticatedInteligenciaRoute: AuthenticatedInteligenciaRoute,
+  AuthenticatedMapaRoute: AuthenticatedMapaRoute,
+  AuthenticatedMidiasRoute: AuthenticatedMidiasRoute,
+  AuthenticatedMonitoramentoRoute: AuthenticatedMonitoramentoRoute,
+  AuthenticatedNoticiasRoute: AuthenticatedNoticiasRoute,
+  AuthenticatedPlaylistsRoute: AuthenticatedPlaylistsRoute,
+  AuthenticatedProgramacaoRoute: AuthenticatedProgramacaoRoute,
+  AuthenticatedRegioesRoute: AuthenticatedRegioesRoute,
+  AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
+  AuthenticatedTelasRoute: AuthenticatedTelasRoute,
+  AuthenticatedWidgetsRoute: AuthenticatedWidgetsRoute,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
