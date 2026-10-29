@@ -26,3 +26,6 @@
 - [x] Analisar páginas, integrações, banco e segurança sem alterar a aplicação.
 - [x] Apresentar diagnóstico e plano por etapas para aprovação.
 - [ ] Implementação estrutural aguardando aprovação do plano.
+- [x] Login: lembrar apenas e-mail, mostrar/ocultar senha e chamada de cadastro; menu reorganizado com Parceiros não operacional.
+- [x] Recuperação: validar contexto e tratar link inválido/expirado.
+- [ ] Aprovar SQL aditivo da Etapa 1 antes de aplicar banco e conectar aprovação, condições comerciais, planos e notificações.
