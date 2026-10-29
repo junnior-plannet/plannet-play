@@ -20,12 +20,12 @@
 ## Backend Etapa 1
 - [x] Tabelas, papéis, RLS e procedimento do primeiro administrador
 - [x] Login/logout e telas de Clientes, Estabelecimentos e TVs ligadas ao banco
-- [ ] Teste de segurança RLS (SQL revisado aguardando aprovação do usuário)
+- [x] Teste de segurança RLS V2 autorizado anteriormente: 46 verificações e rollback integral confirmados.
 
 ## Atualização completa — diagnóstico e plano
 - [x] Analisar páginas, integrações, banco e segurança sem alterar a aplicação.
 - [x] Apresentar diagnóstico e plano por etapas para aprovação.
-- [ ] Implementação estrutural aguardando aprovação do plano.
+- [x] Plano aprovado; primeira entrega limitada à Etapa 1.
 - [x] Login: lembrar apenas e-mail, mostrar/ocultar senha e chamada de cadastro; menu reorganizado com Parceiros não operacional.
 - [x] Recuperação: validar contexto e tratar link inválido/expirado.
 - [ ] Aprovar SQL aditivo da Etapa 1 antes de aplicar banco e conectar aprovação, condições comerciais, planos e notificações.
