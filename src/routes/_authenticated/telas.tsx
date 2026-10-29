@@ -9,7 +9,7 @@ import { useDemo } from "@/components/v2/DemoProvider";
 import { seo } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/telas")({
+export const Route = createFileRoute('/_authenticated/telas')({
   head: () => seo("Telas e Dispositivos", "Cadastre TVs, vincule a estabelecimentos e acompanhe status e sincronização."),
   component: Page,
 });

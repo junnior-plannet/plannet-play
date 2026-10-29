@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { media, contentLibrary } from "@/lib/mock";
 import { seo } from "@/lib/seo";
 
-export const Route = createFileRoute("/midias")({
+export const Route = createFileRoute('/_authenticated/midias')({
   head: () => seo("Biblioteca de Mídias", "Vídeos e imagens disponíveis para playlists e campanhas."),
   component: Page,
 });

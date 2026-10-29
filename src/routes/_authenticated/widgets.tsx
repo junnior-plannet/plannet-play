@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/app/ui";
 import { Switch } from "@/components/ui/switch";
 import { seo } from "@/lib/seo";
 
-export const Route = createFileRoute("/widgets")({
+export const Route = createFileRoute('/_authenticated/widgets')({
   head: () => seo("Widgets", "Elementos automáticos sobrepostos à programação das telas."),
   component: Page,
 });

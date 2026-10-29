@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { devices } from "@/lib/mock";
 import { seo } from "@/lib/seo";
 
-export const Route = createFileRoute("/ao-vivo")({
+export const Route = createFileRoute('/_authenticated/ao-vivo')({
   head: () => seo("Transmissões ao Vivo", "Cadastre e agende transmissões ao vivo para telas selecionadas."),
   component: Page,
 });

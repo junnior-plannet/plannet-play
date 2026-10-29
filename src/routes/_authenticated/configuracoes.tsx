@@ -6,7 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { seo } from "@/lib/seo";
 
-export const Route = createFileRoute("/configuracoes")({
+export const Route = createFileRoute('/_authenticated/configuracoes')({
   head: () => seo("Configurações", "Preferências da organização, usuários e notificações."),
   component: Page,
 });

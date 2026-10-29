@@ -8,7 +8,7 @@ import { venues } from "@/lib/mock";
 import { seo } from "@/lib/seo";
 import { useDemo } from "@/components/v2/DemoProvider";
 
-export const Route = createFileRoute("/estabelecimentos")({
+export const Route = createFileRoute('/_authenticated/estabelecimentos')({
   head: () => seo("Estabelecimentos", "Pontos da rede com telas instaladas, por cidade, bairro e região."),
   component: Page,
 });

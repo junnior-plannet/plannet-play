@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { seo } from "@/lib/seo";
 
-export const Route = createFileRoute("/noticias")({
+export const Route = createFileRoute('/_authenticated/noticias')({
   head: () => seo("Notícias e RSS", "Configure fontes RSS, categorias, previsão do tempo e relógio."),
   component: Page,
 });
