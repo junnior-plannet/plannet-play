@@ -2,7 +2,7 @@
 
 ## 1. Diagnóstico do projeto atual
 
-Analisados: 20 páginas internas, login/recuperação, menu, componentes, integrações, testes, migrações e banco atual. Evoluir o projeto, não recriá-lo.
+Analisadas 20 páginas, login, componentes, integrações, testes, migrações e banco. Não recriar o projeto.
 
 ### O que já existe
 - Supabase externo `eozuygksoxvealpabern` preservado. Login, cadastro, recuperação e logout usam Auth. Login abriu sem erros; `/` sem sessão redireciona para `/auth`.
