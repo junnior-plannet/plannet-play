@@ -23,6 +23,6 @@
 - [ ] Teste de segurança RLS (SQL revisado aguardando aprovação do usuário)
 
 ## Atualização completa — diagnóstico e plano
-- [ ] Analisar páginas, integrações, banco e segurança sem alterar a aplicação.
-- [ ] Apresentar diagnóstico e plano por etapas para aprovação.
+- [x] Analisar páginas, integrações, banco e segurança sem alterar a aplicação.
+- [x] Apresentar diagnóstico e plano por etapas para aprovação.
 - [ ] Implementação estrutural aguardando aprovação do plano.
