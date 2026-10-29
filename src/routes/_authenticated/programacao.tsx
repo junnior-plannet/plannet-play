@@ -7,7 +7,7 @@ import { seo } from "@/lib/seo";
 import { useDemo } from "@/components/v2/DemoProvider";
 import { DistributionDialog } from "@/components/v2/DistributionDialog";
 
-export const Route = createFileRoute("/programacao")({
+export const Route = createFileRoute('/_authenticated/programacao')({
   head: () => seo("Programação Inteligente", "Distribua conteúdos por região, dispositivo e categoria."),
   component: Page,
 });

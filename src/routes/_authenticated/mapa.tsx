@@ -5,7 +5,7 @@ import { devices } from "@/lib/mock";
 import { seo } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/mapa")({
+export const Route = createFileRoute('/_authenticated/mapa')({
   head: () => seo("Mapa da Rede", "Visualização geográfica das telas e seu status."),
   component: Page,
 });

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { activity, alerts, hourlyActivity, regions, fmt } from "@/lib/mock";
 import { seo } from "@/lib/seo";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute('/_authenticated/')({
   head: () => seo("Dashboard", "Visão geral da rede de telas, disponibilidade, campanhas e alertas."),
   component: Dashboard,
 });

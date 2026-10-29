@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { regions } from "@/lib/mock";
 import { seo } from "@/lib/seo";
 
-export const Route = createFileRoute("/regioes")({
+export const Route = createFileRoute('/_authenticated/regioes')({
   head: () => seo("Regiões", "Agrupamento geográfico das telas para programação e campanhas."),
   component: Page,
 });

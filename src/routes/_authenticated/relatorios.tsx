@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { campaigns } from "@/lib/mock";
 import { seo } from "@/lib/seo";
 
-export const Route = createFileRoute("/relatorios")({
+export const Route = createFileRoute('/_authenticated/relatorios')({
   head: () => seo("Relatórios", "Gere relatórios de exibição, disponibilidade e campanhas."),
   component: Page,
 });

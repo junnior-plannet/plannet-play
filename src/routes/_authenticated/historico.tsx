@@ -5,7 +5,7 @@ import { DataTable, EmptyState, FilterBar, PageHeader, selectCls } from "@/compo
 import { devices, media } from "@/lib/mock";
 import { seo } from "@/lib/seo";
 
-export const Route = createFileRoute("/historico")({
+export const Route = createFileRoute('/_authenticated/historico')({
   head: () => seo("Histórico de Exibições", "Registro de cada conteúdo exibido por tela e horário."),
   component: Page,
 });

@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { campaigns, devices, hourlyActivity, regions, venues } from "@/lib/mock";
 import { seo } from "@/lib/seo";
 
-export const Route = createFileRoute("/inteligencia")({
+export const Route = createFileRoute('/_authenticated/inteligencia')({
   head: () => seo("Central de Inteligência", "Análises de desempenho por região, telas, horários e campanhas."),
   component: Page,
 });

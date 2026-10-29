@@ -1,5 +1,10 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Bell, Search, Orbit } from "lucide-react";
+import { Bell, Search, Orbit, LogOut } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useMe } from "@/lib/auth";
 import type { ReactNode } from "react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader,
@@ -49,16 +54,34 @@ function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu><SidebarMenuItem>
-          <div className="flex items-center gap-2 rounded-lg p-2">
-            <div className="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-xs font-semibold">JP</div>
-            <div className="text-xs group-data-[collapsible=icon]:hidden">
-              <div className="font-medium">Junnior Plannet</div>
-              <div className="text-muted-foreground">{demo.role === 'admin' ? 'Administrador' : 'Cliente (simulado)'}</div>
-            </div>
-          </div>
+          <UserFooter />
         </SidebarMenuItem></SidebarMenu>
       </SidebarFooter>
     </Sidebar>
+  );
+}
+
+function UserFooter() {
+  const { data: me } = useMe();
+  const qc = useQueryClient();
+  const navigate = useNavigate();
+  const name = me?.fullName ?? "…";
+  const initials = name.split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+  async function signOut() {
+    await qc.cancelQueries();
+    qc.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  }
+  return (
+    <div className="flex items-center gap-2 rounded-lg p-2">
+      <div className="grid size-8 shrink-0 place-items-center rounded-full bg-accent text-xs font-semibold">{initials}</div>
+      <div className="min-w-0 flex-1 text-xs group-data-[collapsible=icon]:hidden">
+        <div className="truncate font-medium">{name}</div>
+        <div className="text-muted-foreground">{me?.isAdmin ? "Administrador Plannet" : "Cliente"}</div>
+      </div>
+      <button onClick={signOut} aria-label="Sair" title="Sair" className="grid size-8 shrink-0 place-items-center rounded-md hover:bg-accent group-data-[collapsible=icon]:hidden"><LogOut className="size-4" /></button>
+    </div>
   );
 }
 
@@ -69,6 +92,9 @@ export function AppShell({ children }: { children: ReactNode }) {
 function AppShellContent({ children }: { children: ReactNode }) {
   const demo = useDemo();
   const path = useRouterState({ select: r => r.location.pathname });
+  const { data: me } = useMe();
+  const { setRole } = demo;
+  useEffect(() => { if (me) setRole(me.isAdmin ? 'admin' : 'client'); }, [me, setRole]);
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
@@ -81,19 +107,18 @@ function AppShellContent({ children }: { children: ReactNode }) {
               <input placeholder="Buscar telas, campanhas, estabelecimentos..." className="h-9 w-full rounded-lg border bg-card pl-9 pr-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary" />
             </div>
             <div className="ml-auto flex items-center gap-3">
-              <span className="text-[10px] text-warning">Demonstração V2</span>
+              <span className="text-[10px] text-warning">Etapa 1 · Supabase</span>
               <button className="relative grid size-9 place-items-center rounded-lg border bg-card hover:bg-accent" aria-label="Notificações">
                 <Bell className="size-4" />
                 <span className="absolute right-2 top-2 size-1.5 rounded-full bg-destructive" />
               </button>
             </div>
           </header>
-          <div className="flex flex-wrap items-center gap-2 border-b bg-card px-4 py-2">
-            <span className="text-[10px] text-muted-foreground">Perfil simulado</span>
-            <select aria-label="Perfil simulado" value={demo.role} onChange={e=>demo.setRole(e.target.value === 'admin' ? 'admin' : 'client')} className="h-8 rounded-md border bg-background px-2 text-xs"><option value="admin">Administrador Plannet</option><option value="client">Cliente</option></select>
+          {demo.role === 'admin' && !["/clientes","/estabelecimentos","/telas"].includes(path) && <div className="flex flex-wrap items-center gap-2 border-b bg-card px-4 py-2">
+            <span className="text-[10px] text-muted-foreground">Cliente nos módulos demonstrativos</span>
             <select aria-label="Cliente selecionado" value={demo.clientId} onChange={e=>demo.setClientId(e.target.value)} className="h-8 min-w-0 max-w-full rounded-md border bg-background px-2 text-xs">{demo.clients.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select>
-          </div>
-          <main className="min-w-0 flex-1 p-4 md:p-6 lg:p-8">{demo.role === 'client' && !clientPaths.includes(path) ? <div className="py-8"><h1 className="text-xl font-semibold">Área reservada ao administrador</h1><p className="my-3 text-sm text-muted-foreground">Perfil de cliente simulado · selecione uma página disponível no menu.</p><Button asChild><Link to="/playlists">Minhas playlists</Link></Button></div> : children}</main>
+          </div>}
+          <main className="min-w-0 flex-1 p-4 md:p-6 lg:p-8">{demo.role === 'client' && !clientPaths.includes(path) ? <div className="py-8"><h1 className="text-xl font-semibold">Área reservada ao administrador</h1><p className="my-3 text-sm text-muted-foreground">Perfil de cliente · selecione uma página disponível no menu.</p><Button asChild><Link to="/playlists">Minhas playlists</Link></Button></div> : children}</main>
         </div>
       </div>
     </SidebarProvider>

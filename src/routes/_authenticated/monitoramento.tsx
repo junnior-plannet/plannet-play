@@ -9,7 +9,7 @@ import { seo } from "@/lib/seo";
 import { VisualMonitoring } from "@/components/v2/VisualMonitoring";
 import { useDemo } from "@/components/v2/DemoProvider";
 
-export const Route = createFileRoute("/monitoramento")({
+export const Route = createFileRoute('/_authenticated/monitoramento')({
   head: () => seo("Monitoramento", "Saúde dos dispositivos e alertas da rede em tempo real."),
   component: Page,
 });

@@ -11,7 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { PageHeader, Field, inputCls, selectCls, EmptyState } from '@/components/app/ui';
-export const Route=createFileRoute('/audio-ambiente')({head:()=>seo('Áudio Ambiente','Rádio Plannet, músicas e configurações independentes para TVs — demonstração.'),component:Page});
+export const Route=createFileRoute('/_authenticated/audio-ambiente')({head:()=>seo('Áudio Ambiente','Rádio Plannet, músicas e configurações independentes para TVs — demonstração.'),component:Page});
 const tabs=['Rádio Plannet','Minhas Músicas','Rádio Externa','Configurações de Áudio'];
 
 function Toggle({label,checked,onChange}:{label:string;checked:boolean;onChange:(v:boolean)=>void}) {return <div className="flex items-center justify-between gap-4 border-b py-3 text-sm"><span>{label}</span><Switch aria-label={label} checked={checked} onCheckedChange={onChange}/></div>;}

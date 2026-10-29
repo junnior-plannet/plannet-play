@@ -10,7 +10,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { advertisers, campaigns as initial, media, regions, fmt } from "@/lib/mock";
 import { seo } from "@/lib/seo";
 
-export const Route = createFileRoute("/campanhas")({
+export const Route = createFileRoute('/_authenticated/campanhas')({
   head: () => seo("Campanhas", "Crie e acompanhe campanhas por região e dispositivo."),
   component: Page,
 });

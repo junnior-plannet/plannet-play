@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogT
 import { advertisers } from "@/lib/mock";
 import { seo } from "@/lib/seo";
 
-export const Route = createFileRoute("/anunciantes")({
+export const Route = createFileRoute('/_authenticated/anunciantes')({
   head: () => seo("Anunciantes", "Cadastro de anunciantes e suas mídias associadas."),
   component: Page,
 });
