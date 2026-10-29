@@ -68,28 +68,53 @@ function AuthPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-sm rounded-lg border bg-card p-6">
-        <div className="mb-6 flex justify-center">
-          <img src={logoAsset.url} alt="Plannet Play — Mídia Inteligente" width={1920} height={640} className="h-auto w-full max-w-80 object-contain" />
+    <div className="flex min-h-screen min-h-svh items-center justify-center bg-background px-4 py-8 sm:px-6">
+      <div className="w-full max-w-md rounded-xl border bg-card p-6 sm:p-8">
+        <div className="mb-8 flex justify-center">
+          <img src={logoAsset.url} alt="Plannet Play — Mídia Inteligente" width={1920} height={640} className="h-auto w-full max-w-72 object-contain" />
         </div>
-        <h1 className="text-lg font-semibold">{mode === "login" ? "Entrar" : mode === "signup" ? "Criar conta" : "Recuperar senha"}</h1>
+        <h1 className="text-center text-xl font-semibold tracking-tight">{mode === "login" ? "Entrar" : mode === "signup" ? "Criar conta" : "Recuperar senha"}</h1>
         {sent ? (
-          <div className="mt-4 space-y-4"><p className="text-sm text-muted-foreground">{sent}</p><Button variant="outline" className="w-full" onClick={() => { setSent(""); setMode("login"); }}>Voltar ao login</Button></div>
+          <div className="mt-6 space-y-6">
+            <p className="text-center text-sm leading-relaxed text-muted-foreground">{sent}</p>
+            <Button variant="outline" className="h-11 w-full" onClick={() => { setSent(""); setMode("login"); }}>Voltar ao login</Button>
+          </div>
         ) : (
-          <form className="mt-4 grid gap-4" onSubmit={submit}>
-            {mode === "signup" && <Field label="Nome"><input name="name" required className={inputCls} autoComplete="name" /></Field>}
-            <Field label="E-mail"><input name="email" type="email" required value={email} onChange={e => setEmail(e.target.value)} className={inputCls} autoComplete="email" /></Field>
-            {mode !== "forgot" && <Field label="Senha"><div className="relative"><input name="password" type={showPassword ? "text" : "password"} required minLength={8} className={`${inputCls} pr-11`} autoComplete={mode === "login" ? "current-password" : "new-password"} /><Button type="button" size="icon" variant="ghost" className="absolute right-0 top-0" aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"} title={showPassword ? "Ocultar senha" : "Mostrar senha"} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff /> : <Eye />}</Button></div></Field>}
-            {mode === "login" && <label className="flex items-center gap-2 text-sm"><Checkbox checked={remember} onCheckedChange={v => { const enabled = v === true; setRemember(enabled); if (!enabled) rememberEmail(window.localStorage, "", false); }} />Lembrar meu usuário</label>}
-            <Button type="submit" disabled={busy}>{busy && <Loader2 className="animate-spin" />}{mode === "login" ? "Entrar" : mode === "signup" ? "Criar conta" : "Enviar link"}</Button>
+          <form className="mt-6 grid gap-5" onSubmit={submit}>
+            {mode === "signup" && (
+              <Field label="Nome">
+                <input name="name" required className={`${inputCls} min-h-11`} autoComplete="name" />
+              </Field>
+            )}
+            <Field label="E-mail">
+              <input name="email" type="email" required value={email} onChange={e => setEmail(e.target.value)} className={`${inputCls} min-h-11`} autoComplete="email" />
+            </Field>
+            {mode !== "forgot" && (
+              <Field label="Senha">
+                <div className="relative">
+                  <input name="password" type={showPassword ? "text" : "password"} required minLength={8} className={`${inputCls} min-h-11 pr-12`} autoComplete={mode === "login" ? "current-password" : "new-password"} />
+                  <Button type="button" size="icon" variant="ghost" className="absolute right-1 top-1/2 -translate-y-1/2" aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"} title={showPassword ? "Ocultar senha" : "Mostrar senha"} onClick={() => setShowPassword(v => !v)}>{showPassword ? <EyeOff /> : <Eye />}</Button>
+                </div>
+              </Field>
+            )}
+            {mode === "login" && (
+              <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                <label className="flex min-h-9 cursor-pointer items-center gap-2 text-xs">
+                  <Checkbox checked={remember} onCheckedChange={v => { const enabled = v === true; setRemember(enabled); if (!enabled) rememberEmail(window.localStorage, "", false); }} />
+                  Lembrar meu usuário
+                </label>
+                <Button type="button" variant="link" className="h-auto min-h-9 px-0 py-1 text-xs text-muted-foreground" onClick={() => { setMode("forgot"); setShowPassword(false); }}>Esqueci minha senha</Button>
+              </div>
+            )}
+            <Button type="submit" className="h-11 w-full" disabled={busy}>{busy && <Loader2 className="animate-spin" />}{mode === "login" ? "Entrar" : mode === "signup" ? "Criar conta" : "Enviar link"}</Button>
           </form>
         )}
-        {!sent && <div className="mt-4 flex flex-col items-start gap-1 text-xs">
-          <Button variant="link" className="h-auto max-w-full whitespace-normal p-0 text-left text-xs" onClick={() => { setMode(mode === "login" ? "signup" : "login"); setShowPassword(false); }}>{mode !== "login" ? "Já tenho conta" : "Ainda não tem uma conta? Cadastre-se."}</Button>
-          {mode === "login" && <Button variant="link" className="h-auto p-0 text-xs text-muted-foreground" onClick={() => { setMode("forgot"); setShowPassword(false); }}>Esqueci minha senha</Button>}
-        </div>}
-        {mode === "signup" && !sent && <p className="mt-4 text-[11px] text-muted-foreground">Novas contas entram como cliente. O acesso a clientes e TVs é liberado por um administrador Plannet.</p>}
+        {!sent && (
+          <div className="mt-6 flex justify-center border-t pt-5 text-center">
+            <Button variant="link" className="h-auto min-h-9 max-w-full whitespace-normal px-0 py-1 text-xs leading-relaxed" onClick={() => { setMode(mode === "login" ? "signup" : "login"); setShowPassword(false); }}>{mode !== "login" ? "Já tenho conta" : "Ainda não tem uma conta? Cadastre-se."}</Button>
+          </div>
+        )}
+        {mode === "signup" && !sent && <p className="mt-3 text-center text-[11px] leading-relaxed text-muted-foreground">Novas contas entram como cliente. O acesso a clientes e TVs é liberado por um administrador Plannet.</p>}
       </div>
     </div>
   );
