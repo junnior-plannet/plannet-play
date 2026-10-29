@@ -12,3 +12,7 @@
 - [x] Arrastar, reordenar, selecionar, duplicar, excluir e propriedades com duração/repetição.
 - [x] Rascunho, prévia em loop e publicação demonstrativa preservados.
 - [x] Testes de duração/sequência e verificação visual desktop/celular.
+## Backend Etapa 1
+- [x] Tabelas, papéis, RLS e procedimento do primeiro administrador
+- [x] Login/logout e telas de Clientes, Estabelecimentos e TVs ligadas ao banco
+- [ ] Teste de segurança RLS (SQL revisado aguardando aprovação do usuário)
