@@ -1,8 +1,8 @@
 # PLANNET CONTROL V2
 ## Identidade oficial
-- [ ] Aplicar logo completa no login e menu lateral sem alterar demais páginas.
-- [ ] Preparar favicon e ícones PWA/Smart TV a partir do símbolo oficial.
-- [ ] Conferir login e marca do menu em desktop/mobile e apresentar imagens para validação.
+- [x] Aplicar logo completa no login e menu lateral sem alterar demais páginas.
+- [x] Preparar favicon e ícones PWA/Smart TV a partir do símbolo oficial.
+- [x] Conferir login real e marca do menu em renderização visual isolada, desktop/mobile, e apresentar imagens para validação; sessão autenticada indisponível no Supabase externo.
 
 - [x] Estado demonstrativo compartilhado: TVs, clientes, playlists e áudio; simulação de perfis.
 - [x] Editor visual único com biblioteca, arrastar/reordenar, duração e prévia em loop.
