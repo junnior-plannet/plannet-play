@@ -15,10 +15,10 @@ Analisados: 20 páginas internas, login/recuperação, menu, componentes, integr
 ### O que ainda é demonstrativo ou incompleto
 - Demais módulos ainda usam mocks ou controles sem integração operacional completa: dashboard, inteligência, regiões/mapa, conteúdo, campanhas, relatórios/histórico, monitoramento e rádio.
 - Nenhum bucket de mídia foi encontrado. Marca oficial usa CDN, preservada; arquivos locais não são uploads persistentes.
-- Cadastro de conta não cria uma solicitação comercial pendente, nem oferece aprovação administrativa. O acesso atual verifica sessão, não aprovação contratual.
-- Planos são lidos, mas não há gestão completa de contratação, vencimento, situação financeira, exceções ou suspensão.
-- O código atual de TV é identificador permanente, não código temporário de seis dígitos. Não há Player funcional, credenciais individuais, última conexão, telemetria ou comprovação de exibições.
-- O sino não está ligado a uma central de eventos reais. Não existem registros de notificações, horários de funcionamento ou preferências persistentes.
+- Autocadastro não cria pedido pendente; acesso verifica sessão, não aprovação.
+- Sem contratação, vencimento, financeiro, exceções ou suspensão completos.
+- Código de TV atual é permanente, não pareamento. Sem Player, credenciais individuais, telemetria ou exibições confirmadas.
+- Sino sem eventos reais; faltam notificações, horários e preferências persistentes.
 
 ### Pontos que exigem correção
 1. Retirar o padrão fixo de 20% em novos cadastros, preservando contratos atuais.
@@ -41,7 +41,7 @@ Analisados: 20 páginas internas, login/recuperação, menu, componentes, integr
 - Estabelecimentos: vínculo, segmento, localização e aceite publicitário consistente com contrato; distinguir de espaço físico.
 - Central básica de notificações para cadastro e aprovação, necessária ao próprio fluxo da etapa; demais eventos entram quando sua origem existir.
 - Menu: Visão Geral, Rede, Conteúdo, Publicidade, Gestão; Rádio, Planos e “Parceiros — Em breve”; preservar Histórico e demais módulos.
-- Preservar a conta administradora e todos os cadastros atuais. Não colocar clientes existentes em análise automaticamente: revisar a classificação antes da conversão.
+- Preservar conta admin e cadastros; revisar clientes atuais sem colocá-los em análise automaticamente.
 
 ### Etapa 2 — Gestão e monitoramento
 - Dashboard com totais reais de clientes, estabelecimentos e TVs; aprovações pendentes e notificações reais. Métricas sem fonte ficam indisponíveis.
