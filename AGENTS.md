@@ -15,3 +15,5 @@
 - AppShell owns DemoProvider around its consuming content and route children; keep context identity in the component-free demo-context module to prevent refresh mismatches. Do not persist demo data or call external services.
 - Frontend permission and distribution rules live in demo-rules and are tested independently; they are not a security boundary.
 - Use one PlaylistEditor for both demo roles with PlaylistTimeline for single-track horizontal dnd-kit sorting; playlist-timeline supplies shared duration, repetition and sequencing logic for list and preview consistency. Audio settings remain separate from visual assignments.
+- All app pages live under `src/routes/_authenticated/` (client-only gate, redirects to `/auth`); `/auth` and `/reset-password` are the only public routes.
+- Clients, establishments, devices and plans come from Supabase via `src/lib/api.ts` (browser client, RLS enforced); admin role lives only in `user_roles` and is granted solely through the owner-only `promote_to_admin` SQL function. Other modules still read `src/lib/mock.ts`.
