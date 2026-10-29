@@ -14,16 +14,303 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      client_members: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_members_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          city: string | null
+          contact_email: string | null
+          contact_name: string | null
+          created_at: string
+          document: string | null
+          id: string
+          name: string
+          phone: string | null
+          plan_id: string | null
+          plannet_reserved_percent: number
+          region: string | null
+          status: Database["public"]["Enums"]["record_status"]
+          updated_at: string
+        }
+        Insert: {
+          city?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          document?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          plan_id?: string | null
+          plannet_reserved_percent?: number
+          region?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
+          updated_at?: string
+        }
+        Update: {
+          city?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          created_at?: string
+          document?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          plan_id?: string | null
+          plannet_reserved_percent?: number
+          region?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clients_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      devices: {
+        Row: {
+          activated_at: string | null
+          activation_status: Database["public"]["Enums"]["tv_activation_status"]
+          created_at: string
+          device_code: string
+          establishment_id: string
+          id: string
+          location_note: string | null
+          model: string | null
+          name: string
+          orientation: Database["public"]["Enums"]["tv_orientation"]
+          serial_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          activated_at?: string | null
+          activation_status?: Database["public"]["Enums"]["tv_activation_status"]
+          created_at?: string
+          device_code?: string
+          establishment_id: string
+          id?: string
+          location_note?: string | null
+          model?: string | null
+          name: string
+          orientation?: Database["public"]["Enums"]["tv_orientation"]
+          serial_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          activated_at?: string | null
+          activation_status?: Database["public"]["Enums"]["tv_activation_status"]
+          created_at?: string
+          device_code?: string
+          establishment_id?: string
+          id?: string
+          location_note?: string | null
+          model?: string | null
+          name?: string
+          orientation?: Database["public"]["Enums"]["tv_orientation"]
+          serial_number?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "devices_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      establishments: {
+        Row: {
+          address: string | null
+          city: string | null
+          client_id: string
+          created_at: string
+          district: string | null
+          id: string
+          name: string
+          region: string | null
+          status: Database["public"]["Enums"]["record_status"]
+          type: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          client_id: string
+          created_at?: string
+          district?: string | null
+          id?: string
+          name: string
+          region?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
+          type?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          client_id?: string
+          created_at?: string
+          district?: string | null
+          id?: string
+          name?: string
+          region?: string | null
+          status?: Database["public"]["Enums"]["record_status"]
+          type?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plans: {
+        Row: {
+          active: boolean
+          created_at: string
+          default_reserved_percent: number
+          description: string | null
+          id: string
+          max_tvs: number | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          default_reserved_percent?: number
+          description?: string | null
+          id?: string
+          max_tvs?: number | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          default_reserved_percent?: number
+          description?: string | null
+          id?: string
+          max_tvs?: number | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      establishment_client: {
+        Args: { _establishment_id: string }
+        Returns: string
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_client_member: {
+        Args: { _client_id: string; _user_id: string }
+        Returns: boolean
+      }
+      promote_to_admin: { Args: { _email: string }; Returns: undefined }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "client"
+      record_status: "ativo" | "inativo"
+      tv_activation_status: "pendente" | "ativa" | "inativa" | "bloqueada"
+      tv_orientation: "horizontal" | "vertical"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +437,11 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "client"],
+      record_status: ["ativo", "inativo"],
+      tv_activation_status: ["pendente", "ativa", "inativa", "bloqueada"],
+      tv_orientation: ["horizontal", "vertical"],
+    },
   },
 } as const
