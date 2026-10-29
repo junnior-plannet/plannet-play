@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 ## Architecture
+- Remembered-login preference stores only an opted-in email under its own key; never mix it with auth session storage or password data.
 - Official branding uses CDN asset pointers for uploaded PNGs; favicon sizes are local public PNGs, while 180/192/512/1024px assets prepare future app icons without enabling PWA or TV features.
 - Shared app shell (sidebar + header) lives in `src/components/app/AppShell.tsx` and wraps `<Outlet />` in `__root.tsx`; menu entries come from `src/components/app/nav.ts` so nav and routes stay in sync.
 - All demo data lives in `src/lib/mock.ts`; pages read only from there so real integrations can replace it in one place.

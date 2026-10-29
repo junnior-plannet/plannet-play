@@ -1,10 +1,10 @@
 import {
   LayoutDashboard, BrainCircuit, Store, MapPinned, MonitorSmartphone, Map, Film, ListVideo,
   CalendarClock, Newspaper, LayoutGrid, Radio, Building2, Megaphone, FileBarChart, Activity,
-  History, Settings, Users, Music2, type LucideIcon,
+  History, Settings, Users, Music2, Handshake, type LucideIcon,
 } from "lucide-react";
 
-export type NavItem = { title: string; url: string; icon: LucideIcon };
+export type NavItem = { title: string; url: string; icon: LucideIcon; comingSoon?: boolean };
 export const navGroups: { label: string; items: NavItem[] }[] = [
   { label: "Visão Geral", items: [
     { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -24,18 +24,17 @@ export const navGroups: { label: string; items: NavItem[] }[] = [
     { title: "Notícias e RSS", url: "/noticias", icon: Newspaper },
     { title: "Widgets", url: "/widgets", icon: LayoutGrid },
     { title: "Transmissões ao Vivo", url: "/ao-vivo", icon: Radio },
-    { title: "Áudio Ambiente", url: "/audio-ambiente", icon: Music2 },
+    { title: "Rádio", url: "/audio-ambiente", icon: Music2 },
   ]},
-  { label: "Comercial", items: [
+  { label: "Publicidade", items: [
     { title: "Anunciantes", url: "/anunciantes", icon: Building2 },
     { title: "Campanhas", url: "/campanhas", icon: Megaphone },
   ]},
-  { label: "Análises", items: [
+  { label: "Gestão", items: [
     { title: "Relatórios", url: "/relatorios", icon: FileBarChart },
     { title: "Monitoramento", url: "/monitoramento", icon: Activity },
     { title: "Histórico de Exibições", url: "/historico", icon: History },
-  ]},
-  { label: "Sistema", items: [
+    { title: "Parceiros — Em breve", url: "parceiros-em-breve", icon: Handshake, comingSoon: true },
     { title: "Configurações", url: "/configuracoes", icon: Settings },
   ]},
 ];

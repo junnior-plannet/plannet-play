@@ -37,6 +37,7 @@ function AppSidebar() {
               <SidebarMenu>
                 {g.items.filter(it => demo.role === 'admin' || clientPaths.includes(it.url)).map((it) => {
                   const active = path === it.url;
+                   if (it.comingSoon) return <SidebarMenuItem key={it.url}><SidebarMenuButton disabled tooltip={it.title}><it.icon /><span>{it.title}</span></SidebarMenuButton></SidebarMenuItem>;
                   return (
                     <SidebarMenuButton key={it.url} asChild isActive={active} tooltip={it.title}
                       className="data-[active=true]:text-primary data-[active=true]:font-medium">
