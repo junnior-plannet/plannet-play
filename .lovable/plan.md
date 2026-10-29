@@ -5,15 +5,12 @@
 Analisados: 20 páginas internas, login/recuperação, menu, componentes, integrações, testes, migrações e banco atual. Evoluir o projeto, não recriá-lo.
 
 ### O que já existe
-- Supabase externo conectado ao projeto `eozuygksoxvealpabern`, preservado.
-- Login, cadastro de conta, recuperação de senha e logout usam Supabase Auth. A tela de login carregou sem erros e o acesso sem sessão a `/` foi redirecionado para `/auth`.
-- Clientes, estabelecimentos, TVs e leitura de planos usam dados do Supabase, com cadastro/edição, carregamento, erro e lista vazia.
-- Sete tabelas: `profiles`, `user_roles`, `client_members`, `clients`, `plans`, `establishments`, `devices`.
-- Relações: plano → cliente → estabelecimento → TV; contas vinculadas a clientes por membros.
-- RLS ativa nas sete tabelas: acesso administrativo ou por vínculo; regra no banco protege plano, status e percentual do cliente.
-- Novas contas recebem perfil Cliente. A promoção administrativa não é executável por usuários comuns; continua restrita ao ambiente privilegiado, sem cadastro administrativo público.
-- Há 1 conta, 1 administrador, 1 cliente, 2 planos, nenhum estabelecimento e nenhuma TV no momento da consulta. Nenhum vínculo de membro foi encontrado. O cadastro de cliente existente será preservado.
-- Marca oficial, favicon e tema Dark Tech estão aplicados. Editor de playlists de faixa única já possui ordenação, duração, repetição e prévia.
+- Supabase externo `eozuygksoxvealpabern` preservado. Login, cadastro, recuperação e logout usam Auth. Login abriu sem erros; `/` sem sessão redireciona para `/auth`.
+- Clientes, estabelecimentos e TVs: cadastro/edição/listagens reais, estados de carregamento/erro/vazio; planos são lidos do banco.
+- Sete tabelas: `profiles`, `user_roles`, `client_members`, `clients`, `plans`, `establishments`, `devices`. Relações plano → cliente → estabelecimento → TV e membros vinculados a clientes.
+- Todas têm RLS; acesso por administrador/vínculo. Banco protege plano, status e percentual do cliente. Novas contas são Cliente; promoção administrativa bloqueada a usuários comuns.
+- Consulta atual: 1 conta administradora, 1 cliente, 2 planos, 0 estabelecimentos, 0 TVs e 0 vínculos de membro. Preservar esses registros.
+- Marca/favicon oficiais, Dark Tech e editor único de faixa com ordenação, duração, repetição e prévia.
 
 ### O que ainda é demonstrativo ou incompleto
 - Demais módulos ainda usam mocks ou controles sem integração operacional completa: dashboard, inteligência, regiões/mapa, conteúdo, campanhas, relatórios/histórico, monitoramento e rádio.
