@@ -78,3 +78,8 @@ export const statusLabel: Record<RecordStatus, string> = { ativo: "Ativo", inati
 /** Frontend mirror of the database rule; the database trigger is the real guard. */
 export function canEditReserve(isAdmin: boolean) { return isAdmin; }
 export function clampReserve(n: number) { return Math.min(100, Math.max(0, Math.round(Number.isFinite(n) ? n : 0))); }
+
+type Rows<Q> = Q extends { queryFn?: infer F } ? F extends (...a: never[]) => Promise<infer R> ? R : never : never;
+export type ClientRow = Rows<typeof clientsQuery>[number];
+export type EstablishmentRow = Rows<typeof establishmentsQuery>[number];
+export type DeviceRow = Rows<typeof devicesQuery>[number];

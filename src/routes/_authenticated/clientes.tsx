@@ -5,7 +5,7 @@ import { Plus, Users, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { seo } from "@/lib/seo";
 import { useMe } from "@/lib/auth";
-import { addMemberByEmail, canEditReserve, clampReserve, clientsQuery, membersQuery, plansQuery, removeMember, saveClient, statusLabel, type RecordStatus } from "@/lib/api";
+import { addMemberByEmail, canEditReserve, clampReserve, clientsQuery, membersQuery, plansQuery, removeMember, saveClient, statusLabel, type RecordStatus, type ClientRow } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { PageHeader, DataTable, FilterBar, Field, inputCls, selectCls, StatusBadge } from "@/components/app/ui";
@@ -16,7 +16,6 @@ export const Route = createFileRoute("/_authenticated/clientes")({
   component: Page,
 });
 
-type ClientRow = NonNullable<ReturnType<typeof useQuery<Awaited<ReturnType<typeof clientsQuery.queryFn & {}>>>>["data"]>[number];
 
 function Page() {
   const { data: me } = useMe();
