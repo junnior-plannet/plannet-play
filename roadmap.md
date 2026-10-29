@@ -29,3 +29,4 @@
 - [x] Login: lembrar apenas e-mail, mostrar/ocultar senha e chamada de cadastro; menu reorganizado com Parceiros não operacional.
 - [x] Recuperação: validar contexto e tratar link inválido/expirado.
 - [ ] Aprovar SQL aditivo da Etapa 1 antes de aplicar banco e conectar aprovação, condições comerciais, planos e notificações.
+- [ ] Revisar SQL: concorrência/limite de TVs, campos protegidos, publicidade, exceções justificadas, funções/RLS, leitura para suspensos e compatibilidade; apresentar versão e testes sem executar.
