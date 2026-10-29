@@ -21,3 +21,8 @@
 - [x] Tabelas, papéis, RLS e procedimento do primeiro administrador
 - [x] Login/logout e telas de Clientes, Estabelecimentos e TVs ligadas ao banco
 - [ ] Teste de segurança RLS (SQL revisado aguardando aprovação do usuário)
+
+## Atualização completa — diagnóstico e plano
+- [ ] Analisar páginas, integrações, banco e segurança sem alterar a aplicação.
+- [ ] Apresentar diagnóstico e plano por etapas para aprovação.
+- [ ] Implementação estrutural aguardando aprovação do plano.
