@@ -10,9 +10,9 @@ export type Orientation = Database["public"]["Enums"]["tv_orientation"];
 export type Activation = Database["public"]["Enums"]["tv_activation_status"];
 export type RecordStatus = Database["public"]["Enums"]["record_status"];
 
-function unwrap<D>(r: { data: D | null; error: { message: string } | null }): D {
+function unwrap<R extends { data: unknown; error: { message: string } | null }>(r: R): NonNullable<R["data"]> {
   if (r.error) throw new Error(r.error.message);
-  return r.data as D;
+  return r.data as NonNullable<R["data"]>;
 }
 
 export const plansQuery = queryOptions({
@@ -20,19 +20,23 @@ export const plansQuery = queryOptions({
   queryFn: async () => unwrap(await supabase.from("plans").select("*").order("name")),
 });
 
+async function fetchClients() { return unwrap(await supabase.from("clients").select("*, plans(name), establishments(id, devices(count))").order("name")); }
+async function fetchEstablishments() { return unwrap(await supabase.from("establishments").select("*, clients(name), devices(count)").order("name")); }
+async function fetchDevices() { return unwrap(await supabase.from("devices").select("*, establishments(name, client_id, clients(name))").order("name")); }
+
 export const clientsQuery = queryOptions({
   queryKey: ["clients"],
-  queryFn: async () => unwrap(await supabase.from("clients").select("*, plans(name), establishments(id, devices(count))").order("name")),
+  queryFn: () => fetchClients(),
 });
 
 export const establishmentsQuery = queryOptions({
   queryKey: ["establishments"],
-  queryFn: async () => unwrap(await supabase.from("establishments").select("*, clients(name), devices(count)").order("name")),
+  queryFn: () => fetchEstablishments(),
 });
 
 export const devicesQuery = queryOptions({
   queryKey: ["devices"],
-  queryFn: async () => unwrap(await supabase.from("devices").select("*, establishments(name, client_id, clients(name))").order("name")),
+  queryFn: () => fetchDevices(),
 });
 
 export const membersQuery = (clientId: string) => queryOptions({
@@ -63,7 +67,9 @@ export async function saveDevice(id: string | null, values: DeviceInsert) {
 
 /** Admin only (RLS): link an existing account to a client by e-mail. */
 export async function addMemberByEmail(clientId: string, email: string) {
-  const p = unwrap(await supabase.from("profiles").select("id").ilike("email", email.trim()).maybeSingle());
+  const r = await supabase.from("profiles").select("id").ilike("email", email.trim()).maybeSingle();
+  if (r.error) throw new Error(r.error.message);
+  const p = r.data;
   if (!p) throw new Error("Nenhuma conta encontrada com este e-mail. Peça para a pessoa criar a conta primeiro.");
   unwrap(await supabase.from("client_members").insert({ client_id: clientId, user_id: p.id }));
 }
@@ -79,7 +85,7 @@ export const statusLabel: Record<RecordStatus, string> = { ativo: "Ativo", inati
 export function canEditReserve(isAdmin: boolean) { return isAdmin; }
 export function clampReserve(n: number) { return Math.min(100, Math.max(0, Math.round(Number.isFinite(n) ? n : 0))); }
 
-type Rows<Q> = Q extends { queryFn?: infer F } ? F extends (...a: never[]) => Promise<infer R> ? R : never : never;
-export type ClientRow = Rows<typeof clientsQuery>[number];
-export type EstablishmentRow = Rows<typeof establishmentsQuery>[number];
-export type DeviceRow = Rows<typeof devicesQuery>[number];
+type Row<F extends () => Promise<unknown[]>> = Awaited<ReturnType<F>>[number];
+export type ClientRow = Row<typeof fetchClients>;
+export type EstablishmentRow = Row<typeof fetchEstablishments>;
+export type DeviceRow = Row<typeof fetchDevices>;

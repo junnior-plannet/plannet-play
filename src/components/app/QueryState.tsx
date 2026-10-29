@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "./ui";
 
 export function QueryState({ isLoading, error, isEmpty, emptyIcon, emptyTitle, emptyDescription, emptyAction, onRetry, children }: {
-  isLoading: boolean; error: unknown; isEmpty: boolean; emptyIcon?: LucideIcon; emptyTitle: string; emptyDescription?: string; emptyAction?: ReactNode; onRetry: () => void; children: ReactNode;
+  isLoading: boolean; error: unknown; isEmpty: boolean; emptyIcon?: LucideIcon | undefined; emptyTitle: string; emptyDescription?: string | undefined; emptyAction?: ReactNode; onRetry: () => void; children: ReactNode;
 }) {
   if (isLoading) return <div className="flex items-center justify-center gap-2 rounded-xl border bg-card py-16 text-sm text-muted-foreground"><Loader2 className="size-4 animate-spin" />Carregando…</div>;
   if (error) return (
@@ -15,6 +15,6 @@ export function QueryState({ isLoading, error, isEmpty, emptyIcon, emptyTitle, e
       <Button variant="outline" size="sm" onClick={onRetry}>Tentar novamente</Button>
     </div>
   );
-  if (isEmpty) return <EmptyState icon={emptyIcon} title={emptyTitle} description={emptyDescription} action={emptyAction} />;
+  if (isEmpty) return <EmptyState title={emptyTitle} {...(emptyIcon ? { icon: emptyIcon } : {})} {...(emptyDescription ? { description: emptyDescription } : {})} {...(emptyAction ? { action: emptyAction } : {})} />;
   return <>{children}</>;
 }
