@@ -1,5 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Bell, Search, Orbit, LogOut } from "lucide-react";
+import { Bell, Search, LogOut } from "lucide-react";
+import logoAsset from "@/assets/plannet-play-logo.png.asset.json";
+import symbolAsset from "@/assets/plannet-play-symbol.png.asset.json";
 import { useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -22,14 +24,9 @@ function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <Link to="/" className="flex items-center gap-2.5 px-1 py-2">
-          <div className="grid size-8 shrink-0 place-items-center rounded-lg bg-gradient-primary shadow-glow">
-            <Orbit className="size-4 text-primary-foreground" />
-          </div>
-          <div className="leading-tight group-data-[collapsible=icon]:hidden">
-            <div className="text-sm font-bold tracking-wide">PLANNET CONTROL</div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Plannet Play</div>
-          </div>
+        <Link to="/" aria-label="Plannet Play — início" className="flex items-center justify-center px-1 py-2 group-data-[collapsible=icon]:px-0">
+          <img src={logoAsset.url} alt="Plannet Play — Mídia Inteligente" width={1920} height={640} className="h-auto w-full object-contain group-data-[collapsible=icon]:hidden" />
+          <img src={symbolAsset.url} alt="Plannet Play" width={1254} height={1254} className="hidden size-8 shrink-0 object-contain group-data-[collapsible=icon]:block" />
         </Link>
       </SidebarHeader>
       <SidebarContent>

@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Orbit, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import logoAsset from "@/assets/plannet-play-logo.png.asset.json";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -57,9 +58,8 @@ function AuthPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-sm rounded-xl border bg-card p-6 shadow-lg">
-        <div className="mb-6 flex items-center gap-2.5">
-          <div className="grid size-9 place-items-center rounded-lg bg-gradient-primary shadow-glow"><Orbit className="size-4 text-primary-foreground" /></div>
-          <div><div className="text-sm font-bold tracking-wide">PLANNET CONTROL</div><div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Plannet Play</div></div>
+        <div className="mb-6 flex justify-center">
+          <img src={logoAsset.url} alt="Plannet Play — Mídia Inteligente" width={1920} height={640} className="h-auto w-full max-w-80 object-contain" />
         </div>
         <h1 className="text-lg font-semibold">{mode === "login" ? "Entrar" : mode === "signup" ? "Criar conta" : "Recuperar senha"}</h1>
         {sent ? (
