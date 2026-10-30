@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildDashboardData, compactRanking, formatPercent } from "@/lib/dashboard";
+import { buildDashboardData, formatPercent } from "@/lib/dashboard";
 
 const clients = [
   { id: "c1", name: "Mesmo nome", plan_id: "p1" },
@@ -43,6 +43,12 @@ describe("Agregações reais do Dashboard", () => {
     expect(result.byCity.find((row) => /não informado/.test(row.name))?.value).toBe(2);
     expect(sum(result.byCity)).toBe(devices.length);
   });
+  it("atribui cores distintas às categorias do gráfico principal", () => {
+    const result = buildDashboardData(clients, devices, establishments, plans);
+    const colors = result.byCity.map((row) => row.color);
+    expect(new Set(colors).size).toBe(colors.length);
+    expect(colors.every((color) => color.startsWith("var("))).toBe(true);
+  });
   it("conta clientes por plano, incluindo ausentes e planos não acessíveis", () => {
     const result = buildDashboardData(clients, devices, establishments, plans);
     expect(result.byPlan.map((row) => row.value)).toEqual([1, 1, 1]);
@@ -58,14 +64,5 @@ describe("Agregações reais do Dashboard", () => {
     expect(sum(result.byPlan)).toBe(0);
     expect(formatPercent(0, 0)).toBe("0%");
     expect(formatPercent(1, 4)).toBe("25%");
-  });
-  it("compacta rankings sem perder TVs e sem alterar a fonte completa", () => {
-    const rows = Array.from({ length: 12 }, (_, index) => ({ id: String(index), name: `Categoria ${index}`, value: 12 - index, color: "var(--chart-1)" }));
-    const result = compactRanking(rows);
-    expect(result).toHaveLength(8);
-    expect(result[7].name).toBe("Demais");
-    expect(sum(result)).toBe(sum(rows));
-    expect(rows).toHaveLength(12);
-    expect(compactRanking([{ id: "zero", name: "Zero", value: 0, color: "var(--chart-1)" }])).toEqual([]);
   });
 });

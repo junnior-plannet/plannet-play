@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, Tooltip, XAxis, YAxis } from "recharts";
+import { Cell, Pie, PieChart, Tooltip } from "recharts";
 import { Panel } from "@/components/app/ui";
-import { compactRanking, formatCount, formatPercent, type DashboardDatum } from "@/lib/dashboard";
+import { formatCount, formatPercent, type DashboardDatum } from "@/lib/dashboard";
 
 /** Measure after mount: safe for SSR, mobile layouts and environments without ResizeObserver. */
 function ChartCanvas({ label, height, children }: { label: string; height: number; children: (width: number, animate: boolean) => ReactNode }) {
@@ -87,27 +87,5 @@ export function DashboardDonut({ title, description, rows, unit }: { title: stri
     </div>
     <p className="mt-2 min-h-8 text-xs text-muted-foreground" aria-live="polite">{activeRow ? `${activeRow.name}: ${formatCount(activeRow.value)} ${unit} (${formatPercent(activeRow.value, total)}).` : "Passe o mouse ou selecione uma categoria para destacar."}</p>
     <DataDetails rows={rows} unit={unit} />
-  </Panel>;
-}
-
-export function DashboardBars({ title, description, rows }: { title: string; description: string; rows: DashboardDatum[] }) {
-  const ranking = compactRanking(rows);
-  const total = rows.reduce((sum, row) => sum + row.value, 0);
-  const height = Math.max(220, ranking.length * 38 + 36);
-  return <Panel title={title} description={description} className="dashboard-chart min-w-0">
-    {total > 0 ? <ChartCanvas label={`${title}: ${formatCount(total)} TVs. Dados completos disponíveis abaixo.`} height={height}>
-      {(width, animate) => <BarChart width={width} height={height} data={ranking} layout="vertical" margin={{ top: 4, right: 28, bottom: 0, left: 0 }} barSize={14}>
-        <CartesianGrid horizontal={false} stroke="var(--border)" strokeDasharray="3 5" />
-        <XAxis type="number" allowDecimals={false} axisLine={false} tickLine={false} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} />
-        <YAxis type="category" dataKey="name" width={Math.min(132, Math.floor(width * 0.4))} axisLine={false} tickLine={false}
-          tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} tickFormatter={(value: string) => value.length > 18 ? `${value.slice(0, 17)}…` : value} />
-        <Tooltip cursor={{ fill: "var(--accent)", opacity: 0.4 }} content={<ValueTooltip total={total} unit="TVs" />} />
-        <Bar dataKey="value" name="TVs" radius={[0, 4, 4, 0]} isAnimationActive={animate} animationDuration={650} animationBegin={0}>
-          {ranking.map((row) => <Cell key={row.id} fill={row.color} className="dashboard-bar" style={{ color: row.color }} />)}
-        </Bar>
-      </BarChart>}
-    </ChartCanvas> : <div className="flex h-[220px] items-center justify-center text-sm text-muted-foreground">Nenhuma TV cadastrada neste recorte.</div>}
-    <p className="mt-3 text-xs text-muted-foreground">{ranking.some((row) => row.id === "ranking-others") ? "7 maiores categorias + demais. " : ""}Total: <span className="font-medium text-foreground tabular-nums">{formatCount(total)} TVs</span>. Passe o mouse nas barras para ver os valores.</p>
-    <DataDetails rows={rows} unit="TVs" />
   </Panel>;
 }
