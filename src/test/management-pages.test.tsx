@@ -50,28 +50,23 @@ describe("Páginas gerenciais com dados isolados", () => {
     expect(mocks.devices).toHaveBeenCalledTimes(2);
     expect(screen.getByText("TVs ativas").parentElement?.parentElement).toHaveTextContent("1");
   });
-  it("Dashboard preserva os cinco gráficos e atualiza todas as suas fontes sem recarregar a página", async () => {
+  it("Dashboard apresenta um único gráfico principal multicolorido e o atualiza sem recarregar a página", async () => {
     mocks.establishments.mockResolvedValue([{ id: "e1", client_id: "c1", city: "Aracaju" }]);
     mount(DashboardRoute.options.component as ComponentType);
-    await screen.findByRole("heading", { name: "TVs por status" });
-    for (const title of ["Clientes por plano", "Orientação das TVs", "TVs por cliente", "TVs por município"]) {
-      expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
+    await screen.findByRole("heading", { name: "Distribuição por município" });
+    for (const title of ["TVs por status", "Clientes por plano", "Orientação das TVs", "TVs por cliente"]) {
+      expect(screen.queryByRole("heading", { name: title })).toBeNull();
     }
-    expect(screen.getByRole("button", { name: /Pendentes 1 · 100%/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Vertical 1 · 100%/ })).toBeInTheDocument();
+    expect(screen.getAllByRole("img")).toHaveLength(1);
+    expect(screen.getByRole("button", { name: /Aracaju 1 · 100%/ })).toBeInTheDocument();
     mocks.devices.mockResolvedValue([device, { ...device, id: "tv2", activation_status: "ativa", orientation: "horizontal" }]);
-    mocks.clients.mockResolvedValue([{ ...client, plan_id: "p2", plans: { name: "Plano atualizado" } }]);
-    mocks.plans.mockResolvedValue([{ id: "p2", name: "Plano atualizado" }]);
     mocks.establishments.mockResolvedValue([{ id: "e1", client_id: "c1", city: "São Cristóvão" }]);
     fireEvent.click(screen.getByRole("button", { name: "Atualizar" }));
-    await screen.findByRole("button", { name: /Ativas 1 · 50%/ });
-    await screen.findByRole("button", { name: /Plano atualizado 1 · 100%/ });
-    expect(screen.getByRole("button", { name: /Horizontal 1 · 50%/ })).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: /TVs por município: 2 TVs/ })).toBeInTheDocument();
+    await screen.findByRole("img", { name: /Distribuição por município: 2 TVs/ });
     for (const query of [mocks.clients, mocks.devices, mocks.plans, mocks.establishments]) {
       expect(query).toHaveBeenCalledTimes(2);
     }
-    for (const button of screen.getAllByRole("button", { name: "Ver todos os dados" })) fireEvent.click(button);
+    fireEvent.click(screen.getByRole("button", { name: "Ver todos os dados" }));
     expect(screen.getByText("São Cristóvão")).toBeInTheDocument();
     expect(screen.queryByText("Aracaju")).toBeNull();
   });
