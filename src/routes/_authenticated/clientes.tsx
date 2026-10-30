@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { PageHeader, DataTable, Field, inputCls, selectCls, StatusBadge } from "@/components/app/ui";
 import { QueryState } from "@/components/app/QueryState";
 import { ClientForm } from "@/components/app/ClientForm";
+import { RefreshButton } from "@/components/app/RefreshButton";
 
 export const Route = createFileRoute("/_authenticated/clientes")({
   head: () => seo("Clientes", "Cadastro de clientes, planos contratados e reserva de programação Plannet."),
@@ -27,7 +28,7 @@ function Page() {
 
   return <div className="min-w-0 space-y-6">
     <div className="border-b border-primary/20 pb-1 [&_button]:w-full sm:[&_button]:w-auto">
-      <PageHeader title="Clientes" description={isAdmin ? "Contas, planos e espaço publicitário Plannet · dados do banco" : "Sua conta Plannet Play"} actions={isAdmin && <Button onClick={() => setEditing("new")}><Plus />Novo Cliente</Button>} />
+      <PageHeader title="Clientes" description={isAdmin ? "Contas, planos e espaço publicitário Plannet · dados do banco" : "Sua conta Plannet Play"} actions={<><RefreshButton queryKeys={["clients", "establishments", "devices", "plans"]} />{isAdmin && <Button onClick={() => setEditing("new")}><Plus />Novo Cliente</Button>}</>} />
     </div>
     <section aria-labelledby="client-list-title" className="min-w-0 space-y-4">
       <div className="rounded-xl border bg-card p-4 sm:p-5">

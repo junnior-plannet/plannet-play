@@ -62,6 +62,24 @@ describe("Cadastro simplificado", () => {
     const { snapshot, store } = setup(); await persistClientForm(input(), store); const data = input(); data.existing = true; data.establishments = [{ id: "est-1", name: "Cliente", saved: true, tvs: [{ id: "tv-1", name: "Caixa", orientation: "vertical", saved: true }] }];
     await persistClientForm(data, store); expect(store.saveDevice).toHaveBeenLastCalledWith("tv-1", { id: "tv-1", establishment_id: "est-1", name: "Caixa", orientation: "vertical" }); expect(snapshot.devices).toHaveLength(1);
   });
+  it("persiste orientações individuais de novas TVs nos valores existentes do banco", async () => {
+    const { snapshot, store } = setup(); const data = input();
+    data.establishments[0]!.tvs.push({ id: "tv-2", name: "Entrada", orientation: "vertical", saved: false });
+    await persistClientForm(data, store);
+    expect(snapshot.devices.map((tv) => ({ name: tv.name, orientation: tv.orientation, establishment_id: tv.establishment_id }))).toEqual([
+      { name: "Recepção", orientation: "horizontal", establishment_id: "est-1" },
+      { name: "Entrada", orientation: "vertical", establishment_id: "est-1" },
+    ]);
+    expect(store.saveDevice).toHaveBeenCalledTimes(2);
+  });
+  it("rejeita orientação inválida antes de qualquer gravação", async () => {
+    const { store } = setup(); const data = input();
+    Object.assign(data.establishments[0]!.tvs[0]!, { orientation: "portrait" });
+    await expect(persistClientForm(data, store)).rejects.toThrow("Selecione 16:9 ou 9:16");
+    expect(store.saveClient).not.toHaveBeenCalled();
+    expect(store.saveEstablishment).not.toHaveBeenCalled();
+    expect(store.saveDevice).not.toHaveBeenCalled();
+  });
   it("recusa novas TVs em plano inativo", async () => { const { snapshot, store } = setup(); const plan = snapshot.plans[0]; if (plan) plan.active = false; await expect(persistClientForm(input(), store)).rejects.toThrow("plano ativo"); expect(store.saveClient).not.toHaveBeenCalled(); });
   it("não grava quando consulta falha", async () => { const { store } = setup(); vi.mocked(store.load).mockRejectedValueOnce(Error("Sem conexão")); await expect(persistClientForm(input(), store)).rejects.toThrow("Sem conexão"); expect(store.saveClient).not.toHaveBeenCalled(); });
 });

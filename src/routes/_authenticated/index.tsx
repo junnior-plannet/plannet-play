@@ -1,99 +1,63 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Monitor, Wifi, WifiOff, Gauge, Megaphone, PlayCircle, Clock, AlertTriangle } from "lucide-react";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis, Pie, PieChart, Cell } from "recharts";
-import { PageHeader, Panel, Stat, StatusBadge, chartTooltip } from "@/components/app/ui";
-import { Button } from "@/components/ui/button";
-import { activity, alerts, hourlyActivity, regions, fmt } from "@/lib/mock";
+import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { Monitor, Users, CheckCircle2, Clock } from "lucide-react";
+import { PageHeader, Panel, Stat, DataTable } from "@/components/app/ui";
+import { RefreshButton } from "@/components/app/RefreshButton";
+import { QueryState } from "@/components/app/QueryState";
+import { clientsQuery, devicesQuery, plansQuery } from "@/lib/api";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute('/_authenticated/')({
-  head: () => seo("Dashboard", "Visão geral da rede de telas, disponibilidade, campanhas e alertas."),
+  head: () => seo("Dashboard", "Visão gerencial dos clientes, planos e TVs cadastradas."),
   component: Dashboard,
 });
 
-const colors = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)", "var(--muted-foreground)"];
-
 function Dashboard() {
-  const total = regions.reduce((a, r) => a + r.screens, 0);
-  const online = regions.reduce((a, r) => a + r.online, 0);
-  return (
-    <>
-      <PageHeader title="Dashboard" description="Visão geral da rede PLANNET PLAY em tempo real (dados demonstrativos)."
-        actions={<Button asChild><Link to="/telas">Cadastrar dispositivo</Link></Button>} />
+  const clients = useQuery(clientsQuery);
+  const devices = useQuery(devicesQuery);
+  const plans = useQuery(plansQuery);
+  const error = clients.error ?? devices.error ?? plans.error;
+  const isLoading = clients.isLoading || devices.isLoading || plans.isLoading;
+  const tvs = devices.data ?? [];
+  const accounts = clients.data ?? [];
+  const distribution = (plans.data ?? []).map((plan) => ({
+    id: plan.id, name: plan.name, count: accounts.filter((client) => client.plan_id === plan.id).length,
+  }));
+  const knownPlans = new Set((plans.data ?? []).map((plan) => plan.id));
+  const noPlan = accounts.filter((client) => !client.plan_id).length;
+  const unknownPlan = accounts.filter((client) => client.plan_id && !knownPlans.has(client.plan_id)).length;
+  const retry = () => {
+    if (clients.isFetching || devices.isFetching || plans.isFetching) return;
+    void clients.refetch(); void devices.refetch(); void plans.refetch();
+  };
+  const format = (value: number) => value.toLocaleString("pt-BR");
+  return <>
+    <PageHeader title="Dashboard" description="Visão gerencial · dados do Supabase conforme suas permissões de acesso."
+      actions={<RefreshButton queryKeys={["clients", "devices", "plans", "establishments"]} />} />
+    <QueryState isLoading={isLoading} error={error} isEmpty={false} emptyTitle="Nenhum cadastro" onRetry={retry}>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat label="TVs cadastradas" value={fmt(total)} hint="+12 este mês" icon={Monitor} />
-        <Stat label="TVs online" value={fmt(online)} hint="Conectadas agora" icon={Wifi} tone="success" />
-        <Stat label="TVs offline" value={fmt(total - online)} hint="Requerem atenção" icon={WifiOff} tone="destructive" />
-        <Stat label="Disponibilidade da rede" value={`${((online / total) * 100).toFixed(1)}%`} hint="Últimas 24 horas" icon={Gauge} tone="success" />
-        <Stat label="Campanhas ativas" value="18" hint="4 agendadas" icon={Megaphone} />
-        <Stat label="Exibições registradas" value="1.284.930" hint="Últimos 30 dias" icon={PlayCircle} />
-        <Stat label="Horas de funcionamento" value="142.380 h" hint="Soma de todas as telas" icon={Clock} tone="warning" />
-        <Stat label="Alertas abertos" value={String(alerts.length)} hint="2 críticos" icon={AlertTriangle} tone="destructive" />
+        <Stat label="Total de clientes" value={format(accounts.length)} hint="Cadastros acessíveis à sua conta" icon={Users} />
+        <Stat label="TVs cadastradas" value={format(tvs.length)} hint="Dispositivos vinculados aos clientes" icon={Monitor} />
+        <Stat label="TVs ativas" value={format(tvs.filter((tv) => tv.activation_status === "ativa").length)} hint="Status de ativação, não de conexão" icon={CheckCircle2} tone="success" />
+        <Stat label="TVs pendentes" value={format(tvs.filter((tv) => tv.activation_status === "pendente").length)} hint="Aguardando ativação" icon={Clock} tone="warning" />
       </div>
-
-      <div className="mt-4 grid gap-4 lg:grid-cols-3">
-        <Panel title="Atividade por horário" description="Telas ativas e exibições ao longo do dia" className="lg:col-span-2">
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={hourlyActivity}>
-                <defs>
-                  <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.5} />
-                    <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid stroke="var(--border)" vertical={false} />
-                <XAxis dataKey="hora" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} interval={2} />
-                <YAxis tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={false} tickLine={false} />
-                <Tooltip {...chartTooltip} />
-                <Area dataKey="telas" name="Telas ativas" stroke="var(--chart-1)" fill="url(#g1)" strokeWidth={2} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </Panel>
-        <Panel title="Distribuição por região" description="Telas cadastradas">
-          <div className="h-48">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={regions} dataKey="screens" nameKey="name" innerRadius={50} outerRadius={80} paddingAngle={3} stroke="none">
-                  {regions.map((_, i) => <Cell key={i} fill={colors[i]} />)}
-                </Pie>
-                <Tooltip {...chartTooltip} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <ul className="mt-2 grid grid-cols-2 gap-2 text-xs">
-            {regions.map((r, i) => (
-              <li key={r.name} className="flex items-center gap-2"><span className="size-2 rounded-full" style={{ background: colors[i] }} />{r.name}<span className="ml-auto text-muted-foreground">{r.screens}</span></li>
-            ))}
-          </ul>
-        </Panel>
-      </div>
-
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
-        <Panel title="Dispositivos com alertas" action={<Link to="/monitoramento" className="text-xs text-primary">Ver todos</Link>}>
-          <ul className="divide-y">
-            {alerts.map((a) => (
-              <li key={a.device} className="flex items-center gap-3 py-3 text-sm">
-                <span className="font-mono text-xs text-muted-foreground">{a.device}</span>
-                <div className="min-w-0 flex-1"><div className="truncate font-medium">{a.venue}</div><div className="text-xs text-muted-foreground">{a.issue}</div></div>
-                <StatusBadge status={a.level} />
-              </li>
-            ))}
-          </ul>
+        <Panel title="Clientes por plano" description="Distribuição dos cadastros consultados no banco">
+          <DataTable head={["Plano", "Clientes"]}>
+            {distribution.map((plan) => <tr key={plan.id}><td>{plan.name}</td><td>{format(plan.count)}</td></tr>)}
+            <tr><td>Sem plano</td><td>{format(noPlan)}</td></tr>
+            {unknownPlan > 0 && <tr><td>Plano não disponível para consulta</td><td>{format(unknownPlan)}</td></tr>}
+          </DataTable>
         </Panel>
-        <Panel title="Últimas atividades">
-          <ol className="relative space-y-4 border-l pl-5">
-            {activity.map((a, i) => (
-              <li key={i} className="relative text-sm">
-                <span className="absolute -left-[25px] top-1.5 size-2 rounded-full bg-primary shadow-glow" />
-                <span className="font-medium">{a.who}</span> <span className="text-muted-foreground">{a.what}</span>
-                <div className="text-xs text-muted-foreground">{a.when}</div>
-              </li>
-            ))}
-          </ol>
+        <Panel title="Situação dos dispositivos" description="Ativação registrada, independente de conexão">
+          <dl className="space-y-3 text-sm">
+            <div className="flex justify-between gap-4"><dt>Inativas</dt><dd className="font-medium tabular-nums">{format(tvs.filter((tv) => tv.activation_status === "inativa").length)}</dd></div>
+            <div className="flex justify-between gap-4"><dt>Bloqueadas</dt><dd className="font-medium tabular-nums">{format(tvs.filter((tv) => tv.activation_status === "bloqueada").length)}</dd></div>
+          </dl>
+          <p className="mt-4 text-xs text-muted-foreground">Não há telemetria de conexão integrada a este painel. Por isso, não exibimos indicadores online/offline, disponibilidade ou exibições.</p>
+          <p className="mt-2 text-xs text-muted-foreground">Cadastre TVs em Clientes → Novo Cliente ou Editar cadastro.</p>
         </Panel>
       </div>
-    </>
-  );
+    </QueryState>
+  </>;
 }
