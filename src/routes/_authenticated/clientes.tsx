@@ -92,10 +92,10 @@ function Members({ clientId }: { clientId: string }) {
       <h3 id="client-members-title" className="text-sm font-semibold">Usuários com acesso a este cliente</h3>
       {q.isLoading ? <p className="text-xs text-muted-foreground">Carregando…</p> : q.error ? <p className="break-words text-xs text-destructive">{q.error.message}</p> : !q.data?.length ? <p className="text-xs text-muted-foreground">Nenhum usuário vinculado.</p> :
         q.data.map((m) => <div key={m.id} className="flex items-center justify-between gap-3 rounded-lg border bg-background p-3 text-sm"><span className="min-w-0 break-words">{m.profile?.full_name} <span className="block text-xs text-muted-foreground">{m.profile?.email}</span></span><Button className="shrink-0" size="sm" variant="ghost" aria-label="Remover acesso" onClick={() => del.mutate(m.id)}><Trash2 /></Button></div>)}
-      <form className="flex flex-col gap-2 sm:flex-row sm:items-end" onSubmit={(e) => { e.preventDefault(); add.mutate(); }}>
-        <div className="min-w-0 flex-1"><Field label="Vincular usuário por e-mail"><input type="email" required placeholder="E-mail de uma conta já criada" value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} /></Field></div>
-        <Button type="submit" disabled={add.isPending}>Vincular</Button>
-      </form>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
+        <div className="min-w-0 flex-1"><Field label="Vincular usuário por e-mail"><input type="email" placeholder="E-mail de uma conta já criada" value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (email.trim()) add.mutate(); } }} className={inputCls} /></Field></div>
+        <Button type="button" disabled={add.isPending || !email.trim()} onClick={() => add.mutate()}>Vincular</Button>
+      </div>
     </section>
   );
 }
