@@ -15,6 +15,7 @@ import {
 import { navGroups } from "./nav";
 import { DemoProvider, useDemo } from "@/components/v2/DemoProvider";
 import { Button } from "@/components/ui/button";
+import { NotificationCenter } from "./NotificationCenter";
 
 const clientPaths = ["/clientes", "/estabelecimentos", "/telas", "/midias", "/playlists", "/programacao", "/monitoramento", "/audio-ambiente"];
 
@@ -101,6 +102,7 @@ function AppShellContent({ children }: { children: ReactNode }) {
           <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-background/80 px-4 backdrop-blur">
             <SidebarTrigger />
             <span className="truncate text-sm font-medium text-muted-foreground">{navGroups.flatMap((group) => group.items).find((item) => item.url === path)?.title ?? "Plannet Play"}</span>
+            <NotificationCenter />
           </header>
           <main className="min-w-0 flex-1 p-4 md:p-6 lg:p-8">{demo.role === 'client' && !clientPaths.includes(path) ? <div className="py-8"><h1 className="text-xl font-semibold">Área reservada ao administrador</h1><p className="my-3 text-sm text-muted-foreground">Perfil de cliente · selecione uma página disponível no menu.</p><Button asChild><Link to="/playlists">Minhas playlists</Link></Button></div> : children}</main>
         </div>

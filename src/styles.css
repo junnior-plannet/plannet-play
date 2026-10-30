@@ -205,6 +205,17 @@
   .dashboard-chart *, .dashboard-bar, .dashboard-segment { transition: none !important; }
 }
 
+/* One brief cue only when a connected inbox receives a new unread event. */
+@keyframes notification-arrival {
+  0%, 100% { transform: rotate(0); }
+  20%, 60% { transform: rotate(-12deg); }
+  40%, 80% { transform: rotate(12deg); }
+}
+.notification-arrival { animation: notification-arrival 600ms ease-out 1; transform-origin: top center; }
+@media (prefers-reduced-motion: reduce) {
+  .notification-arrival { animation: none; }
+}
+
 @utility bg-gradient-primary { background-image: var(--gradient-primary); }
 @utility shadow-glow { box-shadow: var(--shadow-glow); }
 @utility dot-live {

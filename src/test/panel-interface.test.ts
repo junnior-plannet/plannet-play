@@ -32,7 +32,9 @@ describe("Interface do painel — contratos estruturais", () => {
     expect(shell).toContain("<UserFooter />");
     expect(shell).toContain('aria-label="Sair"');
     expect(shell).not.toContain("Buscar clientes, dispositivos, campanhas...");
-    expect(shell).not.toContain('aria-label="Notificações"');
+    expect(shell).toContain("<NotificationCenter />");
+    const notificationConfig = readFileSync(new URL("../lib/notifications.ts", import.meta.url), "utf8");
+    expect(notificationConfig).toContain("notificationSource: NotificationSource | null = null");
   });
 
   it("mantém a área de acessos apenas na edição administrativa", () => {
