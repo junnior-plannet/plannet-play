@@ -1,4 +1,5 @@
 import type { ClientInsert, ClientRow, DeviceRow, EstablishmentRow, Orientation } from "@/lib/api";
+import { serializeAddress, type ClientAddress } from "@/lib/client-address";
 import { saveClient, saveDevice, saveEstablishment } from "@/lib/api";
 
 export type TvDraft = { id: string; name: string; orientation: Orientation; saved: boolean };
@@ -19,6 +20,7 @@ export type ClientFormInput = {
   id: string;
   existing: boolean;
   values: ClientInsert;
+  address?: ClientAddress;
   establishments: EstablishmentDraft[];
 };
 
@@ -97,7 +99,9 @@ export async function persistClientForm(input: ClientFormInput, store: ClientFor
   await store.saveClient(existingClient ? input.id : null, { ...input.values, id: input.id });
   for (const est of establishments) {
     const savedEst = snapshot.establishments.find((e) => e.id === est.id);
-    if (!savedEst || savedEst.name !== est.name.trim()) await store.saveEstablishment(savedEst ? est.id : null, { id: est.id, client_id: input.id, name: est.name.trim(), ...(savedEst ? {} : { city: input.values.city, region: input.values.region }) });
+    const addressValues = input.address ? { address: serializeAddress(input.address), district: input.address.district.trim() || null, city: input.address.city.trim() || null } : {};
+    const addressChanged = input.address && (savedEst?.address !== addressValues.address || savedEst?.district !== addressValues.district || savedEst?.city !== addressValues.city);
+    if (!savedEst || savedEst.name !== est.name.trim() || addressChanged) await store.saveEstablishment(savedEst ? est.id : null, { id: est.id, client_id: input.id, name: est.name.trim(), ...(savedEst ? {} : { city: input.values.city, region: input.values.region }), ...addressValues });
     for (const tv of est.tvs) {
       const savedTv = snapshot.devices.find((d) => d.id === tv.id);
       if (!savedTv || savedTv.name !== tv.name.trim() || savedTv.orientation !== tv.orientation) await store.saveDevice(savedTv ? tv.id : null, { id: tv.id, establishment_id: est.id, name: tv.name.trim(), orientation: tv.orientation });
