@@ -21,7 +21,7 @@ export const plansQuery = queryOptions({
 });
 
 async function fetchClients() { return unwrap(await supabase.from("clients").select("*, plans(name), establishments(id, devices(count))").order("name")); }
-async function fetchEstablishments() { return unwrap(await supabase.from("establishments").select("*, clients(name), devices(count)").order("name")); }
+async function fetchEstablishments() { return unwrap(await supabase.from("establishments").select("*, clients(name, contact_name), devices(count)").order("name")); }
 async function fetchDevices() { return unwrap(await supabase.from("devices").select("*, establishments(name, client_id, clients(name))").order("name")); }
 
 export const clientsQuery = queryOptions({

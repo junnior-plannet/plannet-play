@@ -1,4 +1,8 @@
 # PLANNET CONTROL V2
+## Cadastro simplificado de clientes
+- [x] Unificar formulário e reutilizar/criar estabelecimento padrão com TVs individuais, preservando demais vínculos.
+- [x] Exibir responsável e situação verificável em Estabelecimentos, com acesso às TVs filtradas.
+- [x] Testar sem gravações reais: 38 testes e verificação visual isolada desktop/celular. Sem telemetria; gravações sequenciais não garantem concorrência entre sessões sem proteção no banco. SQL V2 continua aguardando autorização, sem migrações nesta entrega.
 ## Identidade oficial
 - [x] Aplicar logo completa no login e menu lateral sem alterar demais páginas.
 - [x] Preparar favicon e ícones PWA/Smart TV a partir do símbolo oficial.
