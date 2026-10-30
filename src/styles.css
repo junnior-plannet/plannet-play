@@ -186,6 +186,25 @@
   .network-municipality, .network-pin { transition: none; }
 }
 
+/* Dashboard charts inherit the same semantic palette in light and dark mode. */
+.dashboard-overview {
+  --dashboard-cyan: oklch(0.8 0.14 210);
+}
+.dashboard-chart { overflow: hidden; }
+.dashboard-bar, .dashboard-segment {
+  filter: drop-shadow(0 0 3px currentColor);
+  transition: filter 180ms ease, opacity 180ms ease;
+}
+.dashboard-bar:hover, .dashboard-bar:focus-visible {
+  filter: drop-shadow(0 0 7px currentColor);
+}
+.dashboard-tooltip { border-color: color-mix(in oklab, var(--dashboard-cyan) 35%, var(--border)); }
+.dashboard-chart .recharts-tooltip-wrapper { z-index: 2; }
+.dashboard-chart .recharts-cartesian-axis-tick text { font-family: inherit; }
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-chart *, .dashboard-bar, .dashboard-segment { transition: none !important; }
+}
+
 @utility bg-gradient-primary { background-image: var(--gradient-primary); }
 @utility shadow-glow { box-shadow: var(--shadow-glow); }
 @utility dot-live {
