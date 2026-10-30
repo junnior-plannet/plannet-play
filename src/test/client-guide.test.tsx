@@ -1,75 +1,89 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { useState, type ReactNode } from "react";
-import { ClientGuideNav, ClientGuidePanels } from "@/components/app/ClientGuide";
-import type { ClientRow } from "@/lib/api";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { randomUUID } from "node:crypto";
+import { useState } from "react";
+import { ClientStructureFields } from "@/components/app/ClientGuide";
+import { hasStructureChanges, makeEstablishmentDrafts, resizeTvs, type EstablishmentDraft } from "@/lib/client-form";
+import type { DeviceRow, EstablishmentRow } from "@/lib/api";
 
-const queries = vi.hoisted(() => ({
-  establishments: vi.fn(), devices: vi.fn(), plans: vi.fn(),
-}));
-vi.mock("@/lib/api", () => ({
-  establishmentsQuery: { queryKey: ["establishments"], queryFn: () => queries.establishments() },
-  devicesQuery: { queryKey: ["devices"], queryFn: () => queries.devices() },
-  plansQuery: { queryKey: ["plans"], queryFn: () => queries.plans() },
-  orientationLabel: { horizontal: "Horizontal", vertical: "Vertical" },
-  activationLabel: { pendente: "Pendente", ativa: "Ativa" },
-}));
-
-function mount(children: ReactNode) {
-  const qc = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
-  return render(<QueryClientProvider client={qc}>{children}</QueryClientProvider>);
+vi.mock("@/lib/api", () => ({ saveClient: vi.fn(), saveEstablishment: vi.fn(), saveDevice: vi.fn() }));
+beforeEach(() => { vi.stubGlobal("crypto", { randomUUID }); });
+afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
+const plan = { name: "Plano teste", max_tvs: 3, active: true };
+const saved: EstablishmentDraft = { id: "est-1", name: "Unidade A", saved: true, tvs: [{ id: "tv-1", name: "Recepção", orientation: "horizontal", saved: true }] };
+function mount(initial: EstablishmentDraft[] = [], max = 3) {
+  function Form() {
+    const [drafts, setDrafts] = useState(initial);
+    return <ClientStructureFields drafts={drafts} onChange={setDrafts} disabled={false} plan={{ ...plan, max_tvs: max }} />;
+  }
+  return render(<Form />);
 }
-const client = { id: "client-1", name: "Cliente do teste" } as ClientRow;
 
-afterEach(() => { cleanup(); vi.resetAllMocks(); });
-
-describe("Estrutura visual do cadastro guiado", () => {
-  it("permite navegar pelas quatro etapas e identifica a etapa atual", () => {
-    function Navigation() {
-      const [step, setStep] = useState(0);
-      return <ClientGuideNav step={step} onStep={setStep} />;
+describe("Seções do formulário único de Clientes", () => {
+  it("mostra estabelecimentos e TVs juntos, sem navegação por etapas nem Resumo", () => {
+    mount();
+    expect(screen.getByRole("heading", { name: "Estabelecimentos" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "TVs por estabelecimento" })).toBeTruthy();
+    expect(screen.queryByText("Resumo")).toBeNull();
+    expect(screen.queryByText(/Etapa [1-4]/)).toBeNull();
+  });
+  it("adiciona estabelecimento, quantidade e orientação individual na mesma tela", () => {
+    mount();
+    fireEvent.click(screen.getByRole("button", { name: "Adicionar estabelecimento" }));
+    fireEvent.change(screen.getByLabelText("Nome do estabelecimento 1"), { target: { value: "Unidade nova" } });
+    fireEvent.change(screen.getByLabelText("Quantidade de TVs · estabelecimento 1"), { target: { value: "2" } });
+    expect(screen.getByLabelText("Nome da TV 1 · estabelecimento 1")).toHaveProperty("value", "TV 1");
+    fireEvent.change(screen.getByLabelText("Nome da TV 2 · estabelecimento 1"), { target: { value: "Caixa" } });
+    fireEvent.change(screen.getByLabelText("Orientação da TV 2 · estabelecimento 1"), { target: { value: "vertical" } });
+    expect(screen.getByLabelText("Nome da TV 2 · estabelecimento 1")).toHaveProperty("value", "Caixa");
+    expect(screen.getByLabelText("Orientação da TV 2 · estabelecimento 1")).toHaveProperty("value", "vertical");
+    expect(screen.getAllByRole("option", { name: "Horizontal (16:9)" })).toHaveLength(2);
+  });
+  it("não deixa exceder o plano nem remover TVs e estabelecimentos já salvos", () => {
+    mount([saved], 1);
+    const count = screen.getByLabelText("Quantidade de TVs · estabelecimento 1");
+    fireEvent.change(count, { target: { value: "2" } });
+    expect(count).toHaveProperty("value", "1");
+    fireEvent.change(count, { target: { value: "0" } });
+    expect(count).toHaveProperty("value", "1");
+    expect(screen.queryByRole("button", { name: /Remover novo estabelecimento/ })).toBeNull();
+  });
+  it("desabilita estrutura durante consulta e mostra excesso do plano", () => {
+    render(<ClientStructureFields drafts={[saved]} onChange={vi.fn()} disabled plan={{ ...plan, max_tvs: 0 }} />);
+    expect(screen.getByRole("alert").textContent).toContain("excede o limite");
+    expect(screen.getByLabelText("Nome do estabelecimento 1")).toHaveProperty("disabled", true);
+    expect(screen.getByRole("button", { name: "Adicionar estabelecimento" })).toHaveProperty("disabled", true);
+  });
+  it("sem plano, não adiciona TVs, mas permite configurar as já salvas", () => {
+    function Form() {
+      const [drafts, setDrafts] = useState([saved]);
+      return <ClientStructureFields drafts={drafts} onChange={setDrafts} disabled={false} plan={undefined} />;
     }
-    mount(<Navigation />);
-    expect(screen.getAllByRole("button")).toHaveLength(4);
-    fireEvent.click(screen.getByRole("button", { name: /Etapa 3 TVs/ }));
-    expect(screen.getByRole("button", { name: /Etapa 3 TVs/ }).getAttribute("aria-current")).toBe("step");
-    fireEvent.click(screen.getByRole("button", { name: /Etapa 1 Dados do cliente/ }));
-    expect(screen.getByRole("button", { name: /Etapa 1 Dados do cliente/ }).getAttribute("aria-current")).toBe("step");
+    render(<Form />);
+    const count = screen.getByLabelText("Quantidade de TVs · estabelecimento 1");
+    fireEvent.change(count, { target: { value: "2" } });
+    expect(count).toHaveProperty("value", "1");
+    expect(screen.getByLabelText("Nome da TV 1 · estabelecimento 1")).toHaveProperty("disabled", false);
   });
+});
 
-  it("não consulta vínculos de um cliente ainda não salvo e bloqueia novas TVs", async () => {
-    queries.plans.mockResolvedValue([]);
-    mount(<ClientGuidePanels step={2} client={null} name="" planId="" />);
-    expect(await screen.findByText("Sem plano selecionado · 0 TV(s) cadastrada(s)")).toBeTruthy();
-    expect(queries.establishments).not.toHaveBeenCalled();
-    expect(queries.devices).not.toHaveBeenCalled();
-    expect(screen.getByRole("button", { name: /Adicionar \/ configurar nova TV/ }).hasAttribute("disabled")).toBe(true);
-    expect(screen.getByText(/Limite não confirmado/)).toBeTruthy();
+describe("Rascunhos e retomada", () => {
+  it("carrega apenas vínculos do cliente e preserva IDs e orientação", () => {
+    const establishments = [{ id: "est-1", client_id: "client-1", name: "A" }, { id: "est-2", client_id: "client-2", name: "B" }] as EstablishmentRow[];
+    const devices = [{ id: "tv-1", establishment_id: "est-1", name: "Vertical", orientation: "vertical" }, { id: "tv-2", establishment_id: "est-2", name: "Outra", orientation: "horizontal" }] as DeviceRow[];
+    expect(makeEstablishmentDrafts("client-1", establishments, devices)).toEqual([{ id: "est-1", name: "A", saved: true, tvs: [{ id: "tv-1", name: "Vertical", orientation: "vertical", saved: true }] }]);
   });
-
-  it("mostra somente as TVs do cliente e alerta quando excedem o plano", async () => {
-    queries.plans.mockResolvedValue([{ id: "plan-1", name: "Plano do teste", max_tvs: 1 }]);
-    queries.establishments.mockResolvedValue([{ id: "est-1", client_id: "client-1", name: "Unidade do teste", status: "ativo" }]);
-    queries.devices.mockResolvedValue([
-      { id: "tv-1", name: "Tela A", establishment_id: "est-1", establishments: { client_id: "client-1" }, device_code: "A", orientation: "horizontal", activation_status: "pendente" },
-      { id: "tv-2", name: "Tela B", establishment_id: "est-1", establishments: { client_id: "client-1" }, device_code: "B", orientation: "vertical", activation_status: "ativa" },
-      { id: "tv-3", name: "Tela de outro cliente", establishment_id: "est-2", establishments: { client_id: "client-2" } },
-    ]);
-    mount(<ClientGuidePanels step={2} client={client} name={client.name} planId="plan-1" />);
-    expect(await screen.findByRole("alert")).toHaveProperty("textContent", expect.stringContaining("excede o limite"));
-    expect(screen.getByText("Tela A")).toBeTruthy();
-    expect(screen.getByText("Tela B")).toBeTruthy();
-    expect(screen.queryByText("Tela de outro cliente")).toBeNull();
-    expect((screen.getByLabelText("Quantidade de TVs cadastradas") as HTMLInputElement).value).toBe("2");
+  it("reduz apenas TVs não salvas e mantém os IDs das restantes", () => {
+    let next = 0;
+    const draft = resizeTvs(saved, 3, () => `new-${++next}`);
+    expect(resizeTvs(draft, 2, () => "unused").tvs.map((tv) => tv.id)).toEqual(["tv-1", "new-1"]);
+    expect(resizeTvs(draft, 0, () => "unused")).toBe(draft);
+    expect(resizeTvs(draft, 1.5, () => "unused")).toBe(draft);
   });
-
-  it("não apresenta erro de consulta como ausência de vínculos", async () => {
-    queries.plans.mockResolvedValue([]);
-    queries.establishments.mockRejectedValue(new Error("Falha de consulta"));
-    queries.devices.mockResolvedValue([]);
-    mount(<ClientGuidePanels step={1} client={client} name={client.name} planId="" />);
-    expect(await screen.findByRole("alert")).toHaveProperty("textContent", expect.stringContaining("Não foi possível consultar"));
-    expect(screen.queryByText("Nenhum estabelecimento vinculado.")).toBeNull();
+  it("identifica alterações de estabelecimentos ou TVs para pedir confirmação", () => {
+    expect(hasStructureChanges([saved], [saved])).toBe(false);
+    expect(hasStructureChanges([{ ...saved, name: "Outro nome" }], [saved])).toBe(true);
+    expect(hasStructureChanges([{ ...saved, tvs: [{ ...saved.tvs[0]!, orientation: "vertical" }] }], [saved])).toBe(true);
+    expect(hasStructureChanges([{ id: "new", name: "", saved: false, tvs: [] }], [])).toBe(true);
   });
 });
