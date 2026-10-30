@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 ## Architecture
+- Client address fields round-trip through a versioned, labeled text representation in the existing default establishment address, while district/city use their existing columns; preserve legacy text and never repurpose region as state. CEP lookup runs in the browser and never supplies coordinates.
 - Client registration uses one default-establishment draft and stable UUIDs with fresh reads for resumable sequential writes; reuse a name-matching or oldest linked establishment because the schema has no default marker. Preserve other linked records and count their TVs against the plan.
 - Remembered-login preference stores only an opted-in email under its own key; never mix it with auth session storage or password data.
 - Official branding uses CDN asset pointers for uploaded PNGs; favicon sizes are local public PNGs, while 180/192/512/1024px assets prepare future app icons without enabling PWA or TV features.
