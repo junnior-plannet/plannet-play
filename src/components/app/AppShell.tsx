@@ -102,7 +102,7 @@ function AppShellContent({ children }: { children: ReactNode }) {
             <SidebarTrigger />
             <div className="relative hidden max-w-md flex-1 md:block">
               <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <input placeholder="Buscar telas, campanhas, estabelecimentos..." className="h-9 w-full rounded-lg border bg-card pl-9 pr-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary" />
+              <input placeholder="Buscar clientes, dispositivos, campanhas..." className="h-9 w-full rounded-lg border bg-card pl-9 pr-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary" />
             </div>
             <div className="ml-auto flex items-center gap-3">
               <span className="text-[10px] text-warning">Etapa 1 · Supabase</span>

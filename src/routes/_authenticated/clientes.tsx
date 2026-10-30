@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Users, Pencil, Trash2, Search, Building2, Tv } from "lucide-react";
+import { Plus, Users, Pencil, Trash2, Search, Tv } from "lucide-react";
 import { toast } from "sonner";
 import { seo } from "@/lib/seo";
 import { useMe } from "@/lib/auth";
@@ -46,13 +46,12 @@ function Page() {
         emptyTitle={q.data?.length ? "Nenhum cliente corresponde aos filtros" : "Nenhum cliente cadastrado"}
         emptyDescription={isAdmin ? "Cadastre o primeiro cliente para começar." : "Sua conta ainda não foi vinculada a um cliente. Fale com a equipe Plannet."}
         emptyAction={isAdmin && !q.data?.length ? <Button onClick={() => setEditing("new")}><Plus />Novo Cliente</Button> : undefined}>
-        <div className="hidden min-w-0 lg:block [&_th:nth-child(7)]:max-w-48 [&_th:nth-child(7)]:whitespace-normal [&_td:nth-child(7)]:font-medium [&_td:nth-child(7)]:tabular-nums [&_td:nth-child(7)]:text-primary">
-          <DataTable head={["Cliente", "Cidade / Região", "Estabelecimentos", "TVs", "Plano", "Status", "Espaço Publicitário Plannet (%)", ""]}>
+        <div className="hidden min-w-0 lg:block [&_th:nth-child(6)]:max-w-48 [&_th:nth-child(6)]:whitespace-normal [&_td:nth-child(6)]:font-medium [&_td:nth-child(6)]:tabular-nums [&_td:nth-child(6)]:text-primary">
+          <DataTable head={["Cliente", "Cidade", "TVs", "Plano", "Status", "Espaço Publicitário Plannet (%)", ""]}>
             {rows.map((c) => <tr key={c.id}>
               <td className="font-medium">{c.name}<div className="text-xs text-muted-foreground">{c.contact_email}</div></td>
-              <td>{[c.city, c.region].filter(Boolean).join(" / ") || "—"}</td>
-              <td>{c.establishments.length}</td>
-              <td>{c.establishments.reduce((n, e) => n + (e.devices[0]?.count ?? 0), 0)}</td>
+              <td>{[c.city, null].filter(Boolean).join(" / ") || "—"}</td>
+                            <td>{c.establishments.reduce((n, e) => n + (e.devices[0]?.count ?? 0), 0)}</td>
               <td>{c.plans?.name ?? "—"}</td>
               <td><StatusBadge status={statusLabel[c.status]} /></td>
               <td>{c.plannet_reserved_percent}%</td>
@@ -67,8 +66,7 @@ function Page() {
               <span className="shrink-0"><StatusBadge status={statusLabel[c.status]} /></span>
             </div>
             <dl className="grid grid-cols-2 gap-3 border-y py-3 text-sm">
-              <div className="col-span-2 min-w-0"><dt className="text-xs text-muted-foreground">Cidade / Região</dt><dd className="mt-1 break-words">{[c.city, c.region].filter(Boolean).join(" / ") || "—"}</dd></div>
-              <div><dt className="flex items-center gap-1.5 text-xs text-muted-foreground"><Building2 className="size-3.5" aria-hidden="true" />Estabelecimentos</dt><dd className="mt-1 font-medium tabular-nums">{c.establishments.length}</dd></div>
+              <div className="col-span-2 min-w-0"><dt className="text-xs text-muted-foreground">Cidade</dt><dd className="mt-1 break-words">{[c.city, null].filter(Boolean).join(" / ") || "—"}</dd></div>
               <div><dt className="flex items-center gap-1.5 text-xs text-muted-foreground"><Tv className="size-3.5" aria-hidden="true" />TVs</dt><dd className="mt-1 font-medium tabular-nums">{c.establishments.reduce((n, e) => n + (e.devices[0]?.count ?? 0), 0)}</dd></div>
               <div className="col-span-2 min-w-0"><dt className="text-xs text-muted-foreground">Plano</dt><dd className="mt-1 break-words">{c.plans?.name ?? "—"}</dd></div>
               <div className="col-span-2"><dt className="text-xs text-muted-foreground">Espaço Publicitário Plannet (%)</dt><dd className="mt-1 font-semibold tabular-nums text-primary">{c.plannet_reserved_percent}%</dd></div>

@@ -1,5 +1,5 @@
 import {
-  LayoutDashboard, BrainCircuit, Store, MapPinned, MonitorSmartphone, Map, Film, ListVideo,
+  LayoutDashboard, BrainCircuit, MapPinned, MonitorSmartphone, Map, Film, ListVideo,
   CalendarClock, Newspaper, LayoutGrid, Radio, Building2, Megaphone, FileBarChart, Activity,
   History, Settings, Users, Music2, Handshake, type LucideIcon,
 } from "lucide-react";
@@ -12,9 +12,8 @@ export const navGroups: { label: string; items: NavItem[] }[] = [
   ]},
   { label: "Rede", items: [
     { title: "Clientes", url: "/clientes", icon: Users },
-    { title: "Estabelecimentos", url: "/estabelecimentos", icon: Store },
     { title: "Regiões", url: "/regioes", icon: MapPinned },
-    { title: "Telas e Dispositivos", url: "/telas", icon: MonitorSmartphone },
+    { title: "Dispositivos", url: "/telas", icon: MonitorSmartphone },
     { title: "Mapa da Rede", url: "/mapa", icon: Map },
   ]},
   { label: "Conteúdo", items: [

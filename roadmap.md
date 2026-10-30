@@ -1,4 +1,8 @@
 # PLANNET CONTROL V2
+## Endereço e dispositivos por cliente
+- [x] Salvar endereço completo como texto reutilizando campos atuais, com consulta CEP e edição manual.
+- [x] Retirar Estabelecimentos do menu e usar Cliente na gestão de Dispositivos, preservando vínculos internos.
+- [x] Testar endereço, consulta CEP e compatibilidade sem gravações reais: 45 testes, verificação visual isolada desktop/celular, zero gravações e sem coordenadas inventadas. Sessão real não testada; concorrência de gravações ainda depende de proteção no banco.
 ## Cadastro simplificado de clientes
 - [x] Unificar formulário e reutilizar/criar estabelecimento padrão com TVs individuais, preservando demais vínculos.
 - [x] Exibir responsável e situação verificável em Estabelecimentos, com acesso às TVs filtradas.
