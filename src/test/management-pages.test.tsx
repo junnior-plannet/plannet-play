@@ -40,7 +40,7 @@ function mount(component: ComponentType) {
 describe("Páginas gerenciais com dados isolados", () => {
   it("Dashboard não expõe cadastro de dispositivo e atualiza contadores pela consulta", async () => {
     mount(DashboardRoute.options.component as ComponentType);
-    await screen.findByText("Plano real");
+    await screen.findByRole("heading", { name: "Distribuição por município" });
     expect(screen.queryByRole("button", { name: /Cadastrar Dispositivo/i })).toBeNull();
     expect(screen.queryByRole("link", { name: /Cadastrar Dispositivo/i })).toBeNull();
     expect(screen.getByText("TVs cadastradas").parentElement?.parentElement).toHaveTextContent("1");
@@ -67,8 +67,8 @@ describe("Páginas gerenciais com dados isolados", () => {
       expect(query).toHaveBeenCalledTimes(2);
     }
     fireEvent.click(screen.getByRole("button", { name: "Ver todos os dados" }));
-    expect(screen.getByText("São Cristóvão")).toBeInTheDocument();
-    expect(screen.queryByText("Aracaju")).toBeNull();
+    expect(within(screen.getByRole("table")).getByText("São Cristóvão")).toBeInTheDocument();
+    expect(within(screen.getByRole("table")).queryByText("Aracaju")).toBeNull();
   });
   it("Clientes consulta novamente a lista ao atualizar", async () => {
     mount(ClientsRoute.options.component as ComponentType);
