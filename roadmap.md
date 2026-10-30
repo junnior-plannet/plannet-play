@@ -1,9 +1,9 @@
 # PLANNET CONTROL V2
 ## Consolidação final do painel
-- [ ] Orientação individual no cadastro e carregamento de TVs/endereço existentes.
-- [ ] Atualizar Clientes e Dispositivos sem solicitações repetidas ou recarregar o site.
-- [ ] Remover acesso demonstrativo de interface preservando módulos compartilhados.
-- [ ] Validar regras e interfaces sem gravações em produção.
+- [x] Orientação individual no cadastro e carregamento de TVs/endereço existentes.
+- [x] Atualizar Clientes e Dispositivos sem solicitações repetidas ou recarregar o site.
+- [x] Remover seletor demonstrativo de interface preservando módulos compartilhados; não existe rota ou item separado chamado Módulo Demonstrativo.
+- [x] Validar regras e interfaces sem gravações em produção: 50 testes, formulário visual isolado, zero gravações, build OK. Fluxo autenticado real não executado; prévia de TV real não implementada.
 ## Endereço e dispositivos por cliente
 - [x] Salvar endereço completo como texto reutilizando campos atuais, com consulta CEP e edição manual.
 - [x] Retirar Estabelecimentos do menu e usar Cliente na gestão de Dispositivos, preservando vínculos internos.
