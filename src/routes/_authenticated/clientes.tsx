@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Users, Pencil, Trash2, Search, Building2, Tv } from "lucide-react";
 import { toast } from "sonner";
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { PageHeader, DataTable, Field, inputCls, selectCls, StatusBadge } from "@/components/app/ui";
 import { QueryState } from "@/components/app/QueryState";
+import { ClientGuideNav, ClientGuidePanels, clientGuideSteps } from "@/components/app/ClientGuide";
 
 export const Route = createFileRoute("/_authenticated/clientes")({
   head: () => seo("Clientes", "Cadastro de clientes, planos contratados e reserva de programação Plannet."),
@@ -57,7 +58,7 @@ function Page() {
               <td>{c.plans?.name ?? "—"}</td>
               <td><StatusBadge status={statusLabel[c.status]} /></td>
               <td>{c.plannet_reserved_percent}%</td>
-              <td><Button variant="outline" size="sm" onClick={() => setEditing(c)}><Pencil />Editar</Button></td>
+              <td><Button variant="outline" size="sm" onClick={() => setEditing(c)}><Pencil />Abrir cadastro guiado</Button></td>
             </tr>)}
           </DataTable>
         </div>
@@ -74,7 +75,7 @@ function Page() {
               <div className="col-span-2 min-w-0"><dt className="text-xs text-muted-foreground">Plano</dt><dd className="mt-1 break-words">{c.plans?.name ?? "—"}</dd></div>
               <div className="col-span-2"><dt className="text-xs text-muted-foreground">Espaço Publicitário Plannet (%)</dt><dd className="mt-1 font-semibold tabular-nums text-primary">{c.plannet_reserved_percent}%</dd></div>
             </dl>
-            <Button className="w-full" variant="outline" size="sm" onClick={() => setEditing(c)}><Pencil />Editar</Button>
+            <Button className="w-full" variant="outline" size="sm" onClick={() => setEditing(c)}><Pencil />Abrir cadastro guiado</Button>
           </article>)}
         </div>
       </QueryState>
@@ -87,29 +88,71 @@ function ClientDialog({ client, isAdmin, onClose }: { client: ClientRow | null; 
   const qc = useQueryClient();
   const plans = useQuery(plansQuery);
   const [reserve, setReserve] = useState(client?.plannet_reserved_percent ?? 20);
+  const [step, setStep] = useState(0);
+  const [name, setName] = useState(client?.name ?? "");
+  const [planId, setPlanId] = useState(client?.plan_id ?? "");
+  const creationId = useRef<string | null>(null);
+  const submitting = useRef(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const goToStep = (next: number) => { setStep(next); headingRef.current?.focus(); };
   const save = useMutation({
+    retry: false,
     mutationFn: (f: FormData) => {
       const s = (k: string) => String(f.get(k) ?? "").trim() || null;
       const base = { name: String(f.get("name")).trim(), document: s("document"), contact_name: s("contact_name"), contact_email: s("contact_email"), phone: s("phone"), city: s("city"), region: s("region") };
       const adminFields = isAdmin ? { status: String(f.get("status")) as RecordStatus, plan_id: s("plan_id"), plannet_reserved_percent: clampReserve(reserve) } : {};
-      return saveClient(client?.id ?? null, { ...base, ...adminFields });
+      // Reuse the same UUID after an uncertain response; never insert a second client on retry.
+      if (!client && !creationId.current) creationId.current = crypto.randomUUID();
+      return saveClient(client?.id ?? null, { ...base, ...adminFields, ...(!client ? { id: creationId.current! } : {}) });
     },
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["clients"] }); toast.success(client ? "Cliente atualizado" : "Cliente cadastrado"); onClose(); },
-    onError: (e) => toast.error(e.message),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["clients"] }); toast.success(client ? "Dados do cliente atualizados. Continue depois pela lista de Clientes." : "Cliente salvo. Continue depois pela lista de Clientes."); onClose(); },
+    onError: (e) => { qc.invalidateQueries({ queryKey: ["clients"] }); toast.error(e.message.includes("duplicate") ? "Este cadastro pode já ter sido salvo. Feche e confira a lista de Clientes antes de tentar novamente." : `${e.message}${!client ? " Confira a lista de Clientes antes de iniciar outro cadastro; a resposta pode ter falhado após o salvamento." : ""}`); },
+    onSettled: () => { submitting.current = false; },
   });
   const reserveEditable = canEditReserve(isAdmin);
   return (
-    <Dialog open onOpenChange={(v) => { if (!v) onClose(); }}>
-      <DialogContent className="max-h-[90dvh] w-[calc(100%_-_2rem)] max-w-3xl gap-0 overflow-y-auto rounded-xl p-0">
+    <Dialog open onOpenChange={(v) => { if (!v && !submitting.current) onClose(); }}>
+      <DialogContent className="max-h-[90dvh] w-[calc(100%_-_2rem)] max-w-3xl gap-0 overflow-y-auto rounded-xl p-0" onEscapeKeyDown={(e) => { if (submitting.current) e.preventDefault(); }} onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader className="min-w-0 border-b bg-card p-4 pr-10 text-left sm:p-6 sm:pr-12">
-          <DialogTitle className="break-words leading-snug">{client ? client.name : "Novo Cliente"}</DialogTitle>
-          <DialogDescription>{isAdmin ? "Dados cadastrais, plano e espaço publicitário Plannet" : "Plano, status e espaço publicitário Plannet são definidos pela Plannet"}</DialogDescription>
+          <DialogTitle ref={headingRef} tabIndex={-1} className="break-words leading-snug outline-none">{client ? client.name : "Novo Cliente"} · cadastro guiado</DialogTitle>
+          <DialogDescription>{isAdmin ? "Quatro etapas para organizar o cadastro. Nesta versão, somente os dados do cliente podem ser salvos." : "Plano, status e espaço publicitário Plannet são definidos pela Plannet. Estabelecimentos e TVs em consulta."}</DialogDescription>
         </DialogHeader>
-        <form className="min-w-0 space-y-6 p-4 sm:p-6 [&_input]:min-w-0 [&_select]:min-w-0 [&_select]:w-full [&_input:disabled]:cursor-not-allowed [&_input:disabled]:opacity-60 [&_select:disabled]:cursor-not-allowed [&_select:disabled]:opacity-60" onSubmit={(e) => { e.preventDefault(); save.mutate(new FormData(e.currentTarget)); }}>
+        <ClientGuideNav step={step} onStep={goToStep} />
+        <form ref={formRef} noValidate className="min-w-0 space-y-6 p-4 sm:p-6 [&_input]:min-w-0 [&_select]:min-w-0 [&_select]:w-full [&_input:disabled]:cursor-not-allowed [&_input:disabled]:opacity-60 [&_select:disabled]:cursor-not-allowed [&_select:disabled]:opacity-60" onSubmit={(e) => {
+          e.preventDefault();
+          if (submitting.current) return;
+          const selectedPlan = plans.data?.find((p) => p.id === planId);
+          const savedTvCount = client?.establishments.reduce((n, est) => n + (est.devices[0]?.count ?? 0), 0) ?? 0;
+          if (isAdmin && planId && (!selectedPlan || plans.isError)) {
+            setStep(0);
+            toast.error("Aguarde a consulta do plano ou tente novamente antes de salvar.");
+            return;
+          }
+          if (isAdmin && selectedPlan?.max_tvs != null && savedTvCount > selectedPlan.max_tvs) {
+            setStep(0);
+            toast.error(`O cliente já possui ${savedTvCount} TVs, acima do limite de ${selectedPlan.max_tvs} deste plano. Revise o plano antes de salvar.`);
+            return;
+          }
+          if (!name.trim()) {
+            setStep(0);
+            toast.error("Informe o nome do cliente antes de salvar.");
+            return;
+          }
+          if (!e.currentTarget.checkValidity()) {
+            setStep(0);
+            requestAnimationFrame(() => formRef.current?.reportValidity());
+            return;
+          }
+          submitting.current = true;
+          save.mutate(new FormData(e.currentTarget));
+        }}>
+          <div hidden={step !== 0} className="space-y-6">
+          <p className="text-xs text-muted-foreground">Etapa 1 · Dados do cliente. Navegar entre etapas não salva nem descarta o formulário. Ao fechar, alterações não salvas serão descartadas.</p>
           <fieldset className="min-w-0 space-y-3">
             <legend className="mb-1 text-sm font-semibold">Dados cadastrais</legend>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Nome do cliente"><input required name="name" defaultValue={client?.name} className={inputCls} /></Field>
+              <Field label="Nome do cliente"><input required name="name" value={name} onChange={(e) => setName(e.target.value)} className={inputCls} /></Field>
               <Field label="CNPJ / CPF"><input name="document" defaultValue={client?.document ?? ""} className={inputCls} /></Field>
             </div>
           </fieldset>
@@ -132,14 +175,25 @@ function ClientDialog({ client, isAdmin, onClose }: { client: ClientRow | null; 
             <legend className="px-2 text-sm font-semibold">Plano e espaço publicitário</legend>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Status"><select name="status" disabled={!isAdmin} defaultValue={client?.status ?? "ativo"} className={selectCls}><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></Field>
-              <Field label="Plano contratado"><select name="plan_id" disabled={!isAdmin} defaultValue={client?.plan_id ?? ""} className={selectCls}><option value="">Sem plano</option>{plans.data?.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select></Field>
+              <Field label="Plano contratado"><select name="plan_id" disabled={!isAdmin} value={planId} onChange={(e) => setPlanId(e.target.value)} className={selectCls}><option value="">Sem plano</option>{plans.data?.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select></Field>
               <div className="sm:col-span-2"><Field label="Espaço Publicitário Plannet (%)"><input type="number" min={0} max={100} value={reserve} disabled={!reserveEditable} onChange={(e) => setReserve(clampReserve(Number(e.target.value)))} className={inputCls} /></Field></div>
             </div>
             <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{100 - reserve}% da programação para o cliente · {reserve}% reservado à Plannet{!reserveEditable && " · somente o administrador altera"}</p>
           </fieldset>
-          <div className="flex flex-col-reverse gap-2 border-t pt-4 sm:flex-row sm:justify-end"><Button type="button" variant="outline" onClick={onClose}>Cancelar</Button><Button type="submit" disabled={save.isPending}>{save.isPending ? "Salvando…" : "Salvar cliente"}</Button></div>
+          </div>
+          <ClientGuidePanels step={step} client={client} name={name} planId={planId} />
+          <div className="space-y-3 border-t pt-4">
+            <p className="text-xs text-muted-foreground" aria-live="polite">Etapa {step + 1} de {clientGuideSteps.length} · {clientGuideSteps[step]}</p>
+            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+              <Button type="button" variant="ghost" disabled={save.isPending} onClick={onClose}>Fechar sem salvar</Button>
+              <Button type="button" variant="outline" disabled={step === 0 || save.isPending} onClick={() => goToStep(step - 1)}>Voltar</Button>
+              {step < 3 && <Button type="button" variant="outline" disabled={save.isPending} onClick={() => goToStep(step + 1)}>Próxima etapa</Button>}
+              <Button type="submit" className="sm:ml-auto" disabled={save.isPending}>{save.isPending ? "Salvando…" : "Salvar e continuar depois"}</Button>
+            </div>
+            <p className="text-xs text-muted-foreground">Salva somente o cliente. Para retomar, use “Abrir cadastro guiado” na lista de Clientes. A conclusão completa ainda não está habilitada.</p>
+          </div>
         </form>
-        {client && isAdmin && <Members clientId={client.id} />}
+        {client && isAdmin && step === 0 && <Members clientId={client.id} />}
       </DialogContent>
     </Dialog>
   );
