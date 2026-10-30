@@ -150,12 +150,12 @@ export function ClientForm({ client, isAdmin, onClose, children }: Props) {
           <ClientStructureFields drafts={drafts} onChange={setDrafts} disabled={!structureAvailable} plan={plans.data?.find((p) => p.id === planId)} otherTvCount={otherTvCount} />
         </fieldset>
         {partial && <p role="alert" className="text-sm text-destructive">Parte do cadastro pode ter sido salva. Tente novamente ou confira a listagem antes de iniciar outro cadastro.</p>}
+        {children && <fieldset disabled={save.isPending} className="-mx-4 min-w-0 sm:-mx-6">{children}</fieldset>}
         <div className="flex flex-col gap-2 border-t pt-4 sm:flex-row sm:justify-end">
           <Button type="button" variant="outline" disabled={save.isPending} onClick={onClose}>Cancelar</Button>
           <Button type="submit" disabled={save.isPending || !structureAvailable || plans.isLoading || plans.isError}>{save.isPending ? "Salvando…" : "Salvar cadastro"}</Button>
         </div>
       </form>
-      <fieldset disabled={save.isPending} className="min-w-0">{children}</fieldset>
     </DialogContent>
   </Dialog>;
 }

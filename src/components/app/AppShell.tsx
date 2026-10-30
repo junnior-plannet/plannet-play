@@ -105,17 +105,12 @@ function AppShellContent({ children }: { children: ReactNode }) {
               <input placeholder="Buscar clientes, dispositivos, campanhas..." className="h-9 w-full rounded-lg border bg-card pl-9 pr-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary" />
             </div>
             <div className="ml-auto flex items-center gap-3">
-              <span className="text-[10px] text-warning">Etapa 1 · Supabase</span>
               <button className="relative grid size-9 place-items-center rounded-lg border bg-card hover:bg-accent" aria-label="Notificações">
                 <Bell className="size-4" />
                 <span className="absolute right-2 top-2 size-1.5 rounded-full bg-destructive" />
               </button>
             </div>
           </header>
-          {demo.role === 'admin' && !["/clientes","/estabelecimentos","/telas"].includes(path) && <div className="flex flex-wrap items-center gap-2 border-b bg-card px-4 py-2">
-            <span className="text-[10px] text-muted-foreground">Cliente nos módulos demonstrativos</span>
-            <select aria-label="Cliente selecionado" value={demo.clientId} onChange={e=>demo.setClientId(e.target.value)} className="h-8 min-w-0 max-w-full rounded-md border bg-background px-2 text-xs">{demo.clients.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select>
-          </div>}
           <main className="min-w-0 flex-1 p-4 md:p-6 lg:p-8">{demo.role === 'client' && !clientPaths.includes(path) ? <div className="py-8"><h1 className="text-xl font-semibold">Área reservada ao administrador</h1><p className="my-3 text-sm text-muted-foreground">Perfil de cliente · selecione uma página disponível no menu.</p><Button asChild><Link to="/playlists">Minhas playlists</Link></Button></div> : children}</main>
         </div>
       </div>
