@@ -1,10 +1,12 @@
 import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { navGroups } from "@/components/app/nav";
 
-const shell = readFileSync(new URL("../components/app/AppShell.tsx", import.meta.url), "utf8");
-const establishmentsRoute = readFileSync(new URL("../routes/_authenticated/estabelecimentos.tsx", import.meta.url), "utf8");
-const clientsPage = readFileSync(new URL("../routes/_authenticated/clientes.tsx", import.meta.url), "utf8");
+const readSrc = (path: string) => readFileSync(resolve(process.cwd(), "src", path), "utf8");
+const shell = readSrc("components/app/AppShell.tsx");
+const establishmentsRoute = readSrc("routes/_authenticated/estabelecimentos.tsx");
+const clientsPage = readSrc("routes/_authenticated/clientes.tsx");
 
 // Structural regression checks only: these do not assert browser behavior or real permissions.
 describe("Interface do painel — contratos estruturais", () => {
@@ -33,7 +35,7 @@ describe("Interface do painel — contratos estruturais", () => {
     expect(shell).toContain('aria-label="Sair"');
     expect(shell).not.toContain("Buscar clientes, dispositivos, campanhas...");
     expect(shell).toContain("<NotificationCenter />");
-    const notificationConfig = readFileSync(new URL("../lib/notifications.ts", import.meta.url), "utf8");
+    const notificationConfig = readSrc("lib/notifications.ts");
     expect(notificationConfig).toContain("notificationSource: NotificationSource | null = null");
   });
 
