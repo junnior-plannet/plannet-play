@@ -30,7 +30,7 @@ function Page() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("todos");
   const [editing, setEditing] = useState<DeviceRow | "new" | null>(null);
-  const canCreate = (ests.data?.length ?? 0) > 0;
+  const canCreate = !!clients.data?.some((c) => ests.data?.some((e) => e.client_id === c.id));
   const rows = (q.data ?? []).filter((d) => `${d.name} ${d.device_code}`.toLowerCase().includes(search.toLowerCase()) && (status === "todos" || d.activation_status === status) && (!selectedClient || d.establishments?.client_id === selectedClient));
 
   return <>
@@ -61,7 +61,7 @@ function Page() {
 
 function DeviceDialog({ device, ests, clients, defaultClientId, onClose }: { defaultClientId?: string | undefined; device: DeviceRow | null; ests: import("@/lib/api").EstablishmentRow[]; clients: { id: string; name: string }[]; onClose: () => void }) {
   const qc = useQueryClient();
-  const [clientId, setClientId] = useState(device?.establishments?.client_id ?? defaultClientId ?? clients[0]?.id ?? "");
+  const [clientId, setClientId] = useState(device?.establishments?.client_id ?? defaultClientId ?? clients.find((c) => ests.some((e) => e.client_id === c.id))?.id ?? "");
   const save = useMutation({
     mutationFn: (f: FormData) => {
       const s = (k: string) => String(f.get(k) ?? "").trim() || null;
