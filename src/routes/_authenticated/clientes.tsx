@@ -9,6 +9,7 @@ import { addMemberByEmail, clientsQuery, membersQuery, removeMember, statusLabel
 import { Button } from "@/components/ui/button";
 import { PageHeader, DataTable, Field, inputCls, selectCls, StatusBadge } from "@/components/app/ui";
 import { QueryState } from "@/components/app/QueryState";
+import { RefreshDataButton } from "@/components/app/RefreshDataButton";
 import { ClientForm } from "@/components/app/ClientForm";
 
 export const Route = createFileRoute("/_authenticated/clientes")({
@@ -27,7 +28,7 @@ function Page() {
 
   return <div className="min-w-0 space-y-6">
     <div className="border-b border-primary/20 pb-1 [&_button]:w-full sm:[&_button]:w-auto">
-      <PageHeader title="Clientes" description={isAdmin ? "Contas, planos e espaço publicitário Plannet · dados do banco" : "Sua conta Plannet Play"} actions={isAdmin && <Button onClick={() => setEditing("new")}><Plus />Novo Cliente</Button>} />
+      <PageHeader title="Clientes" description={isAdmin ? "Contas, planos e espaço publicitário Plannet · dados do banco" : "Sua conta Plannet Play"} actions={<><RefreshDataButton fetching={q.isFetching} refresh={async () => { const result = await q.refetch({ cancelRefetch: false }); if (result.error) throw result.error; }} />{isAdmin && <Button onClick={() => setEditing("new")}><Plus />Novo Cliente</Button>}</>} />
     </div>
     <section aria-labelledby="client-list-title" className="min-w-0 space-y-4">
       <div className="rounded-xl border bg-card p-4 sm:p-5">
@@ -50,7 +51,7 @@ function Page() {
           <DataTable head={["Cliente", "Cidade", "TVs", "Plano", "Status", "Espaço Publicitário Plannet (%)", ""]}>
             {rows.map((c) => <tr key={c.id}>
               <td className="font-medium">{c.name}<div className="text-xs text-muted-foreground">{c.contact_email}</div></td>
-              <td>{[c.city, null].filter(Boolean).join(" / ") || "—"}</td>
+              <td>{c.city || "—"}</td>
                             <td>{c.establishments.reduce((n, e) => n + (e.devices[0]?.count ?? 0), 0)}</td>
               <td>{c.plans?.name ?? "—"}</td>
               <td><StatusBadge status={statusLabel[c.status]} /></td>
@@ -66,7 +67,7 @@ function Page() {
               <span className="shrink-0"><StatusBadge status={statusLabel[c.status]} /></span>
             </div>
             <dl className="grid grid-cols-2 gap-3 border-y py-3 text-sm">
-              <div className="col-span-2 min-w-0"><dt className="text-xs text-muted-foreground">Cidade</dt><dd className="mt-1 break-words">{[c.city, null].filter(Boolean).join(" / ") || "—"}</dd></div>
+              <div className="col-span-2 min-w-0"><dt className="text-xs text-muted-foreground">Cidade</dt><dd className="mt-1 break-words">{c.city || "—"}</dd></div>
               <div><dt className="flex items-center gap-1.5 text-xs text-muted-foreground"><Tv className="size-3.5" aria-hidden="true" />TVs</dt><dd className="mt-1 font-medium tabular-nums">{c.establishments.reduce((n, e) => n + (e.devices[0]?.count ?? 0), 0)}</dd></div>
               <div className="col-span-2 min-w-0"><dt className="text-xs text-muted-foreground">Plano</dt><dd className="mt-1 break-words">{c.plans?.name ?? "—"}</dd></div>
               <div className="col-span-2"><dt className="text-xs text-muted-foreground">Espaço Publicitário Plannet (%)</dt><dd className="mt-1 font-semibold tabular-nums text-primary">{c.plannet_reserved_percent}%</dd></div>

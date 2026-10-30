@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { PageHeader, DataTable, FilterBar, Field, inputCls, selectCls } from "@/components/app/ui";
 import { defaultEstablishment } from "@/lib/client-form";
+import { RefreshDataButton } from "@/components/app/RefreshDataButton";
 import { QueryState } from "@/components/app/QueryState";
 
 export const Route = createFileRoute("/_authenticated/telas")({
@@ -34,7 +35,7 @@ function Page() {
   const rows = (q.data ?? []).filter((d) => `${d.name} ${d.device_code}`.toLowerCase().includes(search.toLowerCase()) && (status === "todos" || d.activation_status === status) && (!selectedClient || d.establishments?.client_id === selectedClient));
 
   return <>
-    <PageHeader title="Dispositivos" description="TVs e situação de ativação por cliente" actions={canCreate && <Button onClick={() => setEditing("new")}><Plus />Nova TV</Button>} />
+    <PageHeader title="Dispositivos" description="TVs e situação de ativação por cliente" actions={<><RefreshDataButton fetching={q.isFetching || clients.isFetching || ests.isFetching} refresh={async () => { const results = await Promise.all([q.refetch({ cancelRefetch: false }), clients.refetch({ cancelRefetch: false }), ests.refetch({ cancelRefetch: false })]); const error = results.find((r) => r.error)?.error; if (error) throw error; }} />{canCreate && <Button onClick={() => setEditing("new")}><Plus />Nova TV</Button>}</>} />
     <FilterBar>
       <select aria-label="Filtrar cliente" className={selectCls} value={selectedClient ?? ""} onChange={(e) => void navigate({ search: { client: e.target.value || undefined } })}><option value="">Todos os clientes</option>{clients.data?.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select>
       <input className={`${inputCls} max-w-xs`} placeholder="Pesquisar por nome ou código" value={search} onChange={(e) => setSearch(e.target.value)} />
