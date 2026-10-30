@@ -120,15 +120,20 @@ export function ClientForm({ client, isAdmin, onClose, children }: Props) {
     <DialogContent className="max-h-[90dvh] w-[calc(100%_-_2rem)] max-w-2xl gap-0 overflow-y-auto rounded-lg p-0" onEscapeKeyDown={(e) => { if (submitting.current) e.preventDefault(); }} onPointerDownOutside={(e) => e.preventDefault()}>
       <DialogHeader className="border-b bg-card p-4 pr-10 text-left sm:p-6 sm:pr-12">
         <DialogTitle className="break-words">{client ? "Editar cliente" : "Novo Cliente"}</DialogTitle>
-        <DialogDescription>Dados de contato e plano contratado</DialogDescription>
+        <DialogDescription>Dados do cliente, endereço e TVs em um único cadastro. O vínculo interno é criado automaticamente.</DialogDescription>
       </DialogHeader>
       <form ref={formRef} className="min-w-0 space-y-4 p-4 sm:p-6 [&_input]:min-w-0 [&_select]:min-w-0 [&_select]:w-full" onSubmit={(e) => { e.preventDefault(); submit(); }}>
         <fieldset disabled={save.isPending} className="min-w-0 space-y-4 disabled:opacity-60">
+          <h2 className="text-sm font-semibold">Dados do cliente</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Nome do cliente"><input aria-label="Nome do cliente" required name="name" value={name} onChange={(e) => setName(e.target.value)} className={inputCls} /></Field>
             <Field label="Responsável"><input name="contact_name" defaultValue={client?.contact_name ?? ""} className={inputCls} /></Field>
             <Field label="E-mail"><input type="email" name="contact_email" defaultValue={client?.contact_email ?? ""} className={inputCls} /></Field>
             <Field label="Telefone/WhatsApp"><input name="phone" defaultValue={client?.phone ?? ""} className={inputCls} /></Field>
+          </div>
+          <h2 className="border-t pt-4 text-sm font-semibold">Endereço</h2>
+          <p className="text-xs text-muted-foreground">O CEP ajuda a preencher o endereço. Todos os campos podem ser corrigidos manualmente.</p>
+          <div className="grid gap-4 sm:grid-cols-2">
             <Field label="CEP"><input aria-label="CEP" autoComplete="postal-code" inputMode="numeric" maxLength={9} value={address.cep} onBlur={() => void searchCep()} onChange={(e) => { cepRequest.current?.abort(); setCepLoading(false); setCepError(""); setAddress({ ...address, cep: e.target.value }); }} className={inputCls} /></Field>
             <Field label="Logradouro"><input aria-label="Logradouro" autoComplete="address-line1" value={address.street} onChange={(e) => setAddress({ ...address, street: e.target.value })} className={inputCls} /></Field>
             <Field label="Número"><input aria-label="Número" value={address.number} onChange={(e) => setAddress({ ...address, number: e.target.value })} className={inputCls} /></Field>
@@ -136,12 +141,16 @@ export function ClientForm({ client, isAdmin, onClose, children }: Props) {
             <Field label="Bairro"><input aria-label="Bairro" value={address.district} onChange={(e) => setAddress({ ...address, district: e.target.value })} className={inputCls} /></Field>
             <Field label="Cidade"><input aria-label="Cidade" autoComplete="address-level2" value={address.city} onChange={(e) => setAddress({ ...address, city: e.target.value })} className={inputCls} /></Field>
             <Field label="Estado"><input aria-label="Estado" autoComplete="address-level1" maxLength={2} value={address.state} onChange={(e) => setAddress({ ...address, state: e.target.value.toUpperCase() })} className={inputCls} /></Field>
+
+          </div>
+          {cepLoading && <p role="status" className="text-xs text-muted-foreground">Consultando CEP…</p>}
+          {cepError && <p role="alert" className="text-xs text-destructive">{cepError}</p>}
+          <h2 className="border-t pt-4 text-sm font-semibold">Plano e status</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Status"><select name="status" disabled={!isAdmin} defaultValue={client?.status ?? "ativo"} className={selectCls}><option value="ativo">Ativo</option><option value="inativo">Inativo</option></select></Field>
             <Field label="Plano contratado"><select aria-label="Plano contratado" name="plan_id" disabled={!isAdmin} value={planId} onChange={(e) => { const id = e.target.value; setPlanId(id); const p = plans.data?.find((p) => p.id === id); if (p) setReserve(p.default_reserved_percent); }} className={selectCls}><option value="">Sem plano</option>{plans.data?.map((p) => <option key={p.id} value={p.id}>{p.name}{!p.active ? " (inativo)" : ""}</option>)}</select></Field>
             <Field label="Espaço Publicitário Plannet (%)"><input aria-label="Espaço Publicitário Plannet (%)" type="number" min={0} max={100} value={reserve} disabled={!canEditReserve(isAdmin)} onChange={(e) => setReserve(clampReserve(Number(e.target.value)))} className={inputCls} /></Field>
           </div>
-          {cepLoading && <p role="status" className="text-xs text-muted-foreground">Consultando CEP…</p>}
-          {cepError && <p role="alert" className="text-xs text-destructive">{cepError}</p>}
           {plans.isLoading && <p className="text-xs text-muted-foreground">Carregando planos…</p>}
           {plans.isError && <p role="alert" className="text-xs text-destructive">Não foi possível consultar os planos. <Button type="button" variant="outline" size="sm" onClick={() => plans.refetch()}>Tentar novamente</Button></p>}
           {!structureAvailable && <div role={structureError ? "alert" : "status"} className="text-sm">
@@ -150,12 +159,16 @@ export function ClientForm({ client, isAdmin, onClose, children }: Props) {
           <ClientStructureFields drafts={drafts} onChange={setDrafts} disabled={!structureAvailable} plan={plans.data?.find((p) => p.id === planId)} otherTvCount={otherTvCount} />
         </fieldset>
         {partial && <p role="alert" className="text-sm text-destructive">Parte do cadastro pode ter sido salva. Tente novamente ou confira a listagem antes de iniciar outro cadastro.</p>}
-        {children && <fieldset disabled={save.isPending} className="-mx-4 min-w-0 sm:-mx-6">{children}</fieldset>}
         <div className="flex flex-col gap-2 border-t pt-4 sm:flex-row sm:justify-end">
           <Button type="button" variant="outline" disabled={save.isPending} onClick={onClose}>Cancelar</Button>
           <Button type="submit" disabled={save.isPending || !structureAvailable || plans.isLoading || plans.isError}>{save.isPending ? "Salvando…" : "Salvar cadastro"}</Button>
         </div>
       </form>
+      {client && children && <details className="border-t bg-card p-4 sm:p-6">
+        <summary className="cursor-pointer text-sm font-semibold">Gerenciar acessos do cliente</summary>
+        <p className="mt-2 text-xs text-muted-foreground">Vínculos de usuários são gerenciados separadamente e não dependem do botão Salvar cadastro.</p>
+        <fieldset disabled={save.isPending} className="mt-4 min-w-0">{children}</fieldset>
+      </details>}
     </DialogContent>
   </Dialog>;
 }

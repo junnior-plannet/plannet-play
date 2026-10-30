@@ -89,14 +89,14 @@ function Members({ clientId }: { clientId: string }) {
   const add = useMutation({ mutationFn: () => addMemberByEmail(clientId, email), onSuccess: () => { setEmail(""); refresh(); toast.success("Usuário vinculado"); }, onError: (e) => toast.error(e.message.includes("duplicate") ? "Usuário já vinculado" : e.message) });
   const del = useMutation({ mutationFn: removeMember, onSuccess: refresh, onError: (e) => toast.error(e.message) });
   return (
-    <section aria-labelledby="client-members-title" className="min-w-0 space-y-3 border-t bg-card p-4 sm:p-6">
+    <section aria-labelledby="client-members-title" className="min-w-0 space-y-3">
       <h3 id="client-members-title" className="text-sm font-semibold">Usuários com acesso a este cliente</h3>
-      {q.isLoading ? <p className="text-xs text-muted-foreground">Carregando…</p> : q.error ? <p className="break-words text-xs text-destructive">{q.error.message}</p> : !q.data?.length ? <p className="text-xs text-muted-foreground">Nenhum usuário vinculado.</p> :
-        q.data.map((m) => <div key={m.id} className="flex items-center justify-between gap-3 rounded-lg border bg-background p-3 text-sm"><span className="min-w-0 break-words">{m.profile?.full_name} <span className="block text-xs text-muted-foreground">{m.profile?.email}</span></span><Button className="shrink-0" size="sm" variant="ghost" aria-label="Remover acesso" onClick={() => del.mutate(m.id)}><Trash2 /></Button></div>)}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
-        <div className="min-w-0 flex-1"><Field label="Vincular usuário por e-mail"><input type="email" placeholder="E-mail de uma conta já criada" value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (email.trim()) add.mutate(); } }} className={inputCls} /></Field></div>
-        <Button type="button" disabled={add.isPending || !email.trim()} onClick={() => add.mutate()}>Vincular</Button>
-      </div>
+      {q.isLoading ? <p className="text-xs text-muted-foreground">Carregando…</p> : q.error ? <div role="alert" className="text-xs text-destructive"><p className="break-words">{q.error.message}</p><Button type="button" variant="outline" size="sm" disabled={q.isFetching} onClick={() => void q.refetch()}>Tentar novamente</Button></div> : !q.data?.length ? <p className="text-xs text-muted-foreground">Nenhum usuário vinculado.</p> :
+        q.data.map((m) => <div key={m.id} className="flex items-center justify-between gap-3 rounded-lg border bg-background p-3 text-sm"><span className="min-w-0 break-words">{m.profile?.full_name} <span className="block text-xs text-muted-foreground">{m.profile?.email}</span></span><Button type="button" className="shrink-0" size="sm" variant="ghost" aria-label="Remover acesso" disabled={add.isPending || del.isPending} onClick={() => del.mutate(m.id)}><Trash2 /></Button></div>)}
+      <form className="flex flex-col gap-2 sm:flex-row sm:items-end" onSubmit={(e) => { e.preventDefault(); if (!add.isPending && !del.isPending && email.trim()) add.mutate(); }}>
+        <div className="min-w-0 flex-1"><Field label="Vincular usuário por e-mail"><input aria-label="Vincular usuário por e-mail" type="email" required placeholder="E-mail de uma conta já criada" value={email} disabled={add.isPending || del.isPending} onChange={(e) => setEmail(e.target.value)} className={inputCls} /></Field></div>
+        <Button type="submit" disabled={add.isPending || del.isPending || !email.trim()}>{add.isPending ? "Vinculando…" : "Vincular"}</Button>
+      </form>
     </section>
   );
 }

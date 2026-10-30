@@ -23,7 +23,10 @@ export function ClientStructureFields({ drafts, onChange, disabled, plan, otherT
       const count = Number(e.target.value);
       if (count <= max) update(resizeTvs(est, count, () => crypto.randomUUID()));
     }} /></Field>
-    {plan?.max_tvs != null && <p className="text-xs text-muted-foreground">Limite do plano: {plan.max_tvs} TVs{otherTvCount > 0 && ` · ${otherTvCount} em outros estabelecimentos`}</p>}
+    {plan?.max_tvs != null && <p className="text-xs text-muted-foreground">Limite do plano: {plan.max_tvs} TVs</p>}
+    {otherTvCount > 0 && <p className="text-xs text-muted-foreground">Este cliente tem mais {otherTvCount} TVs em vínculos anteriores, preservadas e incluídas no limite do plano. Consulte e edite essas TVs em Dispositivos.</p>}
+    {savedCount > 0 && <p className="text-xs text-muted-foreground">TVs já salvas não são excluídas ao alterar a quantidade. Para gerenciar a ativação, acesse Dispositivos.</p>}
+    {!plan?.active && <p className="text-xs text-muted-foreground">Selecione um plano ativo para adicionar novas TVs. As TVs existentes continuam disponíveis para edição.</p>}
     {plan?.max_tvs != null && est.tvs.length + otherTvCount > plan.max_tvs && <p role="alert" className="text-sm text-destructive">A quantidade excede o limite do plano.</p>}
     <div className="space-y-3">
       {est.tvs.map((tv, index) => <div key={tv.id} className="space-y-3 rounded-lg border bg-card p-4">

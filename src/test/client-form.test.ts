@@ -80,6 +80,39 @@ describe("Cadastro simplificado", () => {
     expect(store.saveEstablishment).not.toHaveBeenCalled();
     expect(store.saveDevice).not.toHaveBeenCalled();
   });
+  it("preserva outros vínculos, TVs, endereço e situação ao editar o cadastro principal", async () => {
+    const { snapshot, store } = setup();
+    await persistClientForm(input(), store);
+    const other = { id: "other-est", client_id: "client-1", name: "Unidade histórica", address: "Endereço legado", status: "inativo", created_at: "2026-02-01" } as EstablishmentRow;
+    const otherTv = { id: "other-tv", establishment_id: other.id, name: "TV histórica", orientation: "vertical", activation_status: "ativa" } as DeviceRow;
+    snapshot.establishments.push(other); snapshot.devices.push(otherTv);
+    vi.mocked(store.saveEstablishment).mockClear(); vi.mocked(store.saveDevice).mockClear();
+    const data = input(); data.existing = true; data.values.name = "Novo nome do cliente";
+    await persistClientForm(data, store);
+    expect(snapshot.establishments).toHaveLength(2);
+    expect(snapshot.establishments.find((e) => e.id === other.id)).toEqual(other);
+    expect(snapshot.devices.find((d) => d.id === otherTv.id)).toEqual(otherTv);
+    expect(store.saveEstablishment).not.toHaveBeenCalled();
+    expect(store.saveDevice).not.toHaveBeenCalled();
+  });
+  it("recusa estabelecimento salvo que desapareceu em vez de trocar silenciosamente o vínculo", async () => {
+    const { snapshot, store } = setup(); const data = input();
+    data.establishments[0]!.saved = true;
+    snapshot.establishments = [{ id: "other-est", client_id: "client-1", name: "Cliente", created_at: "2026-01-01" } as EstablishmentRow];
+    await expect(persistClientForm(data, store)).rejects.toThrow("Vínculo do estabelecimento mudou");
+    expect(store.saveClient).not.toHaveBeenCalled();
+    expect(store.saveEstablishment).not.toHaveBeenCalled();
+    expect(store.saveDevice).not.toHaveBeenCalled();
+  });
+  it("recusa IDs de estabelecimento ou TV de outro cliente antes de gravar", async () => {
+    const { snapshot, store } = setup();
+    snapshot.establishments = [{ id: "est-1", client_id: "other-client", name: "Outro", created_at: "2026-01-01" } as EstablishmentRow];
+    await expect(persistClientForm(input(), store)).rejects.toThrow("Vínculo do estabelecimento mudou");
+    snapshot.establishments = [];
+    snapshot.devices = [{ id: "tv-1", establishment_id: "other-est" } as DeviceRow];
+    await expect(persistClientForm(input(), store)).rejects.toThrow("Vínculo da TV mudou");
+    expect(store.saveClient).not.toHaveBeenCalled();
+  });
   it("recusa novas TVs em plano inativo", async () => { const { snapshot, store } = setup(); const plan = snapshot.plans[0]; if (plan) plan.active = false; await expect(persistClientForm(input(), store)).rejects.toThrow("plano ativo"); expect(store.saveClient).not.toHaveBeenCalled(); });
   it("não grava quando consulta falha", async () => { const { store } = setup(); vi.mocked(store.load).mockRejectedValueOnce(Error("Sem conexão")); await expect(persistClientForm(input(), store)).rejects.toThrow("Sem conexão"); expect(store.saveClient).not.toHaveBeenCalled(); });
 });

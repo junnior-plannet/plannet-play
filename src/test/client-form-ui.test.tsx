@@ -11,6 +11,37 @@ vi.mock("@/lib/api", () => ({ canEditReserve: (admin: boolean) => admin, clampRe
 beforeEach(() => { vi.clearAllMocks(); mocks.persist.mockResolvedValue(undefined); mocks.establishments.mockResolvedValue([]); mocks.devices.mockResolvedValue([]); }); afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 async function mount() { const close = vi.fn(); const qc = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } }); render(<QueryClientProvider client={qc}><ClientForm client={null} isAdmin onClose={close} /></QueryClientProvider>); fireEvent.change(screen.getByLabelText("Nome do cliente"), { target: { value: "Novo cliente" } }); await screen.findByRole("option", { name: "Plano teste" }); return { close }; }
 describe("Envio do formulário", () => {
+ it("separa o gerenciamento de acessos do formulário e o mantém recolhido na edição", async () => {
+  const client = { id: "client-1", name: "Cliente salvo", plan_id: "plan-1", status: "ativo", plannet_reserved_percent: 30 } as ClientRow;
+  const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const link = vi.fn();
+  render(<QueryClientProvider client={qc}><ClientForm client={client} isAdmin onClose={vi.fn()}><form aria-label="Gerenciar usuários" onSubmit={(e) => { e.preventDefault(); link(); }}><input aria-label="E-mail de acesso" type="email" required /><button type="submit">Vincular usuário</button></form></ClientForm></QueryClientProvider>);
+  await screen.findByRole("option", { name: "Plano teste" });
+  const summary = screen.getByText("Gerenciar acessos do cliente");
+  const details = summary.closest("details");
+  expect(details).not.toHaveAttribute("open");
+  expect(summary.closest("form")).toBeNull();
+  fireEvent.click(summary);
+  const accessForm = screen.getByRole("form", { name: "Gerenciar usuários" });
+  expect(accessForm.parentElement?.closest("form")).toBeNull();
+  expect(screen.getByRole("button", { name: "Salvar cadastro" }).closest("form")).not.toContainElement(accessForm);
+  fireEvent.change(screen.getByLabelText("E-mail de acesso"), { target: { value: "conta@example.com" } });
+  fireEvent.submit(accessForm);
+  expect(link).toHaveBeenCalledTimes(1);
+  expect(mocks.persist).not.toHaveBeenCalled();
+ });
+ it("não expõe acessos no novo cadastro nem pede nome do estabelecimento", async () => {
+  const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  render(<QueryClientProvider client={qc}><ClientForm client={null} isAdmin onClose={vi.fn()}><p>Área de usuários</p></ClientForm></QueryClientProvider>);
+  await screen.findByLabelText("Quantidade de TVs");
+  expect(screen.getByLabelText("Quantidade de TVs")).toHaveValue(0);
+  expect(screen.queryByText("Área de usuários")).not.toBeInTheDocument();
+  expect(screen.queryByLabelText(/nome do estabelecimento/i)).not.toBeInTheDocument();
+  expect(screen.queryByLabelText(/região/i)).not.toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "Dados do cliente" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "Endereço" })).toBeInTheDocument();
+  expect(screen.queryByRole("tab")).not.toBeInTheDocument();
+ });
  it("consulta TVs salvas na edição e envia a orientação alterada sem mudar o vínculo", async () => {
   mocks.establishments.mockResolvedValue([{ id: "est-1", client_id: "client-1", name: "Cliente salvo", created_at: "2026-01-01" }]);
   mocks.devices.mockResolvedValue([{ id: "tv-1", establishment_id: "est-1", name: "Entrada", orientation: "vertical" }]);

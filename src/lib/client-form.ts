@@ -65,7 +65,9 @@ export async function persistClientForm(input: ClientFormInput, store: ClientFor
   if (input.establishments.length !== 1) throw new Error("Não foi possível confirmar o estabelecimento padrão.");
   const draft = input.establishments[0];
   if (!draft) throw new Error("Estabelecimento não encontrado.");
-  const reused = snapshot.establishments.find((e) => e.id === draft.id) ?? defaultEstablishment(input.id, existingClient?.name ?? input.values.name, snapshot.establishments);
+  const exactEstablishment = snapshot.establishments.find((e) => e.id === draft.id);
+  if (draft.saved && !exactEstablishment) throw new Error("Vínculo do estabelecimento mudou. Reabra o cadastro.");
+  const reused = exactEstablishment ?? defaultEstablishment(input.id, existingClient?.name ?? input.values.name, snapshot.establishments);
   const establishments = [{ ...draft, id: reused?.id ?? draft.id, saved: !!reused || draft.saved, name: reused?.name ?? input.values.name.trim() }];
   const planId = input.values.plan_id === undefined ? existingClient?.plan_id : input.values.plan_id;
   const plan = snapshot.plans.find((p) => p.id === planId);

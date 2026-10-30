@@ -13,6 +13,12 @@ function mount(otherTvCount = 0, tvs: EstablishmentDraft["tvs"] = []) {
 describe("Quantidade e nomes individuais", () => {
  it("selecionar 3 permite informar 3 nomes e zero remove todos os rascunhos", () => { mount(); const count = screen.getByLabelText("Quantidade de TVs"); fireEvent.change(count, { target: { value: "3" } }); fireEvent.change(screen.getByLabelText("Nome da TV 3"), { target: { value: "Caixa" } }); expect(screen.getByLabelText("Nome da TV 3")).toHaveProperty("value", "Caixa"); fireEvent.change(count, { target: { value: "0" } }); expect(screen.queryByLabelText("Nome da TV 1")).toBeNull(); });
  it("não adiciona TVs acima de 3 incluindo outros estabelecimentos", () => { mount(2); const count = screen.getByLabelText("Quantidade de TVs"); fireEvent.change(count, { target: { value: "2" } }); expect(count).toHaveProperty("value", "0"); fireEvent.change(count, { target: { value: "1" } }); expect(count).toHaveProperty("value", "1"); });
+ it("explica que TVs de vínculos anteriores continuam preservadas e contam no limite", () => {
+  mount(2);
+  expect(screen.getByText(/mais 2 TVs em vínculos anteriores/)).toBeInTheDocument();
+  expect(screen.getByText(/Consulte e edite essas TVs em Dispositivos/)).toBeInTheDocument();
+  expect(screen.getByLabelText("Quantidade de TVs")).toHaveAttribute("max", "1");
+ });
  it("começa em zero e gera orientação horizontal editável por TV", () => {
   mount();
   expect(screen.getByLabelText("Quantidade de TVs")).toHaveValue(0);

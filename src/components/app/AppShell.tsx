@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Bell, Search, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import logoAsset from "@/assets/plannet-play-logo.png.asset.json";
 import symbolAsset from "@/assets/plannet-play-symbol.png.asset.json";
 import { useNavigate } from "@tanstack/react-router";
@@ -100,16 +100,7 @@ function AppShellContent({ children }: { children: ReactNode }) {
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-background/80 px-4 backdrop-blur">
             <SidebarTrigger />
-            <div className="relative hidden max-w-md flex-1 md:block">
-              <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <input placeholder="Buscar clientes, dispositivos, campanhas..." className="h-9 w-full rounded-lg border bg-card pl-9 pr-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary" />
-            </div>
-            <div className="ml-auto flex items-center gap-3">
-              <button className="relative grid size-9 place-items-center rounded-lg border bg-card hover:bg-accent" aria-label="Notificações">
-                <Bell className="size-4" />
-                <span className="absolute right-2 top-2 size-1.5 rounded-full bg-destructive" />
-              </button>
-            </div>
+            <span className="truncate text-sm font-medium text-muted-foreground">{navGroups.flatMap((group) => group.items).find((item) => item.url === path)?.title ?? "Plannet Play"}</span>
           </header>
           <main className="min-w-0 flex-1 p-4 md:p-6 lg:p-8">{demo.role === 'client' && !clientPaths.includes(path) ? <div className="py-8"><h1 className="text-xl font-semibold">Área reservada ao administrador</h1><p className="my-3 text-sm text-muted-foreground">Perfil de cliente · selecione uma página disponível no menu.</p><Button asChild><Link to="/playlists">Minhas playlists</Link></Button></div> : children}</main>
         </div>
