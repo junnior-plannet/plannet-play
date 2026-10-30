@@ -15,7 +15,7 @@ export function ClientForm({ client, isAdmin, onClose, children }: Props) {
   const plans = useQuery(plansQuery);
   const ests = useQuery({ ...establishmentsQuery, enabled: !!client, refetchOnMount: "always" });
   const devices = useQuery({ ...devicesQuery, enabled: !!client, refetchOnMount: "always" });
-  const [reserve, setReserve] = useState(client?.plannet_reserved_percent ?? 20);
+  const [reserve, setReserve] = useState(client?.plannet_reserved_percent ?? 0);
   const [name, setName] = useState(client?.name ?? "");
   const [planId, setPlanId] = useState(client?.plan_id ?? "");
   const [drafts, setDrafts] = useState<EstablishmentDraft[]>([]);
