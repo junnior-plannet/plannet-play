@@ -13,7 +13,7 @@ import { QueryState } from "@/components/app/QueryState";
 
 export const Route = createFileRoute("/_authenticated/telas")({
   head: () => seo("Telas", "Cadastro de TVs com identificação do dispositivo, orientação e status de ativação."),
-  validateSearch: (search: Record<string, unknown>): { establishment?: string } => ({ establishment: typeof search.establishment === "string" ? search.establishment : undefined }),
+  validateSearch: (search: Record<string, unknown>): { establishment?: string | undefined } => ({ establishment: typeof search["establishment"] === "string" ? search["establishment"] : undefined }),
   component: Page,
 });
 
@@ -57,7 +57,7 @@ function Page() {
   </>;
 }
 
-function DeviceDialog({ device, ests, defaultEstablishmentId, onClose }: { defaultEstablishmentId?: string; device: DeviceRow | null; ests: { id: string; name: string; clients: { name: string } | null }[]; onClose: () => void }) {
+function DeviceDialog({ device, ests, defaultEstablishmentId, onClose }: { defaultEstablishmentId?: string | undefined; device: DeviceRow | null; ests: { id: string; name: string; clients: { name: string } | null }[]; onClose: () => void }) {
   const qc = useQueryClient();
   const save = useMutation({
     mutationFn: (f: FormData) => {
