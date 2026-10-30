@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Check, Loader2, MapPin, Monitor, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { activationLabel } from "@/lib/api";
-import { activationColors, fullAddress, geocodePlace, inMunicipality, type Candidate, type ConfirmedPosition, type Mesh, type NetworkPlace } from "@/lib/network-map";
+import { activationColors, activationDistribution, fullAddress, geocodePlace, inMunicipality, verifiedPosition, type Candidate, type ConfirmedPosition, type Mesh, type NetworkPlace } from "@/lib/network-map";
 
 type Props = { place: NetworkPlace; mesh?: Mesh | undefined; confirmed?: ConfirmedPosition | undefined; onConfirm: (position: ConfirmedPosition | null) => void; onClose: () => void };
 export function NetworkPlaceDetails({ place, mesh, confirmed, onConfirm, onClose }: Props) {
@@ -13,7 +13,7 @@ export function NetworkPlaceDetails({ place, mesh, confirmed, onConfirm, onClose
   const locked = useRef(false);
   useEffect(() => () => request.current?.abort(), []);
   const municipality = mesh?.municipalities.find((item) => inMunicipality(place, item));
-  const verified = confirmed?.fingerprint === place.fingerprint ? confirmed : undefined;
+  const verified = mesh ? verifiedPosition(place, confirmed, mesh) : undefined;
   const complete = !!(place.addressData.street.trim() && place.addressData.number.trim() && place.addressData.city.trim());
   async function search() {
     if (!municipality || locked.current) return;
@@ -31,7 +31,7 @@ export function NetworkPlaceDetails({ place, mesh, confirmed, onConfirm, onClose
   return <div className="space-y-5">
     <div className="flex items-start justify-between gap-3">
       <div><p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">Detalhes do local</p><h2 className="mt-1 text-lg font-semibold">{place.clientName}</h2><p className="text-sm text-muted-foreground">{place.name}</p></div>
-      <Button variant="ghost" size="icon" onClick={onClose} aria-label="Fechar detalhes do local"><X className="size-4" /></Button>
+      <Button variant="ghost" size="icon" className="mr-5 shrink-0 xl:mr-0" onClick={onClose} aria-label="Fechar detalhes do local"><X className="size-4" /></Button>
     </div>
     <section className="rounded-xl border bg-background/60 p-4">
       <h3 className="mb-2 flex items-center gap-2 text-sm font-medium"><MapPin className="size-4 text-primary" />Endereço cadastrado</h3>
@@ -53,6 +53,7 @@ export function NetworkPlaceDetails({ place, mesh, confirmed, onConfirm, onClose
     </section>
     <section>
       <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold"><Monitor className="size-4 text-primary" />TVs do local <span className="ml-auto rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">{place.tvs.length}</span></h3>
+      <dl className="mb-4 grid grid-cols-2 gap-2" aria-label="Distribuição dos status de ativação">{activationDistribution(place).map(({ status, count }) => <div key={status} className="rounded-lg border bg-background/60 p-2.5"><dt className="flex items-center gap-1.5 text-xs text-muted-foreground"><i className="size-2 rounded-full" style={{ background: activationColors[status] }} />{activationLabel[status]}</dt><dd className="mt-1 text-lg font-semibold tabular-nums">{count}</dd></div>)}</dl>
       <div className="space-y-3">{place.tvs.map((tv) => <article key={tv.id} className="rounded-xl border bg-background/60 p-4">
         <h4 className="break-words text-sm font-semibold">{tv.name}</h4>
         <dl className="mt-3 space-y-2 text-xs"><div className="flex justify-between gap-2"><dt className="text-muted-foreground">Orientação</dt><dd>{tv.orientation === "vertical" ? "Vertical (9:16)" : "Horizontal (16:9)"}</dd></div><div><dt className="text-muted-foreground">Código do dispositivo</dt><dd className="mt-1 break-all rounded-md bg-muted px-2 py-1.5 font-mono">{tv.device_code}</dd></div><div className="flex justify-between gap-2"><dt className="text-muted-foreground">Ativação</dt><dd className="flex items-center gap-1.5"><i className="size-1.5 rounded-full" style={{ background: activationColors[tv.activation_status] }} />{activationLabel[tv.activation_status]}</dd></div></dl>

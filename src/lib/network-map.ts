@@ -35,7 +35,7 @@ export const normalize = (text: string) => text.normalize("NFD").replace(/[\u030
 export const IBGE_MESH = "https://servicodados.ibge.gov.br/api/v3/malhas/estados/28?formato=application%2Fvnd.geo%2Bjson&qualidade=minima";
 
 type FeatureCollection = { type: string; features: { properties: { codarea?: string }; geometry: Geometry }[] };
-function isGeometry(value: unknown): value is Geometry {
+export function isGeometry(value: unknown): value is Geometry {
   if (!value || typeof value !== "object") return false;
   const geometry = value as { type?: string; coordinates?: unknown };
   const ring = (value: unknown) => Array.isArray(value) && value.length >= 4 && value.every((point: unknown) => Array.isArray(point) && point.length >= 2 && point.every((coordinate: unknown) => typeof coordinate === "number" && Number.isFinite(coordinate)));
@@ -89,13 +89,25 @@ export function scopeNetwork(clients: ClientRow[], places: NetworkPlace[], devic
   const linkedClients = new Set(places.map((place) => place.client_id));
   const tvs = municipality ? devices.filter((device) => ids.has(device.establishment_id)) : devices;
   return { places: local, clients: municipality ? clients.filter((client) => clientIds.has(client.id) || (!linkedClients.has(client.id) && normalize(client.city ?? "") === normalize(municipality.name))).length : clients.length,
-    tvs: tvs.length, active: tvs.filter((tv) => tv.activation_status === "ativa").length, pending: tvs.filter((tv) => tv.activation_status === "pendente").length };
+    tvs: tvs.length, active: tvs.filter((tv) => tv.activation_status === "ativa").length, pending: tvs.filter((tv) => tv.activation_status === "pendente").length,
+    inactive: tvs.filter((tv) => tv.activation_status === "inativa").length, blocked: tvs.filter((tv) => tv.activation_status === "bloqueada").length };
 }
 export function fullAddress(place: NetworkPlace) {
   const address = place.addressData;
   return [address.street, address.number, address.complement, address.district, address.city, address.state, address.cep ? `CEP ${address.cep}` : ""].filter(Boolean).join(", ") || "Endereço não informado";
 }
 export const activationColors = { ativa: "var(--success)", pendente: "var(--warning)", inativa: "var(--muted-foreground)", bloqueada: "var(--destructive)" };
+export function activationDistribution(place: NetworkPlace) {
+  return (Object.keys(activationColors) as (keyof typeof activationColors)[]).map((status) => ({
+    status, count: place.tvs.filter((tv) => tv.activation_status === status).length,
+  }));
+}
+/** A matching address alone is not a geographic verification. Reject stale/out-of-area points. */
+export function verifiedPosition(place: NetworkPlace, confirmed: ConfirmedPosition | undefined, mesh: Mesh): ConfirmedPosition | undefined {
+  if (!confirmed || confirmed.fingerprint !== place.fingerprint || !confirmed.position.every(Number.isFinite)) return undefined;
+  const municipality = mesh.municipalities.find((item) => inMunicipality(place, item));
+  return municipality && contains(municipality.geometry, confirmed.position) && mesh.outline.some((geometry) => contains(geometry, confirmed.position)) ? confirmed : undefined;
+}
 export function placeStatus(place: NetworkPlace): keyof typeof activationColors | "mixed" {
   const states = new Set(place.tvs.map((tv) => tv.activation_status));
   return states.size === 1 ? place.tvs[0]!.activation_status : "mixed";

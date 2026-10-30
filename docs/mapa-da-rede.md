@@ -1,50 +1,76 @@
-# Mapa da Rede — implementação e limites
+# Mapa da Rede — geografia, ativação e limites
 
-## Escopo
+## Entrega: parte 1 de 3
 
-- Menu único **Mapa da Rede**; `/regioes` redireciona para `/mapa`, preservando links antigos.
-- Nenhuma tabela, relacionamento, dado de produção, autenticação ou formulário de cadastro foi alterado. Nenhum SQL ou migração foi executado.
-- As consultas existentes `clientsQuery`, `establishmentsQuery` e `devicesQuery` são reutilizadas, com as permissões RLS da sessão. Não há dados de demonstração na página.
-- Os indicadores mostram todos os registros acessíveis na visão geral. No município, usam o município do endereço; clientes sem estabelecimento usam sua cidade cadastrada. Inativas/bloqueadas entram no total de TVs, mas não nas ativadas/pendentes. Nenhum status de conexão é inferido.
+Esta etapa altera apenas o Mapa da Rede. Dashboard e Central de Notificações permanecem para as próximas partes. Não houve SQL, migração, trigger, mudança de RLS, criação/exclusão de registros, alteração de credenciais ou modificação dos cadastros.
 
-## Dados geográficos
+Os arquivos atuais disponibilizados pela integração da branch main foram inspecionados. Não há ferramenta de terminal, consulta ao HEAD remoto ou navegador neste ambiente: não foi possível comparar o HEAD com o GitHub, executar build/testes ou verificar o preview. A entrega não equivale a uma validação visual em produção.
 
-- Malhas oficiais do **IBGE**, API v3, estado **28 / Sergipe**, formato GeoJSON e qualidade mínima para reduzir o peso.
-- Municípios: `https://servicodados.ibge.gov.br/api/v3/malhas/estados/28`, com `intrarregiao=municipio`.
-- Contorno estadual: mesmo endpoint, sem subdivisão.
-- Nomes/códigos: `https://servicodados.ibge.gov.br/api/v1/localidades/estados/28/municipios`.
-- A malha só é aceita com os 75 municípios identificados e geometrias válidas; falhas exibem erro com nova tentativa, sem substituir por desenhos fictícios.
-- Renderização vetorial SVG com projeção Mercator, seleção acessível por teclado, zoom animado com respeito à redução de movimento, arraste, roda do mouse e controles. Não é uma imagem estática. Aracaju tem destaque e atalho, sem restringir os outros municípios.
-- O carregamento depende de acesso às APIs do IBGE no navegador. Cache em memória por um dia; nenhuma dependência npm foi adicionada.
+## Funcionalidades implementadas no código
 
-## Localização dos pontos
+- Visão estadual fixa e responsiva, sem roda, arraste, zoom manual ou controles de movimentação.
+- Um único path geográfico define o contorno luminoso e sua camada de halo; não há linhas neon decorativas independentes da malha.
+- Contornos municipais oficiais, recortados pelo contorno estadual na visão geral. Aracaju mantém destaque e atalho; todos os municípios carregados podem ser selecionados, inclusive pelo teclado ou seletor.
+- A seleção substitui a visão estadual por um contorno municipal ampliado, com transição de enquadramento de 550 ms. A preferência de movimento reduzido é respeitada.
+- Botão **Voltar para Sergipe** no mapa e no seletor.
+- Contorno municipal com mais detalhe e vias principais carregados somente após seleção. Falhas não geram traçados fictícios e permitem nova tentativa.
+- Pins circulares luminosos por `devices.activation_status`: ativa/verde, pendente/amarelo, inativa/cinza, bloqueada/vermelho. Status mistos têm anel multicolorido proporcional à quantidade de TVs em cada status.
+- Hover/foco exibe cliente e quantidade de TVs; clique abre detalhes à direita. Desktop amplo usa painel ao lado, e telas menores usam painel lateral não modal, mantendo parte do mapa visível.
+- Detalhes preservam endereço, bairro, município, nome/código/orientação/ativação individual de cada TV e incluem distribuição dos quatro status.
+- Indicadores de clientes, locais, TVs, ativas, pendentes, inativas e bloqueadas (estas quando houver). Seleção municipal aplica o mesmo filtro aos indicadores, locais e TVs.
+- Seção **Endereços não localizados**, sem posicionamento artificial de registros.
+- O botão Atualizar e as consultas existentes de clientes/estabelecimentos/dispositivos foram preservados.
 
-A estrutura de estabelecimentos/dispositivos consultada não possui latitude/longitude. Por isso a página inicia com os locais na lista **sem posição confirmada**. Um local só pode gerar ponto se tiver TVs e houver uma consulta individual seguida de confirmação explícita do usuário.
+## Origem dos dados e acesso
 
-Em **Detalhes do local → Consultar este endereço no OpenStreetMap**, logradouro, número, município e CEP disponível são enviados ao Nominatim público. Não são enviados nome do cliente, código das TVs ou credenciais. Não há consulta automática, lote, localização baseada somente em CEP ou uso do centro municipal como localização.
+As consultas `clientsQuery`, `establishmentsQuery` e `devicesQuery`, em `src/lib/api.ts`, consultam o Supabase usando a sessão atual e suas RLS existentes. Nenhuma consulta privilegiada foi adicionada. O mapa não usa dados de demonstração e não tenta inferir conexão online/offline.
 
-Resultados exigem número correspondente ao solicitado e coordenadas dentro do polígono do município, respeitando ilhas e buracos. Mesmo assim, a precisão depende do endereço e da base do serviço; o usuário deve conferir o endereço retornado antes de confirmar. Endereços legados sem número separado, incompletos, fora de Sergipe ou não encontrados continuam na lista. Consultas individuais têm bloqueio de concorrência e intervalo mínimo local de 1,2 segundo, com tempo limite de 15 segundos.
+Na visão geral, os indicadores incluem todos os registros acessíveis, mesmo fora de Sergipe. O filtro municipal considera o município e a UF do endereço, não a posição confirmada. Clientes sem estabelecimento podem ser contados pela cidade cadastrada; os demais precisam ter um local no município selecionado. Endereços não geocodificados continuam nos indicadores.
 
-As coordenadas confirmadas permanecem **apenas no estado da página**. São descartadas ao sair/recarregar, e invalidadas se o endereço mudar. Não há persistência em Supabase nem localStorage. O ponto representa um estabelecimento com TVs, é colorido pela ativação (ou status mistos), tem tooltip e abre os detalhes. O painel desktop mantém o mapa; tablet/mobile usam painel inferior deslizante.
+## Origem dos contornos
 
-## Temas e aparência
+- IBGE / API v3, GeoJSON oficial, Sergipe / código 28.
+- Estado: `https://servicodados.ibge.gov.br/api/v3/malhas/estados/28?formato=application%2Fvnd.geo%2Bjson&qualidade=minima`.
+- Limites municipais estaduais: mesmo endpoint com `intrarregiao=municipio`.
+- Nomes/códigos: API v1 de localidades, `/estados/28/municipios`.
+- Detalhe sob demanda: API v3, `/malhas/municipios/{codigoIBGE}?formato=application%2Fvnd.geo%2Bjson&qualidade=intermediaria`.
+- SVG 2D com projeção Mercator compartilhada para contornos, vias e pontos. A malha estadual exige 75 municípios e geometrias válidas. O detalhe municipal usa a malha geral como fallback em caso de falha.
 
-A paleta azul-marinho/ciano do canvas é intencionalmente a mesma nos dois temas. Indicadores, listas e detalhes reutilizam os tokens existentes. O brilho não utiliza animações contínuas pesadas.
+## Origem e desempenho das vias
 
-## Verificação e testes
+OpenStreetMap via Overpass: `https://overpass-api.de/api/interpreter`. Uma consulta por município selecionado usa a área administrativa com `admin_level=8` e `ref:IBGE` igual ao código selecionado. Busca apenas vias nomeadas `trunk`, `primary`, `secondary` e `tertiary`, retornando suas coordenadas reais (`out geom`). Não são geradas ruas por aproximação.
 
-Adicionado `src/test/network-map.test.ts`: menu único, normalização municipal, ausência de coordenadas inventadas, totais reais por vínculo, distinção de ativação, UF, Polygon/MultiPolygon/buracos, limites, contrato de carregamento dos 75 municípios e geocodificação com rejeição de resultados inadequados. As chamadas externas são simuladas apenas nos testes; nenhum endereço real é consultado por eles.
+Dados inválidos, respostas parciais com aviso do servidor e vias sem pontos no município são rejeitados. As linhas são recortadas pelo contorno municipal no SVG. A diferença de bases IBGE/OSM pode excluir pequenos trechos na borda. Ausência de uma área municipal referenciada no OSM resulta em ausência de vias, não em geometria substituta. A cobertura e disponibilidade reais precisam ser verificadas no navegador.
 
-Foi feita revisão estática do código e das opções estritas do TypeScript. Este ambiente não disponibiliza execução de terminal/build/testes nem consulta ao HEAD remoto: **não foi possível executar a suíte, validar o preview no navegador ou confirmar se há commits remotos mais recentes em main**. Os arquivos inspecionados são os disponibilizados pela integração. Após a sincronização, validar `npm test`, `npm run build`, os dois temas, clique em Aracaju/Barra dos Coqueiros e navegação mobile. Conferir o carregamento real das APIs e um endereço individual autorizado.
+As consultas usam cache em memória de um dia, sem polling ou carregamento de todas as cidades. Vias não têm retentativa automática. Não há novas dependências nem mapas 3D. A atribuição IBGE/OpenStreetMap fica no mapa.
 
-## Pendências para localização durável
+## Estratégia para os pins
 
-1. Escolher um provedor de geocodificação apropriado à produção, com cobertura, limites, política de privacidade e disponibilidade definidos. O Nominatim público é externo, sujeito a limites e não oferece garantia de cobertura/disponibilidade.
-2. Para posições duráveis, apresentar e obter autorização para um modelo que guarde coordenadas, provedor, precisão, endereço consultado e confirmação/data; só depois implementar persistência. Nenhuma mudança no banco foi proposta como já autorizada ou executada.
-3. Geocodificação em massa depende de aprovação separada e política do provedor. Não foi implementada nem executada.
-4. Online/offline depende de telemetria real; a página mostra exclusivamente o status de ativação existente.
+A estrutura usada pelas consultas atuais não fornece coordenadas persistidas verificadas. Por isso os locais começam em **Endereços não localizados**. Em **Detalhes do local → Consultar este endereço no OpenStreetMap**, uma ação individual consulta o Nominatim com logradouro, número, município e CEP disponível. Nome do cliente, códigos das TVs e credenciais não são enviados.
 
-## Arquivos
+Somente resultados numerados, com número correspondente e posição dentro do município, podem ser confirmados pelo usuário. O ponto só aparece após confirmação. Não há geocodificação automática/em massa, posição por CEP ou deslocamento para o centro municipal. Consultas têm intervalo mínimo local de 1,2 segundo e limite de 15 segundos.
 
-- Alterados: `src/components/app/nav.ts`, `src/routes/_authenticated/mapa.tsx`, `src/routes/_authenticated/regioes.tsx`, `src/styles.css`.
-- Criados: `src/lib/network-map.ts`, `src/components/app/NetworkGeography.tsx`, `src/components/app/NetworkPlaceDetails.tsx`, `src/test/network-map.test.ts`, `docs/mapa-da-rede.md`.
+Confirmações ficam exclusivamente no estado da página, não em Supabase ou localStorage. São descartadas ao sair/recarregar e invalidadas por mudança no endereço, coordenadas inválidas ou posição fora da malha municipal/estadual. A precisão final depende da cobertura do Nominatim e da conferência humana; não representa levantamento geodésico.
+
+## Identidade visual e responsividade
+
+O canvas mantém azul-marinho/ciano em ambos os temas. Cards, listas e detalhes usam os tokens existentes. O brilho dos pins aumenta apenas em interação e não há animação contínua. O SVG reserva espaço para cabeçalho/legendas; o enquadramento não depende de gestos manuais. Revisão visual desktop/mobile ainda necessária.
+
+## Testes adicionados e validação pendente
+
+- `src/test/network-map.test.ts`: testes preexistentes preservados, incluindo vínculos, geometrias e geocodificação.
+- `src/test/network-map-update.test.ts`: quatro status, filtro municipal, distribuição agrupada, confirmações inválidas/obsoletas, contrato dos serviços de ruas e contornos, falhas e rejeição de vias inadequadas.
+- `src/test/network-geography.test.tsx`: clique municipal, retorno ao estado, ausência de controles manuais, halo e contorno usando o mesmo path, ausência de ruas fabricadas e interação com pin confirmado.
+
+Os testes usam apenas fixtures sintéticas locais e mocks HTTP, sem chamar o Supabase ou geocodificar endereços reais. Foi feita revisão estática; não foi possível executar a suíte ou o build neste ambiente. Após sincronizar, executar `npm test` e `npm run build` e validar no preview Aracaju, outro município, APIs externas, quatro status, seleção por teclado, temas, desktop/mobile e confirmação individual de endereço autorizado.
+
+## Pendências e banco futuro
+
+Pins duráveis exigem autorização para persistir coordenadas, endereço de origem, provedor, precisão e confirmação/data, com políticas que respeitem o acesso aos clientes. Nada disso foi criado ou executado. Também é necessário definir um provedor de geocodificação adequado à produção e sua política de privacidade/limites; serviços públicos não garantem disponibilidade nem cobertura. O pedido não autoriza geocodificação em massa.
+
+Não há origem de eventos de notificação nesta etapa: a Central será tratada na parte 3, sem simular eventos. Dashboard/gráficos serão tratados na parte 2.
+
+## Arquivos desta etapa
+
+- Alterados: `src/lib/network-map.ts`, `src/components/app/NetworkGeography.tsx`, `src/components/app/NetworkPlaceDetails.tsx`, `src/routes/_authenticated/mapa.tsx`, `src/styles.css`, `docs/mapa-da-rede.md`.
+- Criados: `src/lib/network-roads.ts`, `src/test/network-map-update.test.ts`, `src/test/network-geography.test.tsx`.

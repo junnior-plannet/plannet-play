@@ -159,25 +159,31 @@
   stroke-width: 0.6px;
 }
 .network-eyebrow { color: var(--network-cyan); font-size: 9px; font-weight: 600; letter-spacing: 0.18em; }
-.network-pin { cursor: pointer; filter: drop-shadow(0 0 3px currentColor); }
-.network-pin:focus-visible { outline: none; filter: drop-shadow(0 0 6px currentColor); }
-.network-pin:hover { filter: drop-shadow(0 0 6px currentColor); }
-.network-control {
-  display: grid;
-  width: 34px;
-  height: 34px;
-  place-items: center;
-  cursor: pointer;
-  border-radius: 10px;
-  border: 1px solid var(--network-line);
-  color: var(--network-text);
-  background: var(--network-navy);
+.network-city-land { fill: var(--network-land); }
+.network-outline-halo { stroke-width: 5; opacity: 0.15; filter: blur(2px); }
+.network-roads { pointer-events: none; }
+.network-road {
+  fill: none;
+  stroke: var(--network-cyan);
+  stroke-width: 0.85;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.48;
+  filter: drop-shadow(0 0 1px oklch(0.81 0.14 210 / 35%));
 }
-.network-control:hover { border-color: var(--network-cyan); color: var(--network-cyan); }
-.network-control:focus-visible { outline: 2px solid var(--network-cyan); outline-offset: 2px; }
-.network-map-tooltip { background: var(--network-navy); border-color: var(--network-line); pointer-events: none; }
+.network-pin {
+  cursor: pointer;
+  filter: drop-shadow(0 0 3px currentColor);
+  transition: filter 180ms ease;
+}
+.network-pin:focus-visible, .network-pin.is-selected { outline: none; filter: drop-shadow(0 0 7px currentColor); }
+.network-pin:hover { filter: drop-shadow(0 0 6px currentColor); }
+.network-back, .network-map-tooltip, .network-map-footer { background: var(--network-navy); border-color: var(--network-line); }
+.network-back:hover { border-color: var(--network-cyan); color: var(--network-cyan); }
+.network-back:focus-visible { outline: 2px solid var(--network-cyan); outline-offset: 2px; }
+.network-map-tooltip { pointer-events: none; }
 @media (prefers-reduced-motion: reduce) {
-  .network-municipality { transition: none; }
+  .network-municipality, .network-pin { transition: none; }
 }
 
 @utility bg-gradient-primary { background-image: var(--gradient-primary); }
