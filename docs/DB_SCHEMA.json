@@ -770,7 +770,7 @@
       "trigger": "trg_profiles_updated"
     }
   ],
-  "gerado_em": "2026-10-30T02:06:50.456233+00:00",
+  "gerado_em": "2026-10-30T02:53:59.388186+00:00",
   "rls_ativo": {
     "plans": true,
     "clients": true,
@@ -783,11 +783,11 @@
   "contagem_linhas": {
     "plans": 2,
     "clients": 2,
-    "devices": 3,
+    "devices": 4,
     "profiles": 1,
     "user_roles": 2,
     "client_members": 0,
-    "establishments": 1
+    "establishments": 2
   },
   "chaves_primarias": [
     {
@@ -854,5 +854,5 @@
       "trigger": "on_auth_user_created"
     }
   ],
-  "geckoai_sincronizado_em": "2026-10-30T02:06:54.173Z"
+  "geckoai_sincronizado_em": "2026-10-30T02:54:03.403Z"
 }
