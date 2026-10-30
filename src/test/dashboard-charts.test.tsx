@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { DashboardBars, DashboardDonut } from "@/components/app/DashboardCharts";
+import { DashboardDonut } from "@/components/app/DashboardCharts";
 import type { DashboardDatum } from "@/lib/dashboard";
 
 const rows: DashboardDatum[] = [
@@ -33,16 +33,6 @@ describe("Gráficos acessíveis do Dashboard", () => {
     expect(within(table).getByRole("row", { name: "Pendentes 1 25%" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Ocultar dados" }));
     expect(screen.queryByRole("table")).toBeNull();
-  });
-  it("mantém todas as categorias na tabela mesmo ao compactar as barras", () => {
-    const ranking = Array.from({ length: 12 }, (_, i) => ({ id: String(i), name: `Cliente ${i + 1}`, value: 12 - i, color: "var(--chart-1)" }));
-    render(<DashboardBars title="TVs por cliente" description="Clientes cadastrados" rows={ranking} />);
-    expect(screen.getByText(/7 maiores categorias/)).toBeInTheDocument();
-    expect(screen.getByRole("img")).toHaveAccessibleName(/78 TVs/);
-    fireEvent.click(screen.getByRole("button", { name: "Ver todos os dados" }));
-    const table = screen.getByRole("table");
-    expect(within(table).getAllByRole("row")).toHaveLength(13);
-    expect(within(table).getByRole("row", { name: "Cliente 12 1 1,3%" })).toBeInTheDocument();
   });
   it("informa ausência de registros sem desenhar uma distribuição fictícia", () => {
     render(<DashboardDonut title="Orientação" description="TVs" rows={rows.map((row) => ({ ...row, value: 0 }))} unit="TVs" />);

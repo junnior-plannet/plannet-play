@@ -5,7 +5,7 @@ import { Monitor, Users, CheckCircle2, Clock } from "lucide-react";
 import { PageHeader, Stat } from "@/components/app/ui";
 import { RefreshButton } from "@/components/app/RefreshButton";
 import { QueryState } from "@/components/app/QueryState";
-import { DashboardBars, DashboardDonut } from "@/components/app/DashboardCharts";
+import { DashboardDonut } from "@/components/app/DashboardCharts";
 import { clientsQuery, devicesQuery, establishmentsQuery, plansQuery } from "@/lib/api";
 import { buildDashboardData, formatCount } from "@/lib/dashboard";
 import { seo } from "@/lib/seo";
@@ -44,15 +44,7 @@ function Dashboard() {
           <Stat label="TVs ativas" value={formatCount(active)} hint="Status de ativação, não de conexão" icon={CheckCircle2} tone="success" />
           <Stat label="TVs pendentes" value={formatCount(pending)} hint="Aguardando ativação" icon={Clock} tone="warning" />
         </div>
-        <div className="grid gap-4 xl:grid-cols-3">
-          <DashboardDonut title="TVs por status" description="Ativação registrada · independente de conexão" rows={charts.status} unit="TVs" />
-          <DashboardDonut title="Clientes por plano" description="Distribuição dos cadastros consultados no banco" rows={charts.byPlan} unit="clientes" />
-          <DashboardDonut title="Orientação das TVs" description="Orientação registrada no cadastro dos dispositivos" rows={charts.orientation} unit="TVs" />
-        </div>
-        <div className="grid gap-4 lg:grid-cols-2">
-          <DashboardBars title="TVs por cliente" description="Quantidade de dispositivos vinculados a cada cliente" rows={charts.byClient} />
-          <DashboardBars title="TVs por município" description="Município do estabelecimento vinculado à TV" rows={charts.byCity} />
-        </div>
+        <DashboardDonut title="Distribuição por município" description="TVs cadastradas por município do estabelecimento vinculado" rows={charts.byCity} unit="TVs" />
         <div className="rounded-xl border bg-card p-4 text-xs text-muted-foreground">
           <p>Todos os indicadores e gráficos usam os mesmos cadastros consultados no Supabase. O botão Atualizar consulta clientes, TVs, planos e locais sem recarregar a página.</p>
           <p className="mt-2">Não há telemetria de conexão integrada a este painel. Por isso, não exibimos indicadores online/offline, disponibilidade ou exibições. Vínculos não disponíveis para consulta e municípios não informados aparecem identificados, sem estimativas.</p>

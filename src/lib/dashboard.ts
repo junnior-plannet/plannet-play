@@ -50,15 +50,6 @@ export function buildDashboardData(
   const knownPlans = new Set(plans.map((plan) => plan.id));
   const unknown = clients.filter((client) => client.plan_id && !knownPlans.has(client.plan_id)).length;
   if (unknown) byPlan.push({ id: "unavailable-plan", name: "Plano não disponível para consulta", value: unknown, color: "var(--warning)" });
-  return { status, orientation, byClient: rank(byClient), byCity: rank([...cities.values()]), byPlan };
-}
-
-/** Keep a readable ranking without dropping TVs from its total. Full data stays available in the table. */
-export function compactRanking(rows: DashboardDatum[], limit = 7): DashboardDatum[] {
-  const nonzero = rows.filter((row) => row.value > 0);
-  if (nonzero.length <= limit) return nonzero;
-  return [...nonzero.slice(0, limit), {
-    id: "ranking-others", name: "Demais", color: "var(--chart-1)",
-    value: nonzero.slice(limit).reduce((sum, row) => sum + row.value, 0),
-  }];
+  const byCity = rank([...cities.values()]).map((row, index) => ({ ...row, color: palette[index % palette.length]! }));
+  return { status, orientation, byClient: rank(byClient), byCity, byPlan };
 }
