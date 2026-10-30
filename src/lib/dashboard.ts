@@ -50,6 +50,6 @@ export function buildDashboardData(
   const knownPlans = new Set(plans.map((plan) => plan.id));
   const unknown = clients.filter((client) => client.plan_id && !knownPlans.has(client.plan_id)).length;
   if (unknown) byPlan.push({ id: "unavailable-plan", name: "Plano não disponível para consulta", value: unknown, color: "var(--warning)" });
-  const byCity = rank([...cities.values()]).map((row, index) => ({ ...row, color: palette[index % palette.length] }));
+  const byCity = rank([...cities.values()]).map((row, index) => ({ ...row, color: palette[index % palette.length]! }));
   return { status, orientation, byClient: rank(byClient), byCity, byPlan };
 }
