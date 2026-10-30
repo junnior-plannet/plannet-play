@@ -1,6 +1,6 @@
 import type { EstablishmentDraft } from "@/lib/client-form";
 import { resizeTvs } from "@/lib/client-form";
-import { Field, inputCls } from "@/components/app/ui";
+import { Field, inputCls, selectCls } from "@/components/app/ui";
 
 type Props = {
   drafts: EstablishmentDraft[];
@@ -21,10 +21,13 @@ export function ClientStructureFields({ drafts, onChange, disabled, plan, otherT
       const count = Number(e.target.value);
       if (count <= max) update(resizeTvs(est, count, () => crypto.randomUUID()));
     }} /></Field>
-    {plan?.max_tvs != null && <p className="text-xs text-muted-foreground">Limite do plano: {plan.max_tvs} TVs{otherTvCount > 0 && ` · ${otherTvCount} em outros estabelecimentos`}</p>}
+    {plan?.max_tvs != null && <p className="text-xs text-muted-foreground">Limite do plano: {plan.max_tvs} TVs{otherTvCount > 0 && ` · ${otherTvCount} em outros vínculos do cliente`}</p>}
     {plan?.max_tvs != null && est.tvs.length + otherTvCount > plan.max_tvs && <p role="alert" className="text-sm text-destructive">A quantidade excede o limite do plano.</p>}
-    <div className="grid gap-3 sm:grid-cols-2">
-      {est.tvs.map((tv, index) => <Field key={tv.id} label={`Nome da TV ${index + 1}`}><input aria-label={`Nome da TV ${index + 1}`} required className={inputCls} value={tv.name} disabled={disabled} onChange={(e) => update({ ...est, tvs: est.tvs.map((t) => t.id === tv.id ? { ...t, name: e.target.value } : t) })} /></Field>)}
+    <div className="space-y-3">
+      {est.tvs.map((tv, index) => <div key={tv.id} className="grid gap-3 border-t pt-3 sm:grid-cols-2">
+        <Field label={`Nome da TV ${index + 1}`}><input aria-label={`Nome da TV ${index + 1}`} required className={inputCls} value={tv.name} disabled={disabled} onChange={(e) => update({ ...est, tvs: est.tvs.map((t) => t.id === tv.id ? { ...t, name: e.target.value } : t) })} /></Field>
+        <Field label="Orientação"><select aria-label={`Orientação da TV ${index + 1}`} value={tv.orientation} disabled={disabled} className={`${selectCls} w-full`} onChange={(e) => update({ ...est, tvs: est.tvs.map((t) => t.id === tv.id ? { ...t, orientation: e.target.value === "vertical" ? "vertical" : "horizontal" } : t) })}><option value="horizontal">Horizontal (16:9)</option><option value="vertical">Vertical (9:16)</option></select></Field>
+      </div>)}
     </div>
   </section>;
 }
