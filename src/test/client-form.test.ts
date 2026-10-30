@@ -14,6 +14,14 @@ function setup(max: number | null = 3) {
   return { snapshot, store };
 }
 describe("Cadastro simplificado", () => {
+  it("salva endereço no vínculo interno sem enviar colunas inexistentes ao cliente", async () => {
+    const { snapshot, store } = setup(); const data = input();
+    data.address = { cep: "49010000", street: "Rua A", number: "10", complement: "", district: "Centro", city: "Aracaju", state: "SE" };
+    await persistClientForm(data, store);
+    expect(snapshot.establishments[0]?.address).toContain('Estado: "SE"');
+    expect(snapshot.establishments[0]?.district).toBe("Centro");
+    expect(store.saveClient).toHaveBeenCalledWith(null, expect.not.objectContaining({ address: expect.anything() }));
+  });
   it("salva com zero TVs e cria estabelecimento de mesmo nome", async () => {
     const { snapshot, store } = setup(); const data = input(); data.establishments = [{ id: "est-1", name: "", saved: false, tvs: [] }];
     await persistClientForm(data, store);
