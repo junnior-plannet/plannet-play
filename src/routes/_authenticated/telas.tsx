@@ -13,23 +13,27 @@ import { QueryState } from "@/components/app/QueryState";
 
 export const Route = createFileRoute("/_authenticated/telas")({
   head: () => seo("Telas", "Cadastro de TVs com identificação do dispositivo, orientação e status de ativação."),
+  validateSearch: (search: Record<string, unknown>): { establishment?: string } => ({ establishment: typeof search.establishment === "string" ? search.establishment : undefined }),
   component: Page,
 });
 
 const activationVariant: Record<Activation, "success" | "warning" | "danger" | "secondary"> = { ativa: "success", pendente: "warning", bloqueada: "danger", inativa: "secondary" };
 
 function Page() {
+  const { establishment } = Route.useSearch();
+  const navigate = Route.useNavigate();
   const q = useQuery(devicesQuery);
   const ests = useQuery(establishmentsQuery);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("todos");
   const [editing, setEditing] = useState<DeviceRow | "new" | null>(null);
   const canCreate = (ests.data?.length ?? 0) > 0;
-  const rows = (q.data ?? []).filter((d) => `${d.name} ${d.device_code}`.toLowerCase().includes(search.toLowerCase()) && (status === "todos" || d.activation_status === status));
+  const rows = (q.data ?? []).filter((d) => `${d.name} ${d.device_code}`.toLowerCase().includes(search.toLowerCase()) && (status === "todos" || d.activation_status === status) && (!establishment || d.establishment_id === establishment));
 
   return <>
     <PageHeader title="Telas" description="TVs cadastradas na rede · dados do banco (sem comunicação real com as TVs nesta etapa)" actions={canCreate && <Button onClick={() => setEditing("new")}><Plus />Nova TV</Button>} />
     <FilterBar>
+      <select aria-label="Filtrar estabelecimento" className={selectCls} value={establishment ?? ""} onChange={(e) => void navigate({ search: { establishment: e.target.value || undefined } })}><option value="">Todos os estabelecimentos</option>{ests.data?.map((e) => <option key={e.id} value={e.id}>{e.name}</option>)}</select>
       <input className={`${inputCls} max-w-xs`} placeholder="Pesquisar por nome ou código" value={search} onChange={(e) => setSearch(e.target.value)} />
       <select className={selectCls} aria-label="Status de ativação" value={status} onChange={(e) => setStatus(e.target.value)}><option value="todos">Todos os status</option>{Object.entries(activationLabel).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
     </FilterBar>
@@ -49,11 +53,11 @@ function Page() {
         </tr>)}
       </DataTable>
     </QueryState>
-    {editing && <DeviceDialog device={editing === "new" ? null : editing} ests={ests.data ?? []} onClose={() => setEditing(null)} />}
+    {editing && <DeviceDialog device={editing === "new" ? null : editing} ests={ests.data ?? []} defaultEstablishmentId={establishment} onClose={() => setEditing(null)} />}
   </>;
 }
 
-function DeviceDialog({ device, ests, onClose }: { device: DeviceRow | null; ests: { id: string; name: string; clients: { name: string } | null }[]; onClose: () => void }) {
+function DeviceDialog({ device, ests, defaultEstablishmentId, onClose }: { defaultEstablishmentId?: string; device: DeviceRow | null; ests: { id: string; name: string; clients: { name: string } | null }[]; onClose: () => void }) {
   const qc = useQueryClient();
   const save = useMutation({
     mutationFn: (f: FormData) => {
@@ -76,7 +80,7 @@ function DeviceDialog({ device, ests, onClose }: { device: DeviceRow | null; est
       <DialogContent className="max-h-[90dvh] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto">
         <DialogHeader><DialogTitle>{device ? device.name : "Nova TV"}</DialogTitle><DialogDescription>Identificação, orientação e ativação do dispositivo</DialogDescription></DialogHeader>
         <form className="grid gap-4 sm:grid-cols-2" onSubmit={(e) => { e.preventDefault(); save.mutate(new FormData(e.currentTarget)); }}>
-          <Field label="Estabelecimento"><select name="establishment_id" required defaultValue={device?.establishment_id ?? ests[0]?.id} className={selectCls}>{ests.map((e) => <option key={e.id} value={e.id}>{e.name}{e.clients ? ` · ${e.clients.name}` : ""}</option>)}</select></Field>
+          <Field label="Estabelecimento"><select name="establishment_id" required defaultValue={device?.establishment_id ?? defaultEstablishmentId ?? ests[0]?.id} className={selectCls}>{ests.map((e) => <option key={e.id} value={e.id}>{e.name}{e.clients ? ` · ${e.clients.name}` : ""}</option>)}</select></Field>
           <Field label="Nome da TV"><input name="name" required placeholder="TV Balcão" defaultValue={device?.name} className={inputCls} /></Field>
           <Field label="Código do dispositivo"><input name="device_code" placeholder="Gerado automaticamente" defaultValue={device?.device_code ?? ""} className={`${inputCls} font-mono uppercase`} /></Field>
           <Field label="Número de série"><input name="serial_number" defaultValue={device?.serial_number ?? ""} className={inputCls} /></Field>

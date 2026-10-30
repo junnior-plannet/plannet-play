@@ -1,7 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Store, Pencil } from "lucide-react";
+import { Plus, Store, Pencil, Tv } from "lucide-react";
 import { toast } from "sonner";
 import { seo } from "@/lib/seo";
 import { useMe } from "@/lib/auth";
@@ -36,16 +36,17 @@ function Page() {
       emptyTitle={q.data?.length ? "Nenhum estabelecimento corresponde aos filtros" : "Nenhum estabelecimento cadastrado"}
       emptyDescription={canCreate ? "Cadastre um estabelecimento para vincular TVs." : "Sua conta ainda não está vinculada a um cliente."}
       emptyAction={canCreate && !q.data?.length ? <Button onClick={() => setEditing("new")}><Plus />Novo Estabelecimento</Button> : undefined}>
-      <DataTable head={["Estabelecimento", "Cliente", "Tipo", "Bairro / Cidade", "Região", "TVs", "Status", ""]}>
+      <DataTable head={["Estabelecimento", "Cliente / Responsável", "Tipo", "Bairro / Cidade", "Região", "TVs", "Online / Offline", "Status", ""]}>
         {rows.map((e) => <tr key={e.id}>
           <td className="font-medium">{e.name}<div className="text-xs text-muted-foreground">{e.address}</div></td>
-          <td>{e.clients?.name}</td>
+          <td>{e.clients?.name}<div className="text-xs text-muted-foreground">{e.clients?.contact_name ?? "—"}</div></td>
           <td>{e.type ?? "—"}</td>
           <td>{[e.district, e.city].filter(Boolean).join(" / ") || "—"}</td>
           <td>{e.region ?? "—"}</td>
           <td>{e.devices[0]?.count ?? 0}</td>
+          <td className="text-xs text-muted-foreground">Sem telemetria</td>
           <td><StatusBadge status={statusLabel[e.status]} /></td>
-          <td><Button variant="outline" size="sm" onClick={() => setEditing(e)}><Pencil />Editar</Button></td>
+          <td><div className="flex gap-2"><Button variant="outline" size="sm" asChild><Link to="/telas" search={{ establishment: e.id }}><Tv />Gerenciar TVs</Link></Button><Button variant="outline" size="sm" onClick={() => setEditing(e)}><Pencil />Editar</Button></div></td>
         </tr>)}
       </DataTable>
     </QueryState>
