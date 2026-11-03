@@ -60,7 +60,7 @@ describe("Páginas gerenciais com dados isolados", () => {
     expect(screen.getAllByRole("img")).toHaveLength(2);
     expect(screen.getByRole("heading", { name: "Atividade por horário" })).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent("Sem dados de atividade por horário");
-    expect(screen.getByRole("button", { name: /Aracaju 1 · 100%/ })).toBeInTheDocument();
+    expect(screen.getByRole("list", { name: /Legenda/ })).toHaveTextContent("Aracaju1");
     mocks.devices.mockResolvedValue([device, { ...device, id: "tv2", activation_status: "ativa", orientation: "horizontal" }]);
     mocks.establishments.mockResolvedValue([{ id: "e1", client_id: "c1", city: "São Cristóvão" }]);
     fireEvent.click(screen.getByRole("button", { name: "Atualizar" }));
@@ -68,9 +68,8 @@ describe("Páginas gerenciais com dados isolados", () => {
     for (const query of [mocks.clients, mocks.devices, mocks.plans, mocks.establishments]) {
       expect(query).toHaveBeenCalledTimes(2);
     }
-    fireEvent.click(screen.getByRole("button", { name: "Ver todos os dados" }));
-    expect(within(screen.getByRole("table")).getByText("São Cristóvão")).toBeInTheDocument();
-    expect(within(screen.getByRole("table")).queryByText("Aracaju")).toBeNull();
+    expect(screen.getByRole("list", { name: /Legenda/ })).toHaveTextContent("São Cristóvão");
+    expect(screen.getByRole("list", { name: /Legenda/ })).not.toHaveTextContent("Aracaju");
   });
   it("Clientes consulta novamente a lista ao atualizar", async () => {
     mount(ClientsRoute.options.component as ComponentType);
