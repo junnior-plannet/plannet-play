@@ -40,7 +40,7 @@ function mount(component: ComponentType) {
 describe("Páginas gerenciais com dados isolados", () => {
   it("Dashboard não expõe cadastro de dispositivo e atualiza contadores pela consulta", async () => {
     mount(DashboardRoute.options.component as ComponentType);
-    await screen.findByRole("heading", { name: "Distribuição por município" });
+    await screen.findByRole("heading", { name: "Distribuição por região" });
     expect(screen.queryByRole("button", { name: /Cadastrar Dispositivo/i })).toBeNull();
     expect(screen.queryByRole("link", { name: /Cadastrar Dispositivo/i })).toBeNull();
     expect(screen.getByText("TVs cadastradas").parentElement?.parentElement).toHaveTextContent("1");
@@ -53,7 +53,7 @@ describe("Páginas gerenciais com dados isolados", () => {
   it("Dashboard preserva a distribuição real e deixa a atividade vazia sem telemetria", async () => {
     mocks.establishments.mockResolvedValue([{ id: "e1", client_id: "c1", city: "Aracaju" }]);
     mount(DashboardRoute.options.component as ComponentType);
-    await screen.findByRole("heading", { name: "Distribuição por município" });
+    await screen.findByRole("heading", { name: "Distribuição por região" });
     for (const title of ["TVs por status", "Clientes por plano", "Orientação das TVs", "TVs por cliente"]) {
       expect(screen.queryByRole("heading", { name: title })).toBeNull();
     }
@@ -64,7 +64,7 @@ describe("Páginas gerenciais com dados isolados", () => {
     mocks.devices.mockResolvedValue([device, { ...device, id: "tv2", activation_status: "ativa", orientation: "horizontal" }]);
     mocks.establishments.mockResolvedValue([{ id: "e1", client_id: "c1", city: "São Cristóvão" }]);
     fireEvent.click(screen.getByRole("button", { name: "Atualizar" }));
-    await screen.findByRole("img", { name: /Distribuição por município: 2 TVs/ });
+    await screen.findByRole("img", { name: /Distribuição por região: 2 TVs/ });
     for (const query of [mocks.clients, mocks.devices, mocks.plans, mocks.establishments]) {
       expect(query).toHaveBeenCalledTimes(2);
     }
