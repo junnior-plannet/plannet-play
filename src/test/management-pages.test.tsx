@@ -50,7 +50,7 @@ describe("Páginas gerenciais com dados isolados", () => {
     expect(mocks.devices).toHaveBeenCalledTimes(2);
     expect(screen.getByText("TVs ativas").parentElement?.parentElement).toHaveTextContent("1");
   });
-  it("Dashboard apresenta um único gráfico principal multicolorido e o atualiza sem recarregar a página", async () => {
+  it("Dashboard preserva a distribuição real e deixa a atividade vazia sem telemetria", async () => {
     mocks.establishments.mockResolvedValue([{ id: "e1", client_id: "c1", city: "Aracaju" }]);
     mount(DashboardRoute.options.component as ComponentType);
     await screen.findByRole("heading", { name: "Distribuição por município" });
@@ -58,6 +58,8 @@ describe("Páginas gerenciais com dados isolados", () => {
       expect(screen.queryByRole("heading", { name: title })).toBeNull();
     }
     expect(screen.getAllByRole("img")).toHaveLength(1);
+    expect(screen.getByRole("heading", { name: "Atividade por horário" })).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("Sem dados de atividade por horário");
     expect(screen.getByRole("button", { name: /Aracaju 1 · 100%/ })).toBeInTheDocument();
     mocks.devices.mockResolvedValue([device, { ...device, id: "tv2", activation_status: "ativa", orientation: "horizontal" }]);
     mocks.establishments.mockResolvedValue([{ id: "e1", client_id: "c1", city: "São Cristóvão" }]);
