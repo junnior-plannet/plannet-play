@@ -1,4 +1,7 @@
 # PLANNET CONTROL V2
+## Composição dos gráficos do Dashboard
+- [ ] Restaurar área e rosca na proporção 65/35, preservando indicadores e dados reais.
+- [ ] Validar gráficos e estado vazio sem gravações no Supabase ou alterações nas outras páginas.
 ## Endereço e dispositivos por cliente
 - [x] Salvar endereço completo como texto reutilizando campos atuais, com consulta CEP e edição manual.
 - [x] Retirar Estabelecimentos do menu e usar Cliente na gestão de Dispositivos, preservando vínculos internos.
