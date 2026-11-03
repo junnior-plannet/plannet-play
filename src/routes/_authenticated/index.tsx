@@ -5,7 +5,7 @@ import { Monitor, Users, CheckCircle2, Clock } from "lucide-react";
 import { PageHeader, Stat } from "@/components/app/ui";
 import { RefreshButton } from "@/components/app/RefreshButton";
 import { QueryState } from "@/components/app/QueryState";
-import { DashboardDonut } from "@/components/app/DashboardCharts";
+import { DashboardArea, DashboardDonut } from "@/components/app/DashboardCharts";
 import { clientsQuery, devicesQuery, establishmentsQuery, plansQuery } from "@/lib/api";
 import { buildDashboardData, formatCount } from "@/lib/dashboard";
 import { seo } from "@/lib/seo";
@@ -44,7 +44,10 @@ function Dashboard() {
           <Stat label="TVs ativas" value={formatCount(active)} hint="Status de ativação, não de conexão" icon={CheckCircle2} tone="success" />
           <Stat label="TVs pendentes" value={formatCount(pending)} hint="Aguardando ativação" icon={Clock} tone="warning" />
         </div>
-        <DashboardDonut title="Distribuição por município" description="TVs cadastradas por município do estabelecimento vinculado" rows={charts.byCity} unit="TVs" />
+        <div className="dashboard-main-charts grid min-w-0 items-stretch gap-4">
+          <DashboardArea />
+          <DashboardDonut title="Distribuição por município" description="TVs cadastradas por município do estabelecimento vinculado" rows={charts.byCity} unit="TVs" />
+        </div>
         <div className="rounded-xl border bg-card p-4 text-xs text-muted-foreground">
           <p>Todos os indicadores e gráficos usam os mesmos cadastros consultados no Supabase. O botão Atualizar consulta clientes, TVs, planos e locais sem recarregar a página.</p>
           <p className="mt-2">Não há telemetria de conexão integrada a este painel. Por isso, não exibimos indicadores online/offline, disponibilidade ou exibições. Vínculos não disponíveis para consulta e municípios não informados aparecem identificados, sem estimativas.</p>

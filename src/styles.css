@@ -189,7 +189,15 @@
 /* Dashboard charts inherit the same semantic palette in light and dark mode. */
 .dashboard-overview {
   --dashboard-cyan: oklch(0.8 0.14 210);
+  --dashboard-area-fill: color-mix(in oklab, var(--primary) 28%, transparent);
+  --dashboard-area-fade: color-mix(in oklab, var(--primary) 0%, transparent);
+  --dashboard-line-glow: drop-shadow(0 0 3px color-mix(in oklab, var(--primary) 45%, transparent));
 }
+.dashboard-main-charts { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1024px) {
+  .dashboard-main-charts { grid-template-columns: minmax(0, 65fr) minmax(0, 35fr); }
+}
+.dashboard-area-line .recharts-area-curve { filter: var(--dashboard-line-glow); }
 .dashboard-chart { overflow: hidden; }
 .dashboard-segment {
   filter: drop-shadow(0 0 3px currentColor);

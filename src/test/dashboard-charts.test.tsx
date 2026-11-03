@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { DashboardDonut } from "@/components/app/DashboardCharts";
+import { DashboardArea, DashboardDonut } from "@/components/app/DashboardCharts";
 import type { DashboardDatum } from "@/lib/dashboard";
 
 const rows: DashboardDatum[] = [
@@ -11,6 +11,16 @@ const rows: DashboardDatum[] = [
 afterEach(cleanup);
 
 describe("Gráficos acessíveis do Dashboard", () => {
+  it("não inventa atividade na ausência de telemetria ou com um único registro", () => {
+    const { rerender } = render(<DashboardArea />);
+    expect(screen.queryByRole("img")).toBeNull();
+    expect(screen.getByRole("status")).toBeInTheDocument();
+    rerender(<DashboardArea rows={[{ hour: "10:00", value: 2 }]} />);
+    expect(screen.queryByRole("img")).toBeNull();
+    rerender(<DashboardArea rows={[{ hour: "10:00", value: 2 }, { hour: "11:00", value: 3 }]} />);
+    expect(screen.getByRole("img", { name: "Atividade das TVs por horário" })).toBeInTheDocument();
+    expect(screen.queryByRole("status")).toBeNull();
+  });
   it("permite destacar e desmarcar uma categoria pela legenda sem alterar os totais", () => {
     render(<DashboardDonut title="TVs por status" description="Ativação" rows={rows} unit="TVs" />);
     const active = screen.getByRole("button", { name: /Ativas 3 · 75%/ });
