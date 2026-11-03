@@ -40,7 +40,7 @@ function mount(component: ComponentType) {
 describe("Páginas gerenciais com dados isolados", () => {
   it("Dashboard não expõe cadastro de dispositivo e atualiza contadores pela consulta", async () => {
     mount(DashboardRoute.options.component as ComponentType);
-    await screen.findByRole("heading", { name: "Distribuição por município" });
+    await screen.findByRole("heading", { name: "Distribuição por região" });
     expect(screen.queryByRole("button", { name: /Cadastrar Dispositivo/i })).toBeNull();
     expect(screen.queryByRole("link", { name: /Cadastrar Dispositivo/i })).toBeNull();
     expect(screen.getByText("TVs cadastradas").parentElement?.parentElement).toHaveTextContent("1");
@@ -53,24 +53,23 @@ describe("Páginas gerenciais com dados isolados", () => {
   it("Dashboard preserva a distribuição real e deixa a atividade vazia sem telemetria", async () => {
     mocks.establishments.mockResolvedValue([{ id: "e1", client_id: "c1", city: "Aracaju" }]);
     mount(DashboardRoute.options.component as ComponentType);
-    await screen.findByRole("heading", { name: "Distribuição por município" });
+    await screen.findByRole("heading", { name: "Distribuição por região" });
     for (const title of ["TVs por status", "Clientes por plano", "Orientação das TVs", "TVs por cliente"]) {
       expect(screen.queryByRole("heading", { name: title })).toBeNull();
     }
-    expect(screen.getAllByRole("img")).toHaveLength(1);
+    expect(screen.getAllByRole("img")).toHaveLength(2);
     expect(screen.getByRole("heading", { name: "Atividade por horário" })).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent("Sem dados de atividade por horário");
-    expect(screen.getByRole("button", { name: /Aracaju 1 · 100%/ })).toBeInTheDocument();
+    expect(screen.getByRole("list", { name: /Legenda/ })).toHaveTextContent("Aracaju1");
     mocks.devices.mockResolvedValue([device, { ...device, id: "tv2", activation_status: "ativa", orientation: "horizontal" }]);
     mocks.establishments.mockResolvedValue([{ id: "e1", client_id: "c1", city: "São Cristóvão" }]);
     fireEvent.click(screen.getByRole("button", { name: "Atualizar" }));
-    await screen.findByRole("img", { name: /Distribuição por município: 2 TVs/ });
+    await screen.findByRole("img", { name: /Distribuição por região: 2 TVs/ });
     for (const query of [mocks.clients, mocks.devices, mocks.plans, mocks.establishments]) {
       expect(query).toHaveBeenCalledTimes(2);
     }
-    fireEvent.click(screen.getByRole("button", { name: "Ver todos os dados" }));
-    expect(within(screen.getByRole("table")).getByText("São Cristóvão")).toBeInTheDocument();
-    expect(within(screen.getByRole("table")).queryByText("Aracaju")).toBeNull();
+    expect(screen.getByRole("list", { name: /Legenda/ })).toHaveTextContent("São Cristóvão");
+    expect(screen.getByRole("list", { name: /Legenda/ })).not.toHaveTextContent("Aracaju");
   });
   it("Clientes consulta novamente a lista ao atualizar", async () => {
     mount(ClientsRoute.options.component as ComponentType);

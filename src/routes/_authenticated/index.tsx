@@ -46,7 +46,7 @@ function Dashboard() {
         </div>
         <div className="dashboard-main-charts grid min-w-0 items-stretch gap-4">
           <DashboardArea />
-          <DashboardDonut title="Distribuição por município" description="TVs cadastradas por município do estabelecimento vinculado" rows={charts.byCity} unit="TVs" />
+          <DashboardDonut title="Distribuição por região" description="Telas cadastradas" rows={charts.byCity} unit="TVs" />
         </div>
         <div className="rounded-xl border bg-card p-4 text-xs text-muted-foreground">
           <p>Todos os indicadores e gráficos usam os mesmos cadastros consultados no Supabase. O botão Atualizar consulta clientes, TVs, planos e locais sem recarregar a página.</p>
