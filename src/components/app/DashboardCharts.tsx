@@ -74,8 +74,8 @@ export function DashboardArea({ rows = [] }: { rows?: DashboardActivityPoint[] }
             <stop offset="100%" stopColor="var(--dashboard-area-fade)" />
           </linearGradient></defs>
           <CartesianGrid vertical={false} stroke="var(--border)" />
-          <XAxis dataKey="hour" ticks={hasActivity ? undefined : HOUR_TICKS} tickLine={false} axisLine={false} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} minTickGap={24} />
-          <YAxis allowDecimals={false} domain={hasActivity ? undefined : [0, 600]} ticks={hasActivity ? undefined : [0, 150, 300, 450, 600]} tickLine={false} axisLine={false} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} width={38} />
+          <XAxis dataKey="hour" {...(hasActivity ? {} : { ticks: HOUR_TICKS })} tickLine={false} axisLine={false} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} minTickGap={24} />
+          <YAxis allowDecimals={false} {...(hasActivity ? {} : { domain: [0, 600] as [number, number], ticks: [0, 150, 300, 450, 600] })} tickLine={false} axisLine={false} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} width={38} />
           {hasActivity && <Tooltip cursor={{ stroke: "var(--primary)", strokeDasharray: "4 4" }} content={({ active, payload, label }) => active && payload?.length ?
             <div className="dashboard-tooltip rounded-lg border bg-popover px-3 py-2 text-xs text-popover-foreground shadow-lg">
               <p className="mb-1 font-medium">{label}</p><p>{formatCount(Number(payload[0]?.value ?? 0))} registros de atividade</p>
