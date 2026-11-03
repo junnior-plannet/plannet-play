@@ -57,7 +57,7 @@ describe("Páginas gerenciais com dados isolados", () => {
     for (const title of ["TVs por status", "Clientes por plano", "Orientação das TVs", "TVs por cliente"]) {
       expect(screen.queryByRole("heading", { name: title })).toBeNull();
     }
-    expect(screen.getAllByRole("img")).toHaveLength(1);
+    expect(screen.getAllByRole("img")).toHaveLength(2);
     expect(screen.getByRole("heading", { name: "Atividade por horário" })).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent("Sem dados de atividade por horário");
     expect(screen.getByRole("button", { name: /Aracaju 1 · 100%/ })).toBeInTheDocument();
